@@ -12,6 +12,7 @@ using Web_Interface.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Data_Layer;
 
 namespace Web_Interface
 {
@@ -34,6 +35,9 @@ namespace Web_Interface
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            // DbContext setup.
+            services.AddDbContext<MainDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MainDbContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
