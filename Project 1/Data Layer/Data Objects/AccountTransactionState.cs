@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Data_Layer.Data_Objects
 {
-    public class AccountTransactionType
+    public class AccountTransactionState
     {
         public int ID { get; set; }
 
