@@ -7,7 +7,7 @@ namespace Data_Layer
 {
     public partial class Repository
     {
-        private MainDbContext myContext = null;
+        protected MainDbContext myContext = null;
 
         public Repository(MainDbContext newContext)
         {
