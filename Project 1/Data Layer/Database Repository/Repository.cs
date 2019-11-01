@@ -18,9 +18,9 @@ namespace Data_Layer
 
         private async void LoadUtilities()
         {
-            await this.LoadAccountTypes();
-            await this.LoadTransactionStates();
-            await this.LoadStates();
+            await LoadAccountTypes();
+            await LoadTransactionStates();
+            await LoadStates();
         }
     }
 }
