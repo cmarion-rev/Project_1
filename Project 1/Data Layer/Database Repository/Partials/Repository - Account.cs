@@ -156,13 +156,13 @@ namespace Data_Layer
                         else
                         {
                             // Invalid account.
-                            throw new InvalidOperationException(string.Format("ACCOUNT #{0} IS NOT DEPOSITABLE!", accountID));
+                            throw new InvalidAccountException(string.Format("ACCOUNT #{0} IS NOT DEPOSITABLE!", accountID));
                         }
                     }
                     else
                     {
                         // Invalid amount for deposit.
-                        throw new ArithmeticException(string.Format("DEPOSIT AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
+                        throw new InvalidAmountException(string.Format("DEPOSIT AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
                     }
                 }
                 else
@@ -171,7 +171,7 @@ namespace Data_Layer
                     throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
                 }
             }
-            catch(InvalidOperationException WTF)
+            catch(InvalidAccountException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
@@ -181,7 +181,7 @@ namespace Data_Layer
                 Console.WriteLine(WTF);
                 throw;
             }
-            catch (ArithmeticException WTF)
+            catch (InvalidAmountException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
