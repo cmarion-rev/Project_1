@@ -1,4 +1,5 @@
 ﻿using Data_Layer.Data_Objects;
+using Data_Layer.Database_Repository.Interfaces;
 using Data_Layer.Resources;
 using Data_Layer.View_Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Data_Layer
 {
-    public partial class Repository
+    public partial class Repository : IRepository
     {
         public async Task<Customer> GetCustomer(int id)
         {
