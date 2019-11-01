@@ -13,7 +13,7 @@ namespace Data_Layer
 {
     public partial class Repository : IRepository
     {
-        public async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
+        public virtual async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
         {
             Customer tempCustomer = await GetCustomer(customerID);
             Account newAccount = null;
@@ -55,7 +55,7 @@ namespace Data_Layer
             return newAccount;
         }
 
-        public async Task<Account> CloseAccount(int customerID, int accountID)
+        public virtual async Task<Account> CloseAccount(int customerID, int accountID)
         {
             Account result = null;
 
@@ -118,7 +118,7 @@ namespace Data_Layer
             return result;
         }
 
-        public async Task<Account> Deposit(int customerID, int accountID, double newAmount)
+        public virtual async Task<Account> Deposit(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
@@ -200,7 +200,7 @@ namespace Data_Layer
             return currentAccount;
         }
 
-        public async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
+        public virtual async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
