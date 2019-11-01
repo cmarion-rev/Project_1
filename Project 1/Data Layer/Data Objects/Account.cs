@@ -10,6 +10,8 @@ namespace Data_Layer.Data_Objects
 
         public int AccountTypeID { get; set; }
 
+        public virtual AccountType AccountType { get; set; }
+
         public int CustomerID { get; set; }
 
         public double AccountBalance { get; set; }

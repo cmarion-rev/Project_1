@@ -9,6 +9,8 @@ namespace Data_Layer
     {
         public DbSet<Account> Accounts { get; set; }
       
+        public DbSet<AccountType> AccountTypes { get; set; }
+
         public MainDbContext(DbContextOptions<MainDbContext> context) : base(context)
         {
 
