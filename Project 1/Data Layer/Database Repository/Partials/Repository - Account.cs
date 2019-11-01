@@ -11,7 +11,7 @@ namespace Data_Layer
 {
     public partial class Repository
     {
-        public async Task<Account> CreateAccount(int customerID, int accountType, double initialBalance = 0.0)
+        public async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
         {
             Customer tempCustomer = await GetCustomer(customerID);
             Account newAccount = null;
@@ -53,6 +53,52 @@ namespace Data_Layer
             return newAccount;
         }
 
-       
+        public async Task<Account> CloseAccount(int customerID, int accountID)
+        {
+            Account result = null;
+
+            try
+            {
+                result = await myContext.Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID).FirstOrDefaultAsync();
+
+                // Check if account balance is valid for closing.
+                if (result.AccountBalance == 0.0)
+                {
+                    // Mark account as closed.
+                    result.IsActive = false;
+                    result.IsOpen = false;
+                    myContext.Update(result);
+                    await myContext.SaveChangesAsync();
+
+                    // Remove account from customer list.
+                }
+                else if (result.AccountBalance > 0.0)
+                {
+                    // Account still has balance.
+                    throw new InvalidOperationException(string.Format("ACCOUNT #{0} still has an outstanding balance of {1}.", result.ID, result.AccountBalance));
+                }
+                else
+                {
+                    // Account still has overdraft.
+                    throw new InvalidOperationException(string.Format("ACCOUNT #{0} still has an outstanding overdraft balance of {1}.", result.ID, result.AccountBalance));
+                }
+            }
+            catch (InvalidOperationException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+
+            }
+
+            return result;
+        }
     }
 }
