@@ -34,5 +34,7 @@ namespace Data_Layer.Data_Objects
         public bool IsActive { get; set; }
 
         public bool IsOpen { get; set; }
+
+        public List<AccountTransaction> AccountTransactions { get; set; }
     }
 }
