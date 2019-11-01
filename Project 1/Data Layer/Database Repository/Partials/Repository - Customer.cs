@@ -54,7 +54,10 @@ namespace Data_Layer
             try
             {
                 result.Customer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
-                result.Accounts = await myContext.Accounts.Where(a => a.CustomerID == customerID && a.IsOpen && a.IsActive).ToListAsync();
+                result.Accounts = await myContext.Accounts.
+                                            Where(a => a.CustomerID == customerID && 
+                                                  a.IsOpen && 
+                                                  a.IsActive).ToListAsync();
             }
             catch (Exception WTF)
             {
