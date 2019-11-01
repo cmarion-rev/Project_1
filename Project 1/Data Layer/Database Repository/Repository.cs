@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Data_Layer
 {
-    public class Repository
+    public partial class Repository
     {
         private MainDbContext myContext = null;
 
