@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 
+using Data_Layer.Data_Objects;
+
 namespace Data_Layer
 {
     public class MainDbContext : DbContext
     {
-        public DbSet<Customer> Customers { get; set; }
-
+        public DbSet<Account> Accounts { get; set; }
       
         public MainDbContext(DbContextOptions<MainDbContext> context) : base(context)
         {
