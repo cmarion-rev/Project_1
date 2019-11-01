@@ -38,5 +38,33 @@ namespace Data_Layer
 
             return result;
         }
+
+        public async Task<List<AccountTransactionState>> GetTransactionStates()
+        {
+            List<AccountTransactionState> results = await myContext.AccountTransactionStates.ToListAsync();
+
+            return results;
+        }
+
+        public async Task<AccountTransactionState> GetTransactionState(int ID)
+        {
+            AccountTransactionState result = null;
+
+            try
+            {
+                result = await myContext.AccountTransactionStates.Where(s => s.ID == ID).FirstOrDefaultAsync();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+
+            }
+
+            return result;
+        }
     }
 }
