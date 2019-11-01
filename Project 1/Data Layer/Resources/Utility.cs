@@ -23,6 +23,11 @@ namespace Data_Layer.Resources
 
         public enum TransactionCodes
         {
+            // Account States.
+            OPEN_ACCOUNT,
+            CLOSE_ACCOUNT,
+
+            // Main Transactions.
             DEPOSIT,
             WITHDRAWAL,
 
