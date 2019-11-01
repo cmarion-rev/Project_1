@@ -1,4 +1,5 @@
 ﻿using Data_Layer.Data_Objects;
+using Data_Layer.Resources;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -157,7 +158,7 @@ namespace Data_Layer
 
             return result;
         }
-        
+
         private async Task<int> LoadTransactionStates()
         {
             List<AccountTransactionState> MasterStateList = new List<AccountTransactionState>();
@@ -212,7 +213,6 @@ namespace Data_Layer
             return result;
         }
 
-
         public async Task<int> LoadAccountTypes()
         {
             List<AccountType> MasterTypeList = new List<AccountType>();
@@ -261,6 +261,52 @@ namespace Data_Layer
             try
             {
                 result = await myContext.AccountTypes.Where(t => t.ID == id).FirstOrDefaultAsync();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+
+            return result;
+        }
+
+        public async Task<int> GetAccountTypeID(Utility.AccountType accountType)
+        {
+            int result = -1;
+
+            try
+            {
+                AccountType tempType = null;
+                switch (accountType)
+                {
+                    case Utility.AccountType.CHECKING:
+                        tempType = await myContext.AccountTypes.Where(t => t.Name == "Checking").FirstOrDefaultAsync();
+                        break;
+
+                    case Utility.AccountType.BUSINESS:
+                        tempType = await myContext.AccountTypes.Where(t => t.Name == "Business").FirstOrDefaultAsync();
+                        break;
+
+                    case Utility.AccountType.TERM_DEPOSIT:
+                        tempType = await myContext.AccountTypes.Where(t => t.Name == "Term CD").FirstOrDefaultAsync();
+                        break;
+
+                    case Utility.AccountType.LOAN:
+                        tempType = await myContext.AccountTypes.Where(t => t.Name == "Loan").FirstOrDefaultAsync();
+                        break;
+
+                    case Utility.AccountType._COUNT:
+                        break;
+
+                    default:
+                        throw new Exception("INVALID ACCOUNT TYPE SELECTED!");
+                }
+
+                if (tempType != null)
+                {
+                    result = tempType.ID;
+                }
             }
             catch (Exception WTF)
             {
