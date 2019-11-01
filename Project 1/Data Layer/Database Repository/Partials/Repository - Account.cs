@@ -15,6 +15,8 @@ namespace Data_Layer
         {
             Customer tempCustomer = await GetCustomer(customerID);
             Account newAccount = null;
+
+            // Check if customer is valid.
             if (tempCustomer != null)
             {
                 newAccount = new Account()
@@ -42,11 +44,11 @@ namespace Data_Layer
                 {
                     newAccount.MaturityDate = DateTime.Now;
                 }
-            }
 
-            // Add new account to database.
-            myContext.Add(newAccount);
-            await myContext.SaveChangesAsync();
+                // Add new account to database.
+                myContext.Add(newAccount);
+                await myContext.SaveChangesAsync();
+            }
 
             return newAccount;
         }
