@@ -26,11 +26,12 @@ namespace Data_Layer.Resources
             DEPOSIT,
             WITHDRAWAL,
 
-            // ERRORS
+            // Errors
             OVERDRAFT_PROTECTION,
             NON_MATURITY,
 
-
+            // Others
+            INTEREST_ACCRUED,
         }
     }
 }
