@@ -157,8 +157,7 @@ namespace Data_Layer
 
             return result;
         }
-
-
+        
         private async Task<int> LoadTransactionStates()
         {
             List<AccountTransactionState> MasterStateList = new List<AccountTransactionState>();

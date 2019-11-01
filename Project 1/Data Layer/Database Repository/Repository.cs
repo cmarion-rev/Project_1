@@ -22,7 +22,5 @@ namespace Data_Layer
             await this.LoadTransactionStates();
             await this.LoadStates();
         }
-
-
     }
 }
