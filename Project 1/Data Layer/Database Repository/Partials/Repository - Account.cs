@@ -60,28 +60,41 @@ namespace Data_Layer
             try
             {
                 result = await myContext.Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID).FirstOrDefaultAsync();
-
-                // Check if account balance is valid for closing.
-                if (result.AccountBalance == 0.0)
+                if (result.CustomerID == customerID)
                 {
-                    // Mark account as closed.
-                    result.IsActive = false;
-                    result.IsOpen = false;
-                    myContext.Update(result);
-                    await myContext.SaveChangesAsync();
 
-                    // Remove account from customer list.
-                }
-                else if (result.AccountBalance > 0.0)
-                {
-                    // Account still has balance.
-                    throw new InvalidOperationException(string.Format("ACCOUNT #{0} still has an outstanding balance of {1}.", result.ID, result.AccountBalance));
+                    // Check if account balance is valid for closing.
+                    if (result.AccountBalance == 0.0)
+                    {
+                        // Mark account as closed.
+                        result.IsActive = false;
+                        result.IsOpen = false;
+                        myContext.Update(result);
+                        await myContext.SaveChangesAsync();
+
+                        // Remove account from customer list.
+                    }
+                    else if (result.AccountBalance > 0.0)
+                    {
+                        // Account still has balance.
+                        throw new InvalidOperationException(string.Format("ACCOUNT #{0} still has an outstanding balance of {1}.", result.ID, result.AccountBalance));
+                    }
+                    else
+                    {
+                        // Account still has overdraft.
+                        throw new InvalidOperationException(string.Format("ACCOUNT #{0} still has an outstanding overdraft balance of {1}.", result.ID, result.AccountBalance));
+                    }
                 }
                 else
                 {
-                    // Account still has overdraft.
-                    throw new InvalidOperationException(string.Format("ACCOUNT #{0} still has an outstanding overdraft balance of {1}.", result.ID, result.AccountBalance));
+                    // Unauthorized user attempting to access an account not their's.
+                    throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
                 }
+            }
+            catch (UnauthorizedAccessException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
             }
             catch (InvalidOperationException WTF)
             {
@@ -99,6 +112,85 @@ namespace Data_Layer
             }
 
             return result;
+        }
+
+        public async Task<Account> Deposit(int customerID, int accountID, double newAmount)
+        {
+            Account currentAccount = null;
+
+            try
+            {
+                currentAccount = await myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefaultAsync();
+                if (currentAccount.CustomerID == customerID)
+                {
+                    if (newAmount > 0.0)
+                    {
+                        // Check if valid account to deposit to.
+                        if (await IsCheckingAccount(accountID) || await IsBusinessAccount(accountID))
+                        {
+                            // Update account balance for new amount.
+                            currentAccount.AccountBalance += newAmount;
+
+                            // Create new transaction record.
+                            AccountTransaction tempTransaction = new AccountTransaction()
+                            {
+                                AccountID = currentAccount.ID,
+                                Amount = newAmount,
+                                TransactionCode = await GetTransactionID(Utility.TransactionCodes.DEPOSIT),
+                                TimeStamp = DateTime.Now
+                            };
+
+                            // Update account record in database.
+                            myContext.Update(currentAccount);
+                            // Add new transaction record to database.
+                            myContext.Add(tempTransaction);
+                            // Post changes to database.
+                            await myContext.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            // Invalid account.
+                            throw new InvalidOperationException(string.Format("ACCOUNT #{0} IS NOT DEPOSITABLE!", accountID));
+                        }
+                    }
+                    else
+                    {
+                        // Invalid amount for deposit.
+                        throw new ArithmeticException(string.Format("DEPOSIT AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
+                    }
+                }
+                else
+                {
+                    // Unauthorized user attempting to access an account not their's.
+                    throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
+                }
+            }
+            catch(InvalidOperationException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch(UnauthorizedAccessException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (ArithmeticException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+
+            }
+
+            return currentAccount;
         }
     }
 }
