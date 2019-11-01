@@ -13,7 +13,7 @@ namespace Data_Layer
 {
     public partial class Repository : IRepository
     {
-        public async Task<Customer> GetCustomer(int id)
+        public virtual async Task<Customer> GetCustomer(int id)
         {
             Customer result = null;
 
@@ -33,14 +33,14 @@ namespace Data_Layer
             return result;
         }
 
-        public async Task<List<Customer>> GetAllCustomers()
+        public virtual async Task<List<Customer>> GetAllCustomers()
         {
             List<Customer> results = await myContext.Customers.ToListAsync();
 
             return results;
         }
 
-        public async Task<Customer> UpdateCustomer(Customer currentCustomer)
+        public virtual async Task<Customer> UpdateCustomer(Customer currentCustomer)
         {
             myContext.Update(currentCustomer);
             await myContext.SaveChangesAsync();
@@ -48,7 +48,7 @@ namespace Data_Layer
             return currentCustomer;
         }
 
-        public async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID)
+        public virtual async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID)
         {
             CustomerAccountsVM result = new CustomerAccountsVM();
 
@@ -73,7 +73,7 @@ namespace Data_Layer
             return result;
         }
 
-        public async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID, Utility.AccountType accountType)
+        public virtual async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID, Utility.AccountType accountType)
         {
             CustomerAccountsVM result = new CustomerAccountsVM();
 
