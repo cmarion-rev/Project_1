@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Data_Layer.Resources
 {
-    static class Utility
+    public static class Utility
     {
         public enum AccountType
         {
