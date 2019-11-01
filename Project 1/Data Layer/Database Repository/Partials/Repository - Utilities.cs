@@ -10,7 +10,7 @@ namespace Data_Layer
 {
     public partial class Repository
     {
-        private async void LoadStates()
+        private async Task<int> LoadStates()
         {
             List<State> MasterStateList = new List<State>();
             //  Alabama - AL
@@ -119,12 +119,14 @@ namespace Data_Layer
             // Check current list for any missing values.
             foreach (var item in MasterStateList)
             {
-                if (currentStateList.Where(s=>s.Abbreviation == item.Abbreviation).Count()<1)
+                if (currentStateList.Where(s => s.Abbreviation == item.Abbreviation).Count() < 1)
                 {
                     myContext.Add(item);
                     await myContext.SaveChangesAsync();
                 }
             }
+
+            return MasterStateList.Count;
         }
 
         public async Task<List<State>> GetStates()
@@ -137,7 +139,7 @@ namespace Data_Layer
         public async Task<State> GetState(int ID)
         {
             State result = null;
-            
+
             try
             {
                 result = await myContext.States.Where(s => s.ID == ID).FirstOrDefaultAsync();
@@ -150,14 +152,14 @@ namespace Data_Layer
             }
             finally
             {
-            
+
             }
 
             return result;
         }
 
 
-        private  async void LoadTransactionStates()
+        private async Task<int> LoadTransactionStates()
         {
             List<AccountTransactionState> MasterStateList = new List<AccountTransactionState>();
             MasterStateList.Add(new AccountTransactionState() { Name = "Open Account" });
@@ -179,6 +181,8 @@ namespace Data_Layer
                     await myContext.SaveChangesAsync();
                 }
             }
+
+            return MasterStateList.Count;
         }
 
         public async Task<List<AccountTransactionState>> GetTransactionStates()
@@ -207,6 +211,74 @@ namespace Data_Layer
             }
 
             return result;
+        }
+
+
+        public async Task<int> LoadAccountTypes()
+        {
+            List<AccountType> MasterTypeList = new List<AccountType>();
+            MasterTypeList.Add(new AccountType() { Name = "Checking" });
+            MasterTypeList.Add(new AccountType() { Name = "Business" });
+            MasterTypeList.Add(new AccountType() { Name = "Term CD" });
+            MasterTypeList.Add(new AccountType() { Name = "Loan" });
+
+            List<AccountType> currentTypeList = await myContext.AccountTypes.ToListAsync();
+
+            // Check current list for all valid items.
+            foreach (var item in MasterTypeList)
+            {
+                if (currentTypeList.Where(t => t.Name == item.Name).Count() < 1)
+                {
+                    myContext.Add(item);
+                    await myContext.SaveChangesAsync();
+                }
+            }
+
+            return MasterTypeList.Count;
+        }
+
+        public async Task<string> GetAccountTypeName(int id)
+        {
+            string result = null;
+
+            try
+            {
+                var item = await myContext.AccountTypes.Where(t => t.ID == id).FirstOrDefaultAsync();
+                result = item.Name;
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+
+            return result;
+        }
+
+        public async Task<AccountType> GetAccountType(int id)
+        {
+            AccountType result = null;
+
+            try
+            {
+                result = await myContext.AccountTypes.Where(t => t.ID == id).FirstOrDefaultAsync();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+
+            return result;
+        }
+
+        public async Task<List<AccountType>> GetAllAccountTypes()
+        {
+            List<AccountType> results = null;
+
+            results = await myContext.AccountTypes.ToListAsync();
+
+            return results;
         }
     }
 }
