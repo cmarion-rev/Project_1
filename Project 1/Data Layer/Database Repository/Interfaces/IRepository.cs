@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Data_Layer.Database_Repository.Interfaces
 {
-    interface IRepository: IRepository_Customer, IRepository_Account
+    interface IRepository : IRepository_Customer, IRepository_Account, IRepository_Transaction
     {
-      
+
     }
 }
