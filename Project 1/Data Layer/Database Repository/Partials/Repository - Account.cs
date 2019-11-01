@@ -1,4 +1,5 @@
 ﻿using Data_Layer.Data_Objects;
+using Data_Layer.Database_Repository.Interfaces;
 using Data_Layer.Errors;
 using Data_Layer.Resources;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Data_Layer
 {
-    public partial class Repository
+    public partial class Repository : IRepository
     {
         public async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
         {
@@ -171,12 +172,12 @@ namespace Data_Layer
                     throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
                 }
             }
-            catch(InvalidAccountException WTF)
+            catch (InvalidAccountException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
             }
-            catch(UnauthorizedAccessException WTF)
+            catch (UnauthorizedAccessException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
@@ -314,7 +315,7 @@ namespace Data_Layer
                     throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
                 }
             }
-            catch(MaturityValidationException WTF)
+            catch (MaturityValidationException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
@@ -334,7 +335,7 @@ namespace Data_Layer
                 Console.WriteLine(WTF);
                 throw;
             }
-            catch(OverdraftProtectionException WTF)
+            catch (OverdraftProtectionException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
