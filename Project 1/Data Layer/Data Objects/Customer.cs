@@ -20,7 +20,7 @@ namespace Data_Layer.Data_Objects
 
         public int StateID { get; set; }
 
-        // public virtual State State { get; set;}
+        public virtual State State { get; set; }
 
         [Display(Name ="Zipcode")]
         [Range(10000,99999)]
