@@ -25,6 +25,8 @@ namespace Data_Layer.Data_Objects
         [Display(Name = "Last Transaction State")]
         public int LastTransactionState { get; set; }
 
+        public virtual AccountTransactionState LastAccountTransactionState { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime MaturityDate { get; set; }
 
