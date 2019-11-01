@@ -14,6 +14,8 @@ namespace Data_Layer.Data_Objects
 
         public int TransactionCode { get; set; }
 
+        public virtual AccountTransactionState AccountTransactionState { get; set; }
+
         public double Amount { get; set; }
 
         public DateTime TimeStamp { get; set; }
