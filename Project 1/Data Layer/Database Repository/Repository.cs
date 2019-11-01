@@ -11,8 +11,16 @@ namespace Data_Layer
         public Repository(MainDbContext newContext)
         {
             myContext = newContext;
+
+            // Load all utility tables.
+
         }
 
+        private void LoadUtilities()
+        {
+            LoadTransactionStates();
+            LoadStates();
+        }
 
 
     }
