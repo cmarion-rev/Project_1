@@ -10,6 +10,14 @@ namespace Data_Layer
         public DbSet<Account> Accounts { get; set; }
       
         public DbSet<AccountType> AccountTypes { get; set; }
+        
+        public DbSet<AccountTransaction> AccountTransactions { get; set; }
+        
+        public DbSet<AccountTransactionState> AccountTransactionStates { get; set; }
+        
+        public DbSet<State> States { get; set; }
+        
+        public DbSet<Customer> Customers { get; set; }
 
         public MainDbContext(DbContextOptions<MainDbContext> context) : base(context)
         {
