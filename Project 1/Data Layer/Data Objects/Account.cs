@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Data_Layer.Data_Objects
 {
-    class Account
+    public class Account
     {
         public int ID { get; set; }
 
