@@ -3,12 +3,12 @@ using System;
 
 namespace Data_Layer
 {
-    public class MyDbContext : DbContext
+    public class MainDbContext : DbContext
     {
         public DbSet<Customer> Customers { get; set; }
 
       
-        public MyDbContext(DbContextOptions<MyDbContext> context) : base(context)
+        public MainDbContext(DbContextOptions<MainDbContext> context) : base(context)
         {
 
         }
