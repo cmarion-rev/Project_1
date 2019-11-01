@@ -1,4 +1,5 @@
 ﻿using Data_Layer.Data_Objects;
+using Data_Layer.View_Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,28 @@ namespace Data_Layer
             await myContext.SaveChangesAsync();
 
             return currentCustomer;
+        }
+
+        public async Task<CustomerAccountsVM> GetCustomerWithAccounts(int id)
+        {
+            CustomerAccountsVM result = new CustomerAccountsVM();
+
+            try
+            {
+                result.Customer = await myContext.Customers.Where(c => c.ID == id).FirstOrDefaultAsync();
+                result.Accounts = await myContext.Accounts.Where(a => a.CustomerID == id && a.IsOpen && a.IsActive).ToListAsync();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+
+            }
+
+            return result;
         }
     }
 }
