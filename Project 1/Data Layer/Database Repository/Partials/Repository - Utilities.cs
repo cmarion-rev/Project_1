@@ -12,7 +12,119 @@ namespace Data_Layer
     {
         private async void LoadStates()
         {
-            await myContext.States.ToListAsync();
+            List<State> MasterStateList = new List<State>();
+            //  Alabama - AL
+            //  Alaska - AK
+            //  Arizona - AZ
+            //  Arkansas - AR
+            //  California - CA
+            //  Colorado - CO
+            MasterStateList.Add(new State() { Name = "Alabama", Abbreviation = "AL" });
+            MasterStateList.Add(new State() { Name = "Alaska", Abbreviation = "AK" });
+            MasterStateList.Add(new State() { Name = "Arizona", Abbreviation = "AZ" });
+            MasterStateList.Add(new State() { Name = "Arkansas", Abbreviation = "AR" });
+            MasterStateList.Add(new State() { Name = "California", Abbreviation = "CA" });
+            MasterStateList.Add(new State() { Name = "Colorado", Abbreviation = "CO" });
+            //  Connecticut - CT
+            //  Delaware - DE
+            //  Florida - FL
+            //  Georgia - GA
+            //  Hawaii - HI
+            //  Idaho - ID
+            //  Illinois - IL
+            //  Indiana - IN
+            //  Iowa - IA
+            MasterStateList.Add(new State() { Name = "Connecticut", Abbreviation = "CT" });
+            MasterStateList.Add(new State() { Name = "Delaware", Abbreviation = "DE" });
+            MasterStateList.Add(new State() { Name = "Florida", Abbreviation = "FL" });
+            MasterStateList.Add(new State() { Name = "Georgia", Abbreviation = "GA" });
+            MasterStateList.Add(new State() { Name = "Hawaii", Abbreviation = "HI" });
+            MasterStateList.Add(new State() { Name = "Idaho", Abbreviation = "ID" });
+            MasterStateList.Add(new State() { Name = "Illinois", Abbreviation = "IL" });
+            MasterStateList.Add(new State() { Name = "Indiana", Abbreviation = "IN" });
+            MasterStateList.Add(new State() { Name = "Iowa", Abbreviation = "IA" });
+            //  Kansas - KS
+            //  Kentucky - KY
+            //  Louisiana - LA
+            //  Maine - ME
+            //  Maryland - MD
+            //  Massachusetts - MA
+            //  Michigan - MI
+            //  Minnesota - MN
+            //  Mississippi - MS
+            MasterStateList.Add(new State() { Name = "Kansas", Abbreviation = "KS" });
+            MasterStateList.Add(new State() { Name = "Kentucky", Abbreviation = "KY" });
+            MasterStateList.Add(new State() { Name = "Louisiana", Abbreviation = "LA" });
+            MasterStateList.Add(new State() { Name = "Maine", Abbreviation = "ME" });
+            MasterStateList.Add(new State() { Name = "Maryland", Abbreviation = "MD" });
+            MasterStateList.Add(new State() { Name = "Massachusetts", Abbreviation = "MA" });
+            MasterStateList.Add(new State() { Name = "Michigan", Abbreviation = "MI" });
+            MasterStateList.Add(new State() { Name = "Minnesota", Abbreviation = "MN" });
+            MasterStateList.Add(new State() { Name = "Mississippi", Abbreviation = "MS" });
+            //  Missouri - MO
+            //  Montana - MT
+            //  Nebraska - NE
+            //  Nevada - NV
+            //  New Hampshire -NH
+            //  New Jersey -NJ
+            //  New Mexico -NM
+            //  New York -NY
+            MasterStateList.Add(new State() { Name = "Missouri", Abbreviation = "MO" });
+            MasterStateList.Add(new State() { Name = "Montana", Abbreviation = "MT" });
+            MasterStateList.Add(new State() { Name = "Nebraska", Abbreviation = "NE" });
+            MasterStateList.Add(new State() { Name = "Nevada", Abbreviation = "NV" });
+            MasterStateList.Add(new State() { Name = "New Hampshire", Abbreviation = "NH" });
+            MasterStateList.Add(new State() { Name = "New Jersey", Abbreviation = "NJ" });
+            MasterStateList.Add(new State() { Name = "New Mexico", Abbreviation = "NM" });
+            MasterStateList.Add(new State() { Name = "New York", Abbreviation = "NY" });
+            //  North Carolina -NC
+            //  North Dakota -ND
+            //  Ohio - OH
+            //  Oklahoma - OK
+            //  Oregon - OR
+            //  Pennsylvania - PA
+            //  Rhode Island -RI
+            //  South Carolina -SC
+            MasterStateList.Add(new State() { Name = "North Carolina", Abbreviation = "NC" });
+            MasterStateList.Add(new State() { Name = "North Dakota", Abbreviation = "ND" });
+            MasterStateList.Add(new State() { Name = "Ohio", Abbreviation = "OH" });
+            MasterStateList.Add(new State() { Name = "Oklahoma", Abbreviation = "OK" });
+            MasterStateList.Add(new State() { Name = "Oregon", Abbreviation = "OR" });
+            MasterStateList.Add(new State() { Name = "Pennsylvania", Abbreviation = "PA" });
+            MasterStateList.Add(new State() { Name = "Rhode Island", Abbreviation = "RI" });
+            MasterStateList.Add(new State() { Name = "South Carolina", Abbreviation = "SC" });
+            //  South Dakota -SD
+            //  Tennessee - TN
+            //  Texas - TX
+            //  Utah - UT
+            //  Vermont - VT
+            //  Virginia - VA
+            //  Washington - WA
+            //  West Virginia -WV
+            //  Wisconsin - WI
+            //  Wyoming - WY
+            MasterStateList.Add(new State() { Name = "South Dakota", Abbreviation = "SD" });
+            MasterStateList.Add(new State() { Name = "Tennessee", Abbreviation = "TN" });
+            MasterStateList.Add(new State() { Name = "Texas", Abbreviation = "TX" });
+            MasterStateList.Add(new State() { Name = "Utah", Abbreviation = "UT" });
+            MasterStateList.Add(new State() { Name = "Vermont", Abbreviation = "VT" });
+            MasterStateList.Add(new State() { Name = "Virginia", Abbreviation = "VA" });
+            MasterStateList.Add(new State() { Name = "Washington", Abbreviation = "WA" });
+            MasterStateList.Add(new State() { Name = "West Virginia", Abbreviation = "WV" });
+            MasterStateList.Add(new State() { Name = "Wisconsin", Abbreviation = "WI" });
+            MasterStateList.Add(new State() { Name = "Wyoming", Abbreviation = "WY" });
+
+            List<State> currentStateList = await myContext.States.ToListAsync();
+
+            // Check current list for any missing values.
+            foreach (var item in MasterStateList)
+            {
+                if (currentStateList.Where(s=>s.Abbreviation == item.Abbreviation).Count()<1)
+                {
+                    myContext.Add(item);
+                    await myContext.SaveChangesAsync();
+                }
+            }
         }
 
         public async Task<List<State>> GetStates()
