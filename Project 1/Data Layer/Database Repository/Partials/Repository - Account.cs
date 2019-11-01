@@ -59,7 +59,9 @@ namespace Data_Layer
 
             try
             {
-                result = await myContext.Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID).FirstOrDefaultAsync();
+                result = await myContext.Accounts.Where(a => a.ID == accountID && a.IsOpen && a.IsActive).FirstOrDefaultAsync();
+
+                // Check if owning customer.
                 if (result.CustomerID == customerID)
                 {
 
@@ -120,9 +122,12 @@ namespace Data_Layer
 
             try
             {
-                currentAccount = await myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefaultAsync();
+                currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+
+                // Check if owning customer.
                 if (currentAccount.CustomerID == customerID)
                 {
+                    // Check if valid deposit amount.
                     if (newAmount > 0.0)
                     {
                         // Check if valid account to deposit to.
@@ -171,6 +176,152 @@ namespace Data_Layer
                 throw;
             }
             catch(UnauthorizedAccessException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (ArithmeticException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+
+            }
+
+            return currentAccount;
+        }
+
+        public async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
+        {
+            Account currentAccount = null;
+
+            try
+            {
+                currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+
+                // Check if owing customer
+                if (currentAccount.CustomerID == customerID)
+                {
+                    // Check if valid amount.
+                    if (newAmount > 0.0)
+                    {
+                        // Check if withdrawal is over account amount.
+                        if (newAmount > currentAccount.AccountBalance)
+                        {
+                            // Check if valid business account.
+                            if (await IsBusinessAccount(accountID))
+                            {
+                                currentAccount.AccountBalance -= newAmount;
+
+                                // Create new transaction for withdrawal.
+                                AccountTransaction newTransaction = new AccountTransaction()
+                                {
+                                    AccountID = accountID,
+                                    Amount = newAmount,
+                                    TimeStamp = DateTime.Now,
+                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                };
+
+                                // Add new account withdrawal transaction.
+                                myContext.Update(currentAccount);
+                                myContext.Add(newTransaction);
+                                await myContext.SaveChangesAsync();
+                            }
+                            else if (await IsCheckingAccount(accountID))
+                            {
+                                // Create new transaction for overdraft protection.
+                                AccountTransaction newTransaction = new AccountTransaction()
+                                {
+                                    AccountID = accountID,
+                                    Amount = 0.0,
+                                    TimeStamp = DateTime.Now,
+                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
+                                };
+
+                                // Add new invalid transaction.
+                                myContext.Add(newTransaction);
+                                await myContext.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                // Invalid account.
+                                throw new InvalidOperationException(string.Format("ACCOUNT #{0} IS NOT WITHDRAWABLE!", accountID));
+                            }
+                        }
+                        else
+                        {
+                            // Check if account is withdrawable.
+                            if (!(await IsLoanAccount(accountID)))
+                            {
+                                // Check maturity date.
+                                if (currentAccount.MaturityDate.Subtract(DateTime.Now).TotalDays < 0)
+                                {
+                                    currentAccount.AccountBalance -= newAmount;
+
+                                    // Create new transaction for withdrawal.
+                                    AccountTransaction newTransaction = new AccountTransaction()
+                                    {
+                                        AccountID = accountID,
+                                        Amount = newAmount,
+                                        TimeStamp = DateTime.Now,
+                                        TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                    };
+
+                                    // Add new account withdrawal transaction.
+                                    myContext.Update(currentAccount);
+                                    myContext.Add(newTransaction);
+                                    await myContext.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    // Create new transaction for maturity not reached.
+                                    AccountTransaction newTransaction = new AccountTransaction()
+                                    {
+                                        AccountID = accountID,
+                                        Amount = 0.0,
+                                        TimeStamp = DateTime.Now,
+                                        TransactionCode = await GetTransactionID(Utility.TransactionCodes.NON_MATURITY)
+                                    };
+
+                                    // Add new invalid transaction.
+                                    myContext.Add(newTransaction);
+                                    await myContext.SaveChangesAsync();
+
+                                    throw new TypeAccessException(string.Format("ACCOUNT #{0} HAS NOT REACHED MATURITY DATE", accountID));
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Invalid amount for withdrawal.
+                        throw new ArithmeticException(string.Format("WITHDRAWAL AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
+                    }
+                }
+                else
+                {
+                    // Unauthorized user attempting to access an account not their's.
+                    throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
+                }
+            }
+            catch(TypeAccessException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (InvalidOperationException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (UnauthorizedAccessException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
