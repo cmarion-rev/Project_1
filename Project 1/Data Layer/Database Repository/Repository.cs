@@ -13,7 +13,7 @@ namespace Data_Layer
             myContext = newContext;
 
             // Load all utility tables.
-
+            LoadUtilities();
         }
 
         private async void LoadUtilities()
