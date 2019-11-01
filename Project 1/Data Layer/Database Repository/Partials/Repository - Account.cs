@@ -1,4 +1,5 @@
 ﻿using Data_Layer.Data_Objects;
+using Data_Layer.Errors;
 using Data_Layer.Resources;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -248,11 +249,13 @@ namespace Data_Layer
                                 // Add new invalid transaction.
                                 myContext.Add(newTransaction);
                                 await myContext.SaveChangesAsync();
+
+                                throw new OverdraftProtectionException(string.Format("ACCOUNT #{0} WAS STOPPED FROM OVERDRAFTING", accountID));
                             }
                             else
                             {
                                 // Invalid account.
-                                throw new InvalidOperationException(string.Format("ACCOUNT #{0} IS NOT WITHDRAWABLE!", accountID));
+                                throw new InvalidAccountException(string.Format("ACCOUNT #{0} IS NOT WITHDRAWABLE!", accountID));
                             }
                         }
                         else
@@ -294,7 +297,7 @@ namespace Data_Layer
                                     myContext.Add(newTransaction);
                                     await myContext.SaveChangesAsync();
 
-                                    throw new TypeAccessException(string.Format("ACCOUNT #{0} HAS NOT REACHED MATURITY DATE", accountID));
+                                    throw new MaturityValidationException(string.Format("ACCOUNT #{0} HAS NOT REACHED MATURITY DATE", accountID));
                                 }
                             }
                         }
@@ -302,7 +305,7 @@ namespace Data_Layer
                     else
                     {
                         // Invalid amount for withdrawal.
-                        throw new ArithmeticException(string.Format("WITHDRAWAL AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
+                        throw new InvalidAmountException(string.Format("WITHDRAWAL AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
                     }
                 }
                 else
@@ -311,12 +314,12 @@ namespace Data_Layer
                     throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
                 }
             }
-            catch(TypeAccessException WTF)
+            catch(MaturityValidationException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
             }
-            catch (InvalidOperationException WTF)
+            catch (InvalidAccountException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
@@ -326,7 +329,12 @@ namespace Data_Layer
                 Console.WriteLine(WTF);
                 throw;
             }
-            catch (ArithmeticException WTF)
+            catch (InvalidAmountException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch(OverdraftProtectionException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
