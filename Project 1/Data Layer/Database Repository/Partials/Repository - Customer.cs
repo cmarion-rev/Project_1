@@ -1,4 +1,5 @@
 ﻿using Data_Layer.Data_Objects;
+using Data_Layer.Resources;
 using Data_Layer.View_Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -46,14 +47,41 @@ namespace Data_Layer
             return currentCustomer;
         }
 
-        public async Task<CustomerAccountsVM> GetCustomerWithAccounts(int id)
+        public async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID)
         {
             CustomerAccountsVM result = new CustomerAccountsVM();
 
             try
             {
-                result.Customer = await myContext.Customers.Where(c => c.ID == id).FirstOrDefaultAsync();
-                result.Accounts = await myContext.Accounts.Where(a => a.CustomerID == id && a.IsOpen && a.IsActive).ToListAsync();
+                result.Customer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
+                result.Accounts = await myContext.Accounts.Where(a => a.CustomerID == customerID && a.IsOpen && a.IsActive).ToListAsync();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+
+            }
+
+            return result;
+        }
+
+        public async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID, Utility.AccountType accountType)
+        {
+            CustomerAccountsVM result = new CustomerAccountsVM();
+
+            try
+            {
+                int accountTypeID = await GetAccountTypeID(accountType);
+                result.Customer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
+                result.Accounts = await myContext.Accounts.
+                                            Where(a => a.CustomerID == customerID && 
+                                                  a.AccountTypeID == accountTypeID && 
+                                                  a.IsOpen && 
+                                                  a.IsActive).ToListAsync();
             }
             catch (Exception WTF)
             {
