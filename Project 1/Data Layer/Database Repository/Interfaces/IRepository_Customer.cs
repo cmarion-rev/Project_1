@@ -10,7 +10,11 @@ namespace Data_Layer.Database_Repository.Interfaces
 {
     public interface IRepository_Customer
     {
+        Task<Customer> CreateNewCustomer(string guid, string fName = "Person");
+
         Task<Customer> GetCustomer(int id);
+
+        Task<Customer> GetCustomer(string guid);
 
         Task<List<Customer>> GetAllCustomers();
 

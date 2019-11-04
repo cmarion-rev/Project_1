@@ -13,6 +13,33 @@ namespace Data_Layer
 {
     public partial class Repository : IRepository
     {
+        public virtual async Task<Customer> CreateNewCustomer(string guid, string fName = "Person")
+        {
+            Customer result = null;
+
+            // Check if return was valid.
+            if (result == null)
+            {
+                result = new Customer()
+                {
+                    FirstName = "Person",
+                    LastName = "Person",
+                    Address = "NONE",
+                    City = "NONE",
+                    StateID = 0,
+                    ZipCode = 0,
+                    PhoneNumber = "0000000000",
+                    UserIdentity = guid,
+                };
+
+                myContext.Add(result);
+                await myContext.SaveChangesAsync();
+            }
+
+            return result;
+        }
+
+
         public virtual async Task<Customer> GetCustomer(int id)
         {
             Customer result = null;
@@ -30,6 +57,27 @@ namespace Data_Layer
             {
 
             }
+            return result;
+        }
+
+        public virtual async Task<Customer> GetCustomer(string guid)
+        {
+            Customer result = null;
+
+            try
+            {
+                result = await myContext.Customers.Where(c => c.UserIdentity == guid).FirstOrDefaultAsync();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+                
+            }
+
             return result;
         }
 
