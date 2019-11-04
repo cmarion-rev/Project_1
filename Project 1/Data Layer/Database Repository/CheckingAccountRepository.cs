@@ -101,7 +101,98 @@ namespace Data_Layer.Database_Repository
 
         public override async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
         {
-            return await base.Withdraw(customerID, accountID, newAmount);
+            Account currentAccount = null;
+
+            try
+            {
+                int typeID = await GetCheckingAccountID();
+
+                if (typeID > -1)
+                {
+                    currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+
+                    // Check if owing customer
+                    if (currentAccount.CustomerID == customerID)
+                    {
+                        // Check if valid amount.
+                        if (newAmount > 0.0)
+                        {
+                            // Check if withdrawal is over account amount.
+                            if (newAmount > currentAccount.AccountBalance)
+                            {
+                                // Create new transaction for overdraft protection.
+                                AccountTransaction newTransaction = new AccountTransaction()
+                                {
+                                    AccountID = accountID,
+                                    Amount = 0.0,
+                                    TimeStamp = DateTime.Now,
+                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
+                                };
+
+                                // Add new invalid transaction.
+                                myContext.Add(newTransaction);
+                                await myContext.SaveChangesAsync();
+
+                                throw new OverdraftProtectionException(string.Format("ACCOUNT #{0} WAS STOPPED FROM OVERDRAFTING", accountID));
+                            }
+                            else
+                            {
+                                AccountTransaction newTransaction = new AccountTransaction()
+                                {
+                                    AccountID = accountID,
+                                    Amount = newAmount,
+                                    TimeStamp = DateTime.Now,
+                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                };
+
+                                // Update account balance.
+                                currentAccount.AccountBalance -= newAmount;
+                                myContext.Update(currentAccount);
+
+                                // Add new invalid transaction.
+                                myContext.Add(newTransaction);
+                                await myContext.SaveChangesAsync();
+                            }
+                        }
+                        else
+                        {
+                            // Invalid amount for withdrawal.
+                            throw new InvalidAmountException(string.Format("WITHDRAWAL AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
+                        }
+                    }
+                    else
+                    {
+                        // Unauthorized user attempting to access an account not their's.
+                        throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (InvalidAmountException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (OverdraftProtectionException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+
+            }
+
+            return currentAccount;
         }
 
         private async Task<int> GetCheckingAccountID()
