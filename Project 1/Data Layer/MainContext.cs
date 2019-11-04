@@ -19,15 +19,13 @@ namespace Data_Layer
         
         public DbSet<Customer> Customers { get; set; }
 
+        public MainDbContext()
+        {
+        }
+
         public MainDbContext(DbContextOptions<MainDbContext> context) : base(context)
         {
 
-        }
-
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<OrderDetail>().HasKey(t => new { t.OrderID, t.ProductID });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
