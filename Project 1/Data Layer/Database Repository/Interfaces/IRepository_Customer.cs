@@ -18,6 +18,10 @@ namespace Data_Layer.Database_Repository.Interfaces
 
         Task<List<Customer>> GetAllCustomers();
 
+        Task<bool> IsCustomerPresent(string guid);
+        
+        Task<bool> IsCustomerPresent(int id);
+
         Task<Customer> UpdateCustomer(Customer currentCustomer);
 
         Task<CustomerAccountsVM> GetCustomerAccounts(int customerID);

@@ -88,6 +88,26 @@ namespace Data_Layer
             return results;
         }
 
+        public virtual async Task<bool> IsCustomerPresent(string guid)
+        {
+            bool result = false;
+
+            List<Customer> query = await myContext.Customers.Where(c => c.UserIdentity == guid).ToListAsync();
+            result = query.Count() == 1;
+
+            return result;
+        }
+        
+        public virtual async Task<bool> IsCustomerPresent(int id)
+        {
+            bool result = false;
+
+            List<Customer> query = await myContext.Customers.Where(c => c.ID == id).ToListAsync();
+            result = query.Count() == 1;
+
+            return result;
+        }
+        
         public virtual async Task<Customer> UpdateCustomer(Customer currentCustomer)
         {
             myContext.Update(currentCustomer);
