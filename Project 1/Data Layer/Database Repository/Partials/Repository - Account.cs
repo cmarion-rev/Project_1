@@ -32,12 +32,8 @@ namespace Data_Layer
                 };
 
                 // Check for term or loan account to determine maturity.
-                if (await IsLoanAccount(accountType))
-                {
-                    // Set loan period.
-                    newAccount.MaturityDate = DateTime.Now.AddYears(5);
-                }
-                else if (await IsTermAccount(accountType))
+              
+                if (await IsTermAccount(accountType))
                 {
                     // Set term period.
                     newAccount.MaturityDate = DateTime.Now.AddYears(1);

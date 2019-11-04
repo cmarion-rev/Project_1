@@ -24,7 +24,15 @@ namespace Data_Layer.Database_Repository
 
         public override async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0)
         {
-            return await base.OpenAccount(customerID, accountType, initialBalance);
+
+            Account newAccount = null;
+
+            newAccount = await base.OpenAccount(customerID, accountType, initialBalance);
+
+            // Set loan period.
+            newAccount.MaturityDate = DateTime.Now.AddYears(5);
+
+            return newAccount; 
         }
 
         public override async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
