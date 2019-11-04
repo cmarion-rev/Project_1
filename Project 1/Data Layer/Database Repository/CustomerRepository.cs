@@ -15,29 +15,29 @@ namespace Data_Layer.Database_Repository
             
         }
 
-        public override async Task<List<Customer>> GetAllCustomers()
+        public override List<Customer> GetAllCustomers()
         {
-            return await base.GetAllCustomers();
+            return  base.GetAllCustomers();
         }
 
-        public override async Task<Customer> GetCustomer(int id)
+        public override Customer GetCustomer(int id)
         {
-            return await base.GetCustomer(id);
+            return base.GetCustomer(id);
         }
 
-        public override async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID)
+        public override CustomerAccountsVM GetCustomerAccounts(int customerID)
         {
-            return await base.GetCustomerAccounts(customerID);
+            return base.GetCustomerAccounts(customerID);
         }
 
-        public override async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID, Utility.AccountType accountType)
+        public override  CustomerAccountsVM GetCustomerAccounts(int customerID, Utility.AccountType accountType)
         {
-            return await base.GetCustomerAccounts(customerID, accountType);
+            return  base.GetCustomerAccounts(customerID, accountType);
         }
 
-        public override async Task<Customer> UpdateCustomer(Customer currentCustomer)
+        public override  Customer UpdateCustomer(Customer currentCustomer)
         {
-            return await base.UpdateCustomer(currentCustomer);
+            return  base.UpdateCustomer(currentCustomer);
         }
     }
 }

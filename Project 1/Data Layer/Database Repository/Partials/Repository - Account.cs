@@ -15,7 +15,7 @@ namespace Data_Layer
     {
         public virtual async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
         {
-            Customer tempCustomer = await GetCustomer(customerID);
+            Customer tempCustomer = GetCustomer(customerID);
             Account newAccount = null;
 
             // Check if customer is valid.
