@@ -13,7 +13,7 @@ namespace Data_Layer
 {
     public partial class Repository : IRepository
     {
-        public virtual async Task<Customer> CreateNewCustomer(string guid, string fName = "Person")
+        public virtual Customer CreateNewCustomer(string guid, string fName = "Person")
         {
             Customer result = null;
 
@@ -22,6 +22,7 @@ namespace Data_Layer
             {
                 result = new Customer()
                 {
+                    ID = 0,
                     FirstName = "Person",
                     LastName = "Person",
                     Address = "NONE",
@@ -32,21 +33,23 @@ namespace Data_Layer
                     UserIdentity = guid,
                 };
 
-                myContext.Add(result);
-                await myContext.SaveChangesAsync();
+                //var a = myContext.Database.CanConnect();
+                //myContext.Database.OpenConnection();
+                myContext.Customers.Add(result);
+                myContext.SaveChanges();
             }
 
             return result;
         }
 
 
-        public virtual async Task<Customer> GetCustomer(int id)
+        public virtual  Customer GetCustomer(int id)
         {
             Customer result = null;
 
             try
             {
-                result = await myContext.Customers.Where(c => c.ID == id).FirstOrDefaultAsync();
+                result = myContext.Customers.Where(c => c.ID == id).FirstOrDefault();
             }
             catch (Exception WTF)
             {
@@ -60,13 +63,13 @@ namespace Data_Layer
             return result;
         }
 
-        public virtual async Task<Customer> GetCustomer(string guid)
+        public virtual  Customer GetCustomer(string guid)
         {
             Customer result = null;
 
             try
             {
-                result = await myContext.Customers.Where(c => c.UserIdentity == guid).FirstOrDefaultAsync();
+                result = myContext.Customers.Where(c => c.UserIdentity == guid).FirstOrDefault();
             }
             catch (Exception WTF)
             {
@@ -81,58 +84,58 @@ namespace Data_Layer
             return result;
         }
 
-        public virtual async Task<List<Customer>> GetAllCustomers()
+        public virtual List<Customer> GetAllCustomers()
         {
-            List<Customer> results = await myContext.Customers.ToListAsync();
+            List<Customer> results = myContext.Customers.ToList();
 
             return results;
         }
 
-        public virtual async Task<bool> IsCustomerPresent(string guid)
+        public virtual bool IsCustomerPresent(string guid)
         {
             bool result = false;
 
-                var listResult = await myContext.Customers.Where(c => c.UserIdentity == guid).ToListAsync();
+                var listResult = myContext.Customers.Where(c => c.UserIdentity == guid).ToList();
                 result = listResult.Count == 1;
 
-            GC.KeepAlive(myContext);
+            //GC.KeepAlive(myContext);
 
             return result;
         }
         
-        public virtual async Task<bool> IsCustomerPresent(int id)
+        public virtual bool IsCustomerPresent(int id)
         {
             bool result = false;
 
             using (var context = myContext)
             {
                 var query = context.Customers;
-                var listResult = await query.Where(c => c.ID == id).ToListAsync();
+                var listResult = query.Where(c => c.ID == id).ToList();
                 result = listResult.Count == 1;
             }
 
             return result;
         }
         
-        public virtual async Task<Customer> UpdateCustomer(Customer currentCustomer)
+        public virtual Customer UpdateCustomer(Customer currentCustomer)
         {
             myContext.Update(currentCustomer);
-            await myContext.SaveChangesAsync();
+             myContext.SaveChanges();
 
             return currentCustomer;
         }
 
-        public virtual async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID)
+        public virtual  CustomerAccountsVM GetCustomerAccounts(int customerID)
         {
             CustomerAccountsVM result = new CustomerAccountsVM();
 
             try
             {
-                result.Customer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
-                result.Accounts = await myContext.Accounts.
+                result.Customer =  myContext.Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                result.Accounts =  myContext.Accounts.
                                             Where(a => a.CustomerID == customerID && 
                                                   a.IsOpen && 
-                                                  a.IsActive).ToListAsync();
+                                                  a.IsActive).ToList();
             }
             catch (Exception WTF)
             {
@@ -147,19 +150,19 @@ namespace Data_Layer
             return result;
         }
 
-        public virtual async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID, Utility.AccountType accountType)
+        public virtual  CustomerAccountsVM GetCustomerAccounts(int customerID, Utility.AccountType accountType)
         {
             CustomerAccountsVM result = new CustomerAccountsVM();
 
             try
             {
-                int accountTypeID = await GetAccountTypeID(accountType);
-                result.Customer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
-                result.Accounts = await myContext.Accounts.
+                int accountTypeID =  GetAccountTypeID(accountType);
+                result.Customer =  myContext.Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                result.Accounts =  myContext.Accounts.
                                             Where(a => a.CustomerID == customerID && 
                                                   a.AccountTypeID == accountTypeID && 
                                                   a.IsOpen && 
-                                                  a.IsActive).ToListAsync();
+                                                  a.IsActive).ToList();
             }
             catch (Exception WTF)
             {
