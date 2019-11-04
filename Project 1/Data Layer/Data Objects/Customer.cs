@@ -30,5 +30,7 @@ namespace Data_Layer.Data_Objects
         public string PhoneNumber { get; set; }
 
         public List<Account> Accounts { get; set; }
+        
+        public string UserIdentity { get; set; }
     }
 }
