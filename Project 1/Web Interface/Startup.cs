@@ -41,7 +41,7 @@ namespace Web_Interface
             // DbContext setup.
             services.AddDbContext<MainDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MainDbContext")));
 
-            services.AddTransient<IRepository>();
+            services.AddTransient<Repository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
