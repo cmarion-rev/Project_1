@@ -24,7 +24,6 @@ namespace Data_Layer.Database_Repository
 
         public override async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0)
         {
-
             Account newAccount = null;
 
             newAccount = await base.OpenAccount(customerID, accountType, initialBalance);

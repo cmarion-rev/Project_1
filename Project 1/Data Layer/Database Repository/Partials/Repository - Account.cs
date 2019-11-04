@@ -29,19 +29,8 @@ namespace Data_Layer
                     IsActive = true,
                     IsOpen = true,
                     LastTransactionState = await GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
+                    MaturityDate = DateTime.Now,
                 };
-
-                // Check for term or loan account to determine maturity.
-              
-                if (await IsTermAccount(accountType))
-                {
-                    // Set term period.
-                    newAccount.MaturityDate = DateTime.Now.AddYears(1);
-                }
-                else
-                {
-                    newAccount.MaturityDate = DateTime.Now;
-                }
 
                 // Add new account to database.
                 myContext.Add(newAccount);
