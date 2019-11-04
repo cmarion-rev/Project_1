@@ -273,7 +273,7 @@ namespace Data_Layer
             return result;
         }
 
-        public async Task<int> GetAccountTypeID(Utility.AccountType accountType)
+        public int GetAccountTypeID(Utility.AccountType accountType)
         {
             int result = -1;
 
@@ -283,19 +283,19 @@ namespace Data_Layer
                 switch (accountType)
                 {
                     case Utility.AccountType.CHECKING:
-                        tempType = await myContext.AccountTypes.Where(t => t.Name == "Checking").FirstOrDefaultAsync();
+                        tempType =  myContext.AccountTypes.Where(t => t.Name == "Checking").FirstOrDefault();
                         break;
 
                     case Utility.AccountType.BUSINESS:
-                        tempType = await myContext.AccountTypes.Where(t => t.Name == "Business").FirstOrDefaultAsync();
+                        tempType =  myContext.AccountTypes.Where(t => t.Name == "Business").FirstOrDefault();
                         break;
 
                     case Utility.AccountType.TERM_DEPOSIT:
-                        tempType = await myContext.AccountTypes.Where(t => t.Name == "Term CD").FirstOrDefaultAsync();
+                        tempType =  myContext.AccountTypes.Where(t => t.Name == "Term CD").FirstOrDefault();
                         break;
 
                     case Utility.AccountType.LOAN:
-                        tempType = await myContext.AccountTypes.Where(t => t.Name == "Loan").FirstOrDefaultAsync();
+                        tempType =  myContext.AccountTypes.Where(t => t.Name == "Loan").FirstOrDefault();
                         break;
 
                     case Utility.AccountType._COUNT:
