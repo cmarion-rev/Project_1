@@ -6,9 +6,9 @@ using Data_Layer.Data_Objects;
 
 namespace Data_Layer.Database_Repository
 {
-    public class BusinessAccountRepository : Repository
+    public class TermDepositAccountRepository : Repository
     {
-        public BusinessAccountRepository(MainDbContext newContext) : base(newContext)
+        public TermDepositAccountRepository(MainDbContext newContext) : base(newContext)
         {
         }
 
