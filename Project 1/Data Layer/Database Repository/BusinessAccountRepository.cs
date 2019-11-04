@@ -101,7 +101,127 @@ namespace Data_Layer.Database_Repository
 
         public override async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
         {
-            return await base.Withdraw(customerID, accountID, newAmount);
+            Account currentAccount = null;
+
+            try
+            {
+                int typeID = await GetBusinessAccountID();
+
+                if (typeID > -1)
+                {
+                    currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+
+                    // Check if owing customer
+                    if (currentAccount.CustomerID == customerID)
+                    {
+                        // Check if valid amount.
+                        if (newAmount > 0.0)
+                        {
+                            // Check if withdrawal is over account amount.
+                            if (newAmount > currentAccount.AccountBalance)
+                            {
+                                // Check if current balance is positive.
+                                if (currentAccount.AccountBalance >= 0.0)
+                                {
+                                    // Create new transaction for withdrawal.
+                                    AccountTransaction withdrawTransaction = new AccountTransaction()
+                                    {
+                                        AccountID = accountID,
+                                        Amount = currentAccount.AccountBalance - newAmount,
+                                        TimeStamp = DateTime.Now,
+                                        TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                    };
+
+                                    AccountTransaction overdraftTransaction = new AccountTransaction()
+                                    {
+                                        AccountID = accountID,
+                                        Amount = Math.Abs(newAmount - currentAccount.AccountBalance) * ((currentAccount.InterestRate * 0.01) + 1.0),
+                                        TimeStamp = DateTime.Now,
+                                        TransactionCode = await GetTransactionID(Utility.TransactionCodes.OVERDRAFT_FEE)
+                                    };
+
+                                    // Update account.
+                                    currentAccount.AccountBalance -= withdrawTransaction.Amount + overdraftTransaction.Amount;
+                                    myContext.Update(currentAccount);
+
+                                    // Add new account withdrawal transaction.
+                                    myContext.Add(withdrawTransaction);
+                                    myContext.Add(overdraftTransaction);
+                                    await myContext.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    AccountTransaction overdraftTransaction = new AccountTransaction()
+                                    {
+                                        AccountID = accountID,
+                                        Amount = newAmount * ((currentAccount.InterestRate * 0.01) + 1.0),
+                                        TimeStamp = DateTime.Now,
+                                        TransactionCode = await GetTransactionID(Utility.TransactionCodes.OVERDRAFT_FEE)
+                                    };
+
+                                    // Update account.
+                                    currentAccount.AccountBalance -= overdraftTransaction.Amount;
+                                    myContext.Update(currentAccount);
+
+                                    // Add new account withdrawal transaction.
+                                    myContext.Add(overdraftTransaction);
+                                    await myContext.SaveChangesAsync();
+                                }                               
+                            }
+                            else
+                            {
+                                // Create new transaction for withdrawal.
+                                AccountTransaction newTransaction = new AccountTransaction()
+                                {
+                                    AccountID = accountID,
+                                    Amount = newAmount,
+                                    TimeStamp = DateTime.Now,
+                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                };
+
+                                // Update account balance.
+                                currentAccount.AccountBalance -= newAmount;
+                                myContext.Update(currentAccount);
+
+                                // Add new account withdrawal transaction.
+                                myContext.Add(newTransaction);
+                                await myContext.SaveChangesAsync();
+                            }
+                        }
+                        else
+                        {
+                            // Invalid amount for withdrawal.
+                            throw new InvalidAmountException(string.Format("WITHDRAWAL AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
+                        }
+                    }
+                    else
+                    {
+                        // Unauthorized user attempting to access an account not their's.
+                        throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (InvalidAmountException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+
+            }
+
+            return currentAccount;
         }
 
         private async Task<int> GetBusinessAccountID()

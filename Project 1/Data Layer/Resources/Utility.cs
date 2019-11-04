@@ -31,6 +31,7 @@ namespace Data_Layer.Resources
             DEPOSIT,
             WITHDRAWAL,
             LOAN_INSTALLMENT,
+            OVERDRAFT_FEE,
 
             // Errors
             OVERDRAFT_PROTECTION,

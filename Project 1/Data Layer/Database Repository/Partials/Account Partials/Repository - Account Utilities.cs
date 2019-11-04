@@ -41,6 +41,16 @@ namespace Data_Layer
                         result = item.ID;
                         break;
 
+                    case Utility.TransactionCodes.LOAN_INSTALLMENT:
+                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Loan Installment").FirstOrDefaultAsync();
+                        result = item.ID;
+                        break;
+
+                    case Utility.TransactionCodes.OVERDRAFT_FEE:
+                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Overdraft Fee").FirstOrDefaultAsync();
+                        result = item.ID;
+                        break;
+
                     case Utility.TransactionCodes.OVERDRAFT_PROTECTION:
                         item = await myContext.AccountTransactionStates.Where(s => s.Name == "Overdraft Protection").FirstOrDefaultAsync();
                         result = item.ID;
