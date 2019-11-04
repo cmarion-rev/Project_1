@@ -110,7 +110,7 @@ namespace Data_Layer.Database_Repository
 
             try
             {
-                var search = await myContext.AccountTypes.Where(t => t.Name == "Checking").FirstOrDefaultAsync();
+                var search = await myContext.AccountTypes.Where(t => t.Name == "Business").FirstOrDefaultAsync();
                 result = search.ID;
             }
             catch (Exception WTF)

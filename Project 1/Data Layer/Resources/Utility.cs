@@ -30,6 +30,7 @@ namespace Data_Layer.Resources
             // Main Transactions.
             DEPOSIT,
             WITHDRAWAL,
+            LOAN_INSTALLMENT,
 
             // Errors
             OVERDRAFT_PROTECTION,
