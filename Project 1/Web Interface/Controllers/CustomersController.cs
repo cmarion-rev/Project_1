@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Web_Interface.Controllers
 {
-        [Authorize]
+    [Authorize]
     public class CustomersController : Controller
     {
         private readonly Repository _repo;
@@ -35,11 +35,46 @@ namespace Web_Interface.Controllers
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            Customer currentCustomer = null;
+
             if (id == null)
             {
-                string X = User.Identity.Name;
-                var Y = User.Claims.ToList()[0];
-                string Z = Y.Value;
+                // Get current customer data.
+                string userEmail = User.Identity.Name;
+                var userData = User.Claims.ToList()[0];
+                string guid = userData.Value;
+
+                // Check if customer exits.
+                if (await _repo.IsCustomerPresent(guid))
+                {
+                    // Get current customer info.
+                    try
+                    {
+                        currentCustomer = await _repo.GetCustomer(guid);
+                    }
+                    catch (Exception WTF)
+                    {
+                        Console.WriteLine(WTF);
+                        throw;
+                    }
+                    finally
+                    {
+
+                    }
+                }
+                else
+                {
+                    // Create new customer.
+                    try
+                    {
+                        currentCustomer = await _repo.CreateNewCustomer(guid);
+                    }
+                    catch (Exception WTF)
+                    {
+                        Console.WriteLine(WTF);
+                        throw;
+                    }
+                }
             }
             else
             {
@@ -61,7 +96,7 @@ namespace Web_Interface.Controllers
             //    return NotFound();
             //}
 
-            return View(/*customer*/);
+            return View(currentCustomer);
         }
 
         // GET: Customers/Create
