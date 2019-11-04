@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Data_Layer.Data_Objects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data_Layer.Database_Repository
 {
@@ -19,7 +21,19 @@ namespace Data_Layer.Database_Repository
 
         public override async Task<Account> Deposit(int customerID, int accountID, double newAmount)
         {
-            return await base.Deposit(customerID, accountID, newAmount);
+            try
+            {
+                await myContext.Customers.ToListAsync();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+                throw new InvalidOperationException("TERM DEPOSIT ACCOUNT CANNOT BE DEPOSITED TO!");
+            }
         }
 
         public override async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0)
