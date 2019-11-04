@@ -11,7 +11,7 @@ namespace Data_Layer
 {
     public partial class Repository
     {
-        private async Task<int> GetTransactionID(Utility.TransactionCodes transactionCodes)
+        protected async Task<int> GetTransactionID(Utility.TransactionCodes transactionCodes)
         {
             int result = -1;
 
