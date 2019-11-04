@@ -33,7 +33,7 @@ namespace Web_Interface.Controllers
         }
 
         // GET: Customers/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             Customer currentCustomer = null;
 
@@ -45,13 +45,13 @@ namespace Web_Interface.Controllers
             if (id == null)
             {
                 // Check if customer exits.
-                bool result = await _repo.IsCustomerPresent(guid);
+                bool result = _repo.IsCustomerPresent(guid);
                 if (result)
                 {
                     // Get current customer info.
                     try
                     {
-                        currentCustomer = await _repo.GetCustomer(guid);
+                        currentCustomer = _repo.GetCustomer(guid);
                     }
                     catch (Exception WTF)
                     {
@@ -68,7 +68,7 @@ namespace Web_Interface.Controllers
                     // Create new customer.
                     try
                     {
-                        currentCustomer = await _repo.CreateNewCustomer(guid);
+                        currentCustomer =  _repo.CreateNewCustomer(guid);
                     }
                     catch (Exception WTF)
                     {
@@ -80,12 +80,12 @@ namespace Web_Interface.Controllers
             else
             {
                 // Check if user exits
-                if (await _repo.IsCustomerPresent(id.Value))
+                if (_repo.IsCustomerPresent(id.Value))
                 {
                     // Get current customer info.
                     try
                     {
-                        currentCustomer = await _repo.GetCustomer(id.Value);
+                        currentCustomer = _repo.GetCustomer(id.Value);
                     }
                     catch (Exception WTF)
                     {
@@ -103,7 +103,7 @@ namespace Web_Interface.Controllers
                     // Create new customer.
                     try
                     {
-                        currentCustomer = await _repo.CreateNewCustomer(guid);
+                        currentCustomer = _repo.CreateNewCustomer(guid);
                     }
                     catch (Exception WTF)
                     {
