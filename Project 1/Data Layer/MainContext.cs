@@ -2,6 +2,7 @@
 using System;
 
 using Data_Layer.Data_Objects;
+using Microsoft.Data.SqlClient;
 
 namespace Data_Layer
 {
@@ -32,7 +33,7 @@ namespace Data_Layer
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Project1;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer(new SqlConnection(@"Server=.\SQLEXPRESS;Database=Project1;Trusted_Connection=True;"));
             }
         }
 

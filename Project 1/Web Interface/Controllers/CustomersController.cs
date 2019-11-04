@@ -16,15 +16,15 @@ namespace Web_Interface.Controllers
     [Authorize]
     public class CustomersController : Controller
     {
-        private readonly Repository _repo;
+        private readonly IRepository _repo;
 
-        public CustomersController(Repository newRepo)
+        public CustomersController(IRepository newRepo)
         {
             _repo = newRepo;
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             //var mainDbContext = _repo.Customers.Include(c => c.State);
             //return View(await mainDbContext.ToListAsync());
@@ -45,7 +45,8 @@ namespace Web_Interface.Controllers
             if (id == null)
             {
                 // Check if customer exits.
-                if (await _repo.IsCustomerPresent(guid))
+                bool result = await _repo.IsCustomerPresent(guid);
+                if (result)
                 {
                     // Get current customer info.
                     try

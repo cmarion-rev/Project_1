@@ -92,8 +92,10 @@ namespace Data_Layer
         {
             bool result = false;
 
-            List<Customer> query = await myContext.Customers.Where(c => c.UserIdentity == guid).ToListAsync();
-            result = query.Count() == 1;
+                var listResult = await myContext.Customers.Where(c => c.UserIdentity == guid).ToListAsync();
+                result = listResult.Count == 1;
+
+            GC.KeepAlive(myContext);
 
             return result;
         }
@@ -102,8 +104,12 @@ namespace Data_Layer
         {
             bool result = false;
 
-            List<Customer> query = await myContext.Customers.Where(c => c.ID == id).ToListAsync();
-            result = query.Count() == 1;
+            using (var context = myContext)
+            {
+                var query = context.Customers;
+                var listResult = await query.Where(c => c.ID == id).ToListAsync();
+                result = listResult.Count == 1;
+            }
 
             return result;
         }
