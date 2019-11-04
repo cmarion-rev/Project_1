@@ -108,7 +108,19 @@ namespace Data_Layer.Database_Repository
 
         public override async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
         {
-            return await base.Withdraw(customerID, accountID, newAmount);
+            try
+            {
+                await myContext.AccountTypes.ToListAsync();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+                throw new InvalidOperationException("LOAN ACCOUNT CANNOT BE WITHDRAWN FROM!");
+            }
         }
 
         private async Task<int> GetLoanAccountID()

@@ -23,7 +23,7 @@ namespace Data_Layer.Database_Repository
         {
             try
             {
-                await myContext.Customers.ToListAsync();
+                await myContext.AccountTypes.ToListAsync();
             }
             catch (Exception WTF)
             {
