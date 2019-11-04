@@ -37,13 +37,13 @@ namespace Web_Interface.Controllers
         {
             Customer currentCustomer = null;
 
+            // Get current customer data.
+            string userEmail = User.Identity.Name;
+            var userData = User.Claims.ToList()[0];
+            string guid = userData.Value;
+
             if (id == null)
             {
-                // Get current customer data.
-                string userEmail = User.Identity.Name;
-                var userData = User.Claims.ToList()[0];
-                string guid = userData.Value;
-
                 // Check if customer exits.
                 if (await _repo.IsCustomerPresent(guid))
                 {
@@ -78,8 +78,44 @@ namespace Web_Interface.Controllers
             }
             else
             {
-                return NotFound();
+                // Check if user exits
+                if (await _repo.IsCustomerPresent(id.Value))
+                {
+                    // Get current customer info.
+                    try
+                    {
+                        currentCustomer = await _repo.GetCustomer(id.Value);
+                    }
+                    catch (Exception WTF)
+                    {
+                        Console.WriteLine(WTF);
+                        throw;
+                    }
+                    finally
+                    {
+
+                    }
+
+                }
+                else
+                {
+                    // Create new customer.
+                    try
+                    {
+                        currentCustomer = await _repo.CreateNewCustomer(guid);
+                    }
+                    catch (Exception WTF)
+                    {
+                        Console.WriteLine(WTF);
+                        throw;
+                    }
+                    finally
+                    {
+
+                    }
+                }
             }
+
             /* GET USER ID
              * 
             string X = User.Identity.Name;
@@ -96,7 +132,14 @@ namespace Web_Interface.Controllers
             //    return NotFound();
             //}
 
-            return View(currentCustomer);
+            if (currentCustomer != null)
+            {
+                return View(currentCustomer);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET: Customers/Create
