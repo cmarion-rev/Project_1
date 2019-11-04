@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data_Layer.Database_Repository.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +7,7 @@ namespace Data_Layer
 {
     public partial class Repository
     {
-        private MainDbContext myContext = null;
+        protected MainDbContext myContext = null;
 
         public Repository(MainDbContext newContext)
         {
@@ -18,9 +19,9 @@ namespace Data_Layer
 
         private async void LoadUtilities()
         {
-            await this.LoadAccountTypes();
-            await this.LoadTransactionStates();
-            await this.LoadStates();
+            await LoadAccountTypes();
+            await LoadTransactionStates();
+            await LoadStates();
         }
     }
 }

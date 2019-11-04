@@ -1,4 +1,5 @@
 ﻿using Data_Layer.Data_Objects;
+using Data_Layer.Database_Repository.Interfaces;
 using Data_Layer.View_Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Data_Layer
 {
-    public partial class Repository
+    public partial class Repository : IRepository
     {
         public async Task<CustomerAccountTransactionsVM> GetAllTransactions(int customerID, int accountID)
         {
             CustomerAccountTransactionsVM result = new CustomerAccountTransactionsVM();
-            
+
             try
             {
                 Customer tempCustomer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
@@ -26,7 +27,7 @@ namespace Data_Layer
                     List<AccountTransaction> tempTransactions = await myContext.AccountTransactions.
                                                                         Where(t => t.AccountID == accountID).
                                                                         OrderByDescending(t => t.TimeStamp).ToListAsync();
-                    
+
                     // Prepare view model for return.
                     result.Customer = tempCustomer;
                     result.Account = tempAccount;
@@ -38,7 +39,7 @@ namespace Data_Layer
                     throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
                 }
             }
-            catch(UnauthorizedAccessException WTF)
+            catch (UnauthorizedAccessException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
@@ -70,8 +71,8 @@ namespace Data_Layer
                 {
                     // Limit return transaction list to specified period.
                     List<AccountTransaction> tempTransactions = await myContext.AccountTransactions.
-                                                                        Where(t => t.AccountID == accountID && 
-                                                                              startDate <= t.TimeStamp && 
+                                                                        Where(t => t.AccountID == accountID &&
+                                                                              startDate <= t.TimeStamp &&
                                                                               t.TimeStamp <= endDate).
                                                                         OrderByDescending(t => t.TimeStamp).ToListAsync();
 

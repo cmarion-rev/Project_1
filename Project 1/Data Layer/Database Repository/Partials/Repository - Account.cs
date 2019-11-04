@@ -1,4 +1,5 @@
 ﻿using Data_Layer.Data_Objects;
+using Data_Layer.Database_Repository.Interfaces;
 using Data_Layer.Errors;
 using Data_Layer.Resources;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace Data_Layer
 {
-    public partial class Repository
+    public partial class Repository : IRepository
     {
-        public async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
+        public virtual async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
         {
             Customer tempCustomer = await GetCustomer(customerID);
             Account newAccount = null;
@@ -28,23 +29,8 @@ namespace Data_Layer
                     IsActive = true,
                     IsOpen = true,
                     LastTransactionState = await GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
+                    MaturityDate = DateTime.Now,
                 };
-
-                // Check for term or loan account to determine maturity.
-                if (await IsLoanAccount(accountType))
-                {
-                    // Set loan period.
-                    newAccount.MaturityDate = DateTime.Now.AddYears(5);
-                }
-                else if (await IsTermAccount(accountType))
-                {
-                    // Set term period.
-                    newAccount.MaturityDate = DateTime.Now.AddYears(1);
-                }
-                else
-                {
-                    newAccount.MaturityDate = DateTime.Now;
-                }
 
                 // Add new account to database.
                 myContext.Add(newAccount);
@@ -54,7 +40,7 @@ namespace Data_Layer
             return newAccount;
         }
 
-        public async Task<Account> CloseAccount(int customerID, int accountID)
+        public virtual async Task<Account> CloseAccount(int customerID, int accountID)
         {
             Account result = null;
 
@@ -117,7 +103,7 @@ namespace Data_Layer
             return result;
         }
 
-        public async Task<Account> Deposit(int customerID, int accountID, double newAmount)
+        public virtual async Task<Account> Deposit(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
@@ -171,12 +157,12 @@ namespace Data_Layer
                     throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
                 }
             }
-            catch(InvalidAccountException WTF)
+            catch (InvalidAccountException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
             }
-            catch(UnauthorizedAccessException WTF)
+            catch (UnauthorizedAccessException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
@@ -199,7 +185,7 @@ namespace Data_Layer
             return currentAccount;
         }
 
-        public async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
+        public virtual async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
@@ -314,7 +300,7 @@ namespace Data_Layer
                     throw new UnauthorizedAccessException(string.Format("CUSTOMER #{0} DOES NOT HAVE ACCESS TO ACCOUNT #{1}", customerID, accountID));
                 }
             }
-            catch(MaturityValidationException WTF)
+            catch (MaturityValidationException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
@@ -334,7 +320,7 @@ namespace Data_Layer
                 Console.WriteLine(WTF);
                 throw;
             }
-            catch(OverdraftProtectionException WTF)
+            catch (OverdraftProtectionException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;

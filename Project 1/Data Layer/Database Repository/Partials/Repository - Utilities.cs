@@ -166,6 +166,8 @@ namespace Data_Layer
             MasterStateList.Add(new AccountTransactionState() { Name = "Close Account" });
             MasterStateList.Add(new AccountTransactionState() { Name = "Deposit" });
             MasterStateList.Add(new AccountTransactionState() { Name = "Withdrawal" });
+            MasterStateList.Add(new AccountTransactionState() { Name = "Loan Installment" });
+            MasterStateList.Add(new AccountTransactionState() { Name = "Overdraft Fee" });
             MasterStateList.Add(new AccountTransactionState() { Name = "Interest Accrued" });
             MasterStateList.Add(new AccountTransactionState() { Name = "Overdraft Protection" });
             MasterStateList.Add(new AccountTransactionState() { Name = "Maturity Not Reached" });

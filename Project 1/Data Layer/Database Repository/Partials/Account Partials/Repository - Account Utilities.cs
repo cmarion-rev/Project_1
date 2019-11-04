@@ -11,7 +11,7 @@ namespace Data_Layer
 {
     public partial class Repository
     {
-        private async Task<int> GetTransactionID(Utility.TransactionCodes transactionCodes)
+        protected async Task<int> GetTransactionID(Utility.TransactionCodes transactionCodes)
         {
             int result = -1;
 
@@ -38,6 +38,16 @@ namespace Data_Layer
 
                     case Utility.TransactionCodes.WITHDRAWAL:
                         item = await myContext.AccountTransactionStates.Where(s => s.Name == "Withdrawal").FirstOrDefaultAsync();
+                        result = item.ID;
+                        break;
+
+                    case Utility.TransactionCodes.LOAN_INSTALLMENT:
+                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Loan Installment").FirstOrDefaultAsync();
+                        result = item.ID;
+                        break;
+
+                    case Utility.TransactionCodes.OVERDRAFT_FEE:
+                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Overdraft Fee").FirstOrDefaultAsync();
                         result = item.ID;
                         break;
 
