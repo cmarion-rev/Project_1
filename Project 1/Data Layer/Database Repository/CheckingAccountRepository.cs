@@ -71,11 +71,6 @@ namespace Data_Layer.Database_Repository
                     }
                 }
             }
-            catch (InvalidAccountException WTF)
-            {
-                Console.WriteLine(WTF);
-                throw;
-            }
             catch (UnauthorizedAccessException WTF)
             {
                 Console.WriteLine(WTF);
