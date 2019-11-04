@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data_Layer.Database_Repository.Interfaces
 {
-    interface IRepository_Account
+    public interface IRepository_Account
     {
         Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0);
 

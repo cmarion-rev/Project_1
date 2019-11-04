@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Data_Layer.Database_Repository.Interfaces
 {
-    interface IRepository_Customer
+    public interface IRepository_Customer
     {
         Task<Customer> GetCustomer(int id);
 
