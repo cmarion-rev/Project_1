@@ -46,7 +46,7 @@ namespace Data_Layer
             {
                 newAccount = new Account()
                 {
-                    AccountBalance = initialBalance > 0 ? initialBalance : 0.0,
+                    AccountBalance = initialBalance > 0 ? Math.Round(initialBalance, 2) : 0.0,
                     CustomerID = customerID,
                     AccountTypeID = accountType,
                     IsActive = true,
