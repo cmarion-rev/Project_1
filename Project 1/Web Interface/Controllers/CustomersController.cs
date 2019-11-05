@@ -143,12 +143,12 @@ namespace Web_Interface.Controllers
             }
         }
 
-        // GET: Customers/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["StateID"] = new SelectList(_context.States, "ID", "Abbreviation");
-        //    return View();
-        //}
+        //GET: Customers/Create
+        public IActionResult Create()
+        {
+            ViewData["StateID"] = new SelectList(_repo.GetStates(), "ID", "Abbreviation");
+            return View();
+        }
 
         //// POST: Customers/Create
         //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
