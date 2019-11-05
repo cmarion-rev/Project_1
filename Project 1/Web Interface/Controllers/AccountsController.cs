@@ -23,7 +23,7 @@ namespace Web_Interface.Controllers
         //GET: Accounts
         public IActionResult Index()
         {
-            return RedirectToAction(nameof(Index), nameof(CustomersController));
+            return RedirectToAction(nameof(Index), "Customers");
         }
 
         //GET: Accounts/Details/5
@@ -76,8 +76,8 @@ namespace Web_Interface.Controllers
                 {
                     string guid = GetUserGuID();
                     Customer currentCustomer = _repo.GetCustomer(guid);
-                    _repo.OpenAccount(currentCustomer.ID, account.AccountTypeID, account.AccountBalance);
-                    return RedirectToAction(nameof(Details), account.ID);
+                    account = _repo.OpenAccount(currentCustomer.ID, account.AccountTypeID, account.AccountBalance);
+                    return RedirectToAction(nameof(Details), new { id = account.ID });
                 }
             }
             ViewData["AccountTypeID"] = new SelectList(_repo.GetAllAccountTypes(), "ID", "Name");
