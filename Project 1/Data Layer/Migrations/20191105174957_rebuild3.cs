@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data_Layer.Migrations
 {
-    public partial class rebuild2 : Migration
+    public partial class rebuild3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -145,7 +145,7 @@ namespace Data_Layer.Migrations
                 columns: new[] { "ID", "Name" },
                 values: new object[,]
                 {
-                    { -1, "Open Account" },
+                    { 0, "Open Account" },
                     { 1, "Close Account" },
                     { 2, "Deposit" },
                     { 3, "Withdrawal" },
@@ -163,7 +163,7 @@ namespace Data_Layer.Migrations
                 {
                     { 3, "Loan" },
                     { 2, "Term CD" },
-                    { -1, "Checking" },
+                    { 0, "Checking" },
                     { 1, "Business" }
                 });
 
@@ -198,7 +198,7 @@ namespace Data_Layer.Migrations
                     { 24, "MO", "Missouri" },
                     { 18, "ME", "Maine" },
                     { 22, "MN", "Minnesota" },
-                    { -1, "AL", "Alabama" },
+                    { 0, "AL", "Alabama" },
                     { 1, "AK", "Alaska" },
                     { 2, "AZ", "Arizona" },
                     { 3, "AR", "Arkansas" },
