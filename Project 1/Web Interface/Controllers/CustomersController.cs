@@ -29,7 +29,6 @@ namespace Web_Interface.Controllers
         {
             // Check if customer is registered.
             string guid = GetUserGuID();
-
             if (_repo.IsCustomerPresent(guid))
             {
                 // Display Main Account page.
@@ -63,79 +62,32 @@ namespace Web_Interface.Controllers
             // Get current customer data.
             string guid = GetUserGuID();
 
-            if (id == null)
+            // Check if customer exits.
+            bool result = _repo.IsCustomerPresent(guid);
+            if (result)
             {
-                // Check if customer exits.
-                bool result = _repo.IsCustomerPresent(guid);
-                if (result)
+                // Get current customer info.
+                try
                 {
-                    // Get current customer info.
-                    try
-                    {
-                        currentCustomer = _repo.GetCustomer(guid);
-                    }
-                    catch (Exception WTF)
-                    {
-                        Console.WriteLine(WTF);
-                        throw;
-                    }
-                    finally
-                    {
-
-                    }
+                    currentCustomer = _repo.GetCustomer(guid);
                 }
-                else
+                catch (Exception WTF)
                 {
-                    // Create new customer.
-                    try
-                    {
-                        return RedirectToAction(nameof(Create));
-                        // currentCustomer = _repo.CreateNewCustomer(guid);
-                    }
-                    catch (Exception WTF)
-                    {
-                        Console.WriteLine(WTF);
-                        throw;
-                    }
+                    Console.WriteLine(WTF);
+                    throw;
                 }
             }
             else
             {
-                // Check if user exits
-                if (_repo.IsCustomerPresent(id.Value))
+                // Create new customer.
+                try
                 {
-                    // Get current customer info.
-                    try
-                    {
-                        currentCustomer = _repo.GetCustomer(id.Value);
-                    }
-                    catch (Exception WTF)
-                    {
-                        Console.WriteLine(WTF);
-                        throw;
-                    }
-                    finally
-                    {
-
-                    }
-
+                    return RedirectToAction(nameof(Create));
                 }
-                else
+                catch (Exception WTF)
                 {
-                    // Create new customer.
-                    try
-                    {
-                        return RedirectToAction(nameof(Create));
-                    }
-                    catch (Exception WTF)
-                    {
-                        Console.WriteLine(WTF);
-                        throw;
-                    }
-                    finally
-                    {
-
-                    }
+                    Console.WriteLine(WTF);
+                    throw;
                 }
             }
 
@@ -148,11 +100,19 @@ namespace Web_Interface.Controllers
             {
                 return NotFound();
             }
-        }      
+        }
 
         //GET: Customers/Create
         public IActionResult Create()
         {
+            string guid = GetUserGuID();
+
+            // Check if customer infomation has already been created.
+            if (_repo.IsCustomerPresent(guid))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             ViewData["StateID"] = new SelectList(_repo.GetStates(), "ID", "Abbreviation");
             return View();
         }
