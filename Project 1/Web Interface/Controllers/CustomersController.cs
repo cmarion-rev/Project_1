@@ -10,6 +10,7 @@ using Data_Layer.Data_Objects;
 using Data_Layer.Database_Repository.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Data_Layer.View_Models;
 
 namespace Web_Interface.Controllers
 {
@@ -26,7 +27,32 @@ namespace Web_Interface.Controllers
         // GET: Customers
         public IActionResult Index()
         {
-            return RedirectToAction(nameof(Details));
+            // Check if customer is registered.
+            string guid = GetUserGuID();
+
+            if (_repo.IsCustomerPresent(guid))
+            {
+                // Display Main Account page.
+                try
+                {
+                    Customer currentCustomer = _repo.GetCustomer(guid);
+                    CustomerAccountsVM customerAccounts = _repo.GetCustomerAccounts(currentCustomer.ID);
+
+                    ViewData["State"] = _repo.GetStates().FirstOrDefault(s => s.ID == currentCustomer.StateID).Name;
+                    ViewData["Account Types"] = _repo.GetAllAccountTypes();
+                    return View(customerAccounts);
+                }
+                catch (Exception WTF)
+                {
+                    Console.WriteLine(WTF);
+                    throw;
+                }
+            }
+            else
+            {
+                // Redirect to create customer information page.
+                return RedirectToAction(nameof(Create));
+            }
         }
 
         // GET: Customers/Details/5
