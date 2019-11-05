@@ -319,11 +319,11 @@ namespace Data_Layer
             return result;
         }
 
-        public async Task<List<AccountType>> GetAllAccountTypes()
+        public List<AccountType> GetAllAccountTypes()
         {
             List<AccountType> results = null;
 
-            results = await myContext.AccountTypes.ToListAsync();
+            results = myContext.AccountTypes.ToList();
 
             return results;
         }

@@ -57,8 +57,14 @@
         </dd>
     </dl>
 </div>
+
+@Html.ActionLink("Create Account", "Create", "Accounts");
+
 @if (Model.Accounts.Count > 0)
 {
+    <h4>
+        Accounts
+    </h4>
     <table class="table">
         <thead>
             <tr>
@@ -75,22 +81,27 @@
             </tr>
         </thead>
         <tbody>
-    @foreach (var item in Model.Accounts)
-    {
+
+            @for (int index = 0; index < Model.Accounts.Count; ++index)
+            {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ID)
+                    @Html.DisplayFor(modelItem => Model.Accounts[index].ID)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AccountBalance)
+                    @Html.DisplayFor(modelItem => Model.Accounts[index].AccountBalance)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AccountTypeID)
+                    @Html.DisplayFor(modelItem => Model.AccountType[index])
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    @Html.ActionLink("Deposit", "Deposit", "Accounts"); |
+                    @Html.ActionLink("Withdraw", "Withdraw", "Accounts"); |
+                    @Html.ActionLink("Close", "Close", "Accounts"); |
+
+                    @*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
                 </td>
             </tr>
     }

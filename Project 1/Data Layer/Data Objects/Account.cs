@@ -9,6 +9,7 @@ namespace Data_Layer.Data_Objects
     {
         public int ID { get; set; }
 
+        [Display(Name = "Account Type")]
         public int AccountTypeID { get; set; }
 
         [Display(Name = "Account Type")]

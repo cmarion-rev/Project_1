@@ -179,6 +179,16 @@ namespace Data_Layer
                                                   a.AccountTypeID == accountTypeID && 
                                                   a.IsOpen && 
                                                   a.IsActive).ToList();
+
+                // Define each account type name.
+                List<AccountType> allAccountTypes = GetAllAccountTypes();
+
+                result.AccountType = new List<string>();
+                foreach (var item in result.Accounts)
+                {
+                    result.AccountType.Add(allAccountTypes[item.AccountTypeID].Name);
+                }
+
             }
             catch (Exception WTF)
             {

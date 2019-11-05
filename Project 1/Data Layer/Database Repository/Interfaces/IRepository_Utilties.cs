@@ -23,6 +23,6 @@ namespace Data_Layer.Database_Repository.Interfaces
 
         public int GetAccountTypeID(Utility.AccountType accountType);
 
-        public Task<List<AccountType>> GetAllAccountTypes();
+        public List<AccountType> GetAllAccountTypes();
     }
 }
