@@ -156,10 +156,23 @@ namespace Data_Layer
                 // Define each account type name.
                 List<AccountType> allAccountTypes = GetAllAccountTypes();
 
+                // Check all accounts for type and deposit/withdrawability.
                 result.AccountType = new List<string>();
+                result.isDepositable = new System.Collections.BitArray(result.Accounts.Count);
+                result.isWithdrawable = new System.Collections.BitArray(result.Accounts.Count);
+                int index = 0;
                 foreach (var item in result.Accounts)
                 {
+                    // Set account type name.
                     result.AccountType.Add(allAccountTypes[item.AccountTypeID].Name);
+
+                    // Set flag for deposit account.
+                    result.isDepositable.Set(index, IsAccountDepositable(item));
+
+                    // Set flag for withdraw account.
+                    result.isWithdrawable.Set(index, IsAccountWithdrawable(item));
+
+                    ++index;
                 }
             }
             catch (Exception WTF)
@@ -192,10 +205,23 @@ namespace Data_Layer
                 // Define each account type name.
                 List<AccountType> allAccountTypes = GetAllAccountTypes();
 
+                // Check all accounts for type and deposit/withdrawability.
                 result.AccountType = new List<string>();
+                result.isDepositable = new System.Collections.BitArray(result.Accounts.Count);
+                result.isWithdrawable = new System.Collections.BitArray(result.Accounts.Count);
+                int index = 0;
                 foreach (var item in result.Accounts)
                 {
+                    // Set account type name.
                     result.AccountType.Add(allAccountTypes[item.AccountTypeID].Name);
+                    
+                    // Set flag for deposit account.
+                    result.isDepositable.Set(index, IsAccountDepositable(item));
+                    
+                    // Set flag for withdraw account.
+                    result.isWithdrawable.Set(index, IsAccountWithdrawable(item));
+
+                    ++index;
                 }
 
             }
