@@ -84,60 +84,78 @@ namespace Web_Interface.Controllers
             return View(account);
         }
 
-        // GET: Accounts/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        //GET: Accounts/Edit/5
+        public async Task<IActionResult> Deposit(int? id)
+        {
+            // Check if valid id was presented.
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var account = await _repo.Accounts.FindAsync(id);
-        //    if (account == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
-        //    ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
-        //    return View(account);
-        //}
+
+            Account currentAccount = null;
+            try
+            {
+                string guid = GetUserGuID();
+                Customer currentCustomer = _repo.GetCustomer(guid);
+                currentAccount = _repo.GetAccountInformation(currentCustomer.ID, id.Value);
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                return NotFound();
+            }
+           
+            if (currentAccount == null)
+            {
+                return NotFound();
+            }
+           
+            ViewData["AccountType"] = _repo.GetAccountTypeName(currentAccount.AccountTypeID);
+            //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
+            //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
+            return View(currentAccount);
+        }
 
         // POST: Accounts/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("ID,AccountTypeID,CustomerID,AccountBalance,MaturityDate,InterestRate,IsActive,IsOpen")] Account account)
-        //{
-        //    if (id != account.ID)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Deposit(int id, [Bind("ID,AccountTypeID,CustomerID,AccountBalance,MaturityDate,InterestRate,IsActive,IsOpen")] Account account)
+        {
+            if (id != account.ID)
+            {
+                return NotFound();
+            }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _repo.Update(account);
-        //            await _repo.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!AccountExists(account.ID))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
-        //    ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
-        //    return View(account);
-        //}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string guid = GetUserGuID();
+                    Customer currentCustomer = _repo.GetCustomer(guid);
+                    _repo.Deposit(currentCustomer.ID, id, account.AccountBalance);
+                }
+                catch (DbUpdateConcurrencyException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    if (!AccountExists(account.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
+            ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
+            return View(account);
+        }
 
         // GET: Accounts/Delete/5
         //public async Task<IActionResult> Delete(int? id)

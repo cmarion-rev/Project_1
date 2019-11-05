@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
                 <label asp-for="AccountTypeID" class="control-label"></label>
-                <select asp-for="AccountTypeID" class="form-control" asp-items="ViewBag.AccountTypeID"></select>
+                <input asp-for="AccountTypeID" value="@ViewData["AccountType"]" class="form-control" readonly ="readonly"/>
                 <span asp-validation-for="AccountTypeID" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -25,7 +25,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="AccountBalance" class="control-label"></label>
-                <input asp-for="AccountBalance" class="form-control" />
+                <input asp-for="AccountBalance" class="form-control"  readonly ="readonly"/>
                 <span asp-validation-for="AccountBalance" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,12 +40,12 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                    <input class="form-check-input" asp-for="IsActive" readonly="readonly"/> @Html.DisplayNameFor(model => model.IsActive)
                 </label>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsOpen" /> @Html.DisplayNameFor(model => model.IsOpen)
+                    <input class="form-check-input" asp-for="IsOpen" readonly="readonly"/> @Html.DisplayNameFor(model => model.IsOpen)
                 </label>
             </div>
             <div class="form-group">
