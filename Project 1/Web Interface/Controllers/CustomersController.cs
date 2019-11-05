@@ -68,7 +68,8 @@ namespace Web_Interface.Controllers
                     // Create new customer.
                     try
                     {
-                        currentCustomer =  _repo.CreateNewCustomer(guid);
+                        return RedirectToAction(nameof(Create));
+                        // currentCustomer = _repo.CreateNewCustomer(guid);
                     }
                     catch (Exception WTF)
                     {
@@ -103,7 +104,8 @@ namespace Web_Interface.Controllers
                     // Create new customer.
                     try
                     {
-                        currentCustomer = _repo.CreateNewCustomer(guid);
+                        return RedirectToAction(nameof(Create));
+                        // currentCustomer = _repo.CreateNewCustomer(guid);
                     }
                     catch (Exception WTF)
                     {
