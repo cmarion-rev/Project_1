@@ -55,6 +55,11 @@ namespace Data_Layer
                     MaturityDate = DateTime.Now,
                 };
                 
+                
+                // Add new account to database.
+                myContext.Add(newAccount);
+                myContext.SaveChanges();
+                
                 // Create new transaction record.
                 AccountTransaction tempTransaction = new AccountTransaction()
                 {
@@ -63,9 +68,7 @@ namespace Data_Layer
                     TransactionCode = GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
                     TimeStamp = DateTime.Now
                 };
-                
-                // Add new account to database.
-                myContext.Add(newAccount);
+                myContext.Add(tempTransaction);
                 myContext.SaveChanges();
             }
 
