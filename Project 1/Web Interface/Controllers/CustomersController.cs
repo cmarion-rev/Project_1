@@ -168,16 +168,7 @@ namespace Web_Interface.Controllers
             if (ModelState.IsValid)
             {
                 string guid = GetUserGuID();
-                Customer newCustomer = _repo.CreateNewCustomer(guid);
-                newCustomer.FirstName = customer.FirstName;
-                newCustomer.LastName = customer.LastName;
-                newCustomer.City = customer.City;
-                newCustomer.StateID = customer.StateID;
-                newCustomer.ZipCode = customer.ZipCode;
-                newCustomer.PhoneNumber = customer.PhoneNumber;
-
-                _repo.UpdateCustomer(newCustomer);
-
+                Customer newCustomer = _repo.CreateNewCustomer(guid, customer);
                 return RedirectToAction(nameof(Details));
             }
             ViewData["StateID"] = new SelectList(_repo.GetStates(), "ID", "Abbreviation");
@@ -189,23 +180,15 @@ namespace Web_Interface.Controllers
         {
             Customer customer = null;
 
-            if (id == null)
+            string guid = GetUserGuID();
+            if (_repo.IsCustomerPresent(guid))
             {
-                string guid = GetUserGuID();
-                if( _repo.IsCustomerPresent(guid))
-                {
-                    customer = _repo.GetCustomer(guid);
-                }
-                else
-                {
-                    RedirectToAction(nameof(Create));
-                }
+                customer = _repo.GetCustomer(guid);
             }
             else
             {
-                return NotFound();
+                RedirectToAction(nameof(Create));
             }
-
 
             if (customer == null)
             {
@@ -221,7 +204,7 @@ namespace Web_Interface.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("ID,FirstName,LastName,Address,City,StateID,ZipCode,PhoneNumber,UserIdentity")] Customer customer)
+        public IActionResult Edit(int id, [Bind("ID,FirstName,LastName,Address,City,StateID,ZipCode,PhoneNumber")] Customer customer)
         {
             //if (id != customer.ID)
             //{
@@ -232,6 +215,7 @@ namespace Web_Interface.Controllers
             {
                 try
                 {
+                    customer.UserIdentity = GetUserGuID();
                     bool isValidCustomerID = _repo.IsCustomerIdValid(id, customer.UserIdentity);
 
                     if (isValidCustomerID)
