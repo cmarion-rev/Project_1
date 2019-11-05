@@ -40,13 +40,13 @@ namespace Data_Layer
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Account Types.
-            modelBuilder.Entity<AccountType>().HasData(new AccountType() { ID = 0, Name = "Checking" });
+            modelBuilder.Entity<AccountType>().HasData(new AccountType() { ID = -1, Name = "Checking" });
             modelBuilder.Entity<AccountType>().HasData(new AccountType() { ID = 1, Name = "Business" });
             modelBuilder.Entity<AccountType>().HasData(new AccountType() { ID = 2, Name = "Term CD" });
             modelBuilder.Entity<AccountType>().HasData(new AccountType() { ID = 3, Name = "Loan" });
 
             // Transaction Codes.
-            modelBuilder.Entity<AccountTransactionState>().HasData(new AccountTransactionState() { ID = 0, Name = "Open Account" });
+            modelBuilder.Entity<AccountTransactionState>().HasData(new AccountTransactionState() { ID = -1, Name = "Open Account" });
             modelBuilder.Entity<AccountTransactionState>().HasData(new AccountTransactionState() { ID = 1, Name = "Close Account" });
             modelBuilder.Entity<AccountTransactionState>().HasData(new AccountTransactionState() { ID = 2, Name = "Deposit" });
             modelBuilder.Entity<AccountTransactionState>().HasData(new AccountTransactionState() { ID = 3, Name = "Withdrawal" });
@@ -57,7 +57,7 @@ namespace Data_Layer
             modelBuilder.Entity<AccountTransactionState>().HasData(new AccountTransactionState() { ID = 8, Name = "Maturity Not Reached" });
 
             // State Codes.
-            modelBuilder.Entity<State>().HasData(new State() { ID = 0, Name = "Alabama", Abbreviation = "AL" });
+            modelBuilder.Entity<State>().HasData(new State() { ID = -1, Name = "Alabama", Abbreviation = "AL" });
             modelBuilder.Entity<State>().HasData(new State() { ID = 1, Name = "Alaska", Abbreviation = "AK" });
             modelBuilder.Entity<State>().HasData(new State() { ID = 2, Name = "Arizona", Abbreviation = "AZ" });
             modelBuilder.Entity<State>().HasData(new State() { ID = 3, Name = "Arkansas", Abbreviation = "AR" });
