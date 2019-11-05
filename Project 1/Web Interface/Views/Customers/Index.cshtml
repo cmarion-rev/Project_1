@@ -86,7 +86,9 @@
             {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.Accounts[index].ID)
+                    <a asp-controller="Accounts" asp-action="Details" asp-route-id="@Model.Accounts[index].ID">
+                        @Html.DisplayFor(modelItem => Model.Accounts[index].ID)
+                    </a>    
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => Model.Accounts[index].AccountBalance)
