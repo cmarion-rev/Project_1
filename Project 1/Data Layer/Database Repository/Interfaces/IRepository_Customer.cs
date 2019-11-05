@@ -10,7 +10,7 @@ namespace Data_Layer.Database_Repository.Interfaces
 {
     public interface IRepository_Customer
     {
-        Customer CreateNewCustomer(string guid, string fName = "Person");
+        Customer CreateNewCustomer(string guid, Customer newCustomer);
 
         Customer GetCustomer(int id);
 

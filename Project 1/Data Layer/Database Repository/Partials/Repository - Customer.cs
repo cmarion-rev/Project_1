@@ -13,7 +13,7 @@ namespace Data_Layer
 {
     public partial class Repository : IRepository
     {
-        public virtual Customer CreateNewCustomer(string guid, string fName = "Person")
+        public virtual Customer CreateNewCustomer(string guid, Customer newCustomer)
         {
             Customer result = null;
 
@@ -23,18 +23,16 @@ namespace Data_Layer
                 result = new Customer()
                 {
                     ID = 0,
-                    FirstName = "Person",
-                    LastName = "Person",
-                    Address = "NONE",
-                    City = "NONE",
-                    StateID = 0,
-                    ZipCode = 0,
-                    PhoneNumber = "0000000000",
+                    FirstName = newCustomer.FirstName,
+                    LastName = newCustomer.LastName,
+                    Address = newCustomer.Address,
+                    City = newCustomer.City,
+                    StateID = newCustomer.StateID,
+                    ZipCode = newCustomer.ZipCode,
+                    PhoneNumber = newCustomer.PhoneNumber,
                     UserIdentity = guid,
                 };
 
-                //var a = myContext.Database.CanConnect();
-                //myContext.Database.OpenConnection();
                 myContext.Customers.Add(result);
                 myContext.SaveChanges();
             }
@@ -126,7 +124,17 @@ namespace Data_Layer
 
         public virtual Customer UpdateCustomer(Customer currentCustomer)
         {
-            myContext.Update(currentCustomer);
+            Customer tempCustomer = myContext.Customers.Where(c => c.ID == currentCustomer.ID).FirstOrDefault();
+
+            tempCustomer.FirstName = currentCustomer.FirstName;
+            tempCustomer.LastName = currentCustomer.LastName;
+            tempCustomer.City = currentCustomer.City;
+            tempCustomer.StateID = currentCustomer.StateID;
+            tempCustomer.ZipCode = currentCustomer.ZipCode;
+            tempCustomer.PhoneNumber = currentCustomer.PhoneNumber;
+            tempCustomer.UserIdentity = currentCustomer.UserIdentity;
+
+            myContext.Update(tempCustomer);
             myContext.SaveChanges();
 
             return currentCustomer;
