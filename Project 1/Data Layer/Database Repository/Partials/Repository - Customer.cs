@@ -120,7 +120,7 @@ namespace Data_Layer
         public virtual Customer UpdateCustomer(Customer currentCustomer)
         {
             myContext.Update(currentCustomer);
-             myContext.SaveChanges();
+            myContext.SaveChanges();
 
             return currentCustomer;
         }

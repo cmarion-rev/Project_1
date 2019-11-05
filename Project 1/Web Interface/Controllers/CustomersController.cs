@@ -38,9 +38,7 @@ namespace Web_Interface.Controllers
             Customer currentCustomer = null;
 
             // Get current customer data.
-            string userEmail = User.Identity.Name;
-            var userData = User.Claims.ToList()[0];
-            string guid = userData.Value;
+            string guid = GetUserGuID();
 
             if (id == null)
             {
@@ -145,6 +143,14 @@ namespace Web_Interface.Controllers
             }
         }
 
+        private string GetUserGuID()
+        {
+            string userEmail = User.Identity.Name;
+            var userData = User.Claims.ToList()[0];
+            string guid = userData.Value;
+            return guid;
+        }
+
         //GET: Customers/Create
         public IActionResult Create()
         {
@@ -152,22 +158,31 @@ namespace Web_Interface.Controllers
             return View();
         }
 
-        //// POST: Customers/Create
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Address,City,StateID,ZipCode,PhoneNumber,UserIdentity")] Customer customer)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(customer);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["StateID"] = new SelectList(_context.States, "ID", "Abbreviation", customer.StateID);
-        //    return View(customer);
-        //}
+        // POST: Customers/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create([Bind("ID,FirstName,LastName,Address,City,StateID,ZipCode,PhoneNumber,UserIdentity")] Customer customer)
+        {
+            if (ModelState.IsValid)
+            {
+                string guid = GetUserGuID();
+                Customer newCustomer = _repo.CreateNewCustomer(guid);
+                newCustomer.FirstName = customer.FirstName;
+                newCustomer.LastName = customer.LastName;
+                newCustomer.City = customer.City;
+                newCustomer.StateID = customer.StateID;
+                newCustomer.ZipCode = customer.ZipCode;
+                newCustomer.PhoneNumber = customer.PhoneNumber;
+
+                _repo.UpdateCustomer(newCustomer);
+
+                return RedirectToAction(nameof(Details));
+            }
+            ViewData["StateID"] = new SelectList(_repo.GetStates(), "ID", "Abbreviation");
+            return View(customer);
+        }
 
         //// GET: Customers/Edit/5
         //public async Task<IActionResult> Edit(int? id)
