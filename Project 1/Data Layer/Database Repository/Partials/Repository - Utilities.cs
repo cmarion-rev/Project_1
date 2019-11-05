@@ -24,7 +24,7 @@ namespace Data_Layer
 
             try
             {
-                result = myContext.States.Where(s = s.ID == ID).FirstOrDefault();
+                result = myContext.States.Where(s => s.ID == ID).FirstOrDefault();
             }
             catch (Exception WTF)
             {
@@ -53,7 +53,7 @@ namespace Data_Layer
 
             try
             {
-                result = myContext.AccountTransactionStates.Where(s = s.ID == ID).FirstOrDefault();
+                result = myContext.AccountTransactionStates.Where(s => s.ID == ID).FirstOrDefault();
             }
             catch (Exception WTF)
             {
@@ -74,7 +74,7 @@ namespace Data_Layer
 
             try
             {
-                var item = myContext.AccountTypes.Where(t = t.ID == id).FirstOrDefault();
+                var item = myContext.AccountTypes.Where(t => t.ID == id).FirstOrDefault();
                 result = item.Name;
             }
             catch (Exception WTF)
@@ -92,7 +92,7 @@ namespace Data_Layer
 
             try
             {
-                result = myContext.AccountTypes.Where(t = t.ID == id).FirstOrDefault();
+                result = myContext.AccountTypes.Where(t => t.ID == id).FirstOrDefault();
             }
             catch (Exception WTF)
             {
@@ -113,19 +113,19 @@ namespace Data_Layer
                 switch (accountType)
                 {
                     case Utility.AccountType.CHECKING:
-                        tempType = myContext.AccountTypes.Where(t = t.Name == "Checking").FirstOrDefault();
+                        tempType = myContext.AccountTypes.Where(t => t.Name == "Checking").FirstOrDefault();
                         break;
 
                     case Utility.AccountType.BUSINESS:
-                        tempType = myContext.AccountTypes.Where(t = t.Name == "Business").FirstOrDefault();
+                        tempType = myContext.AccountTypes.Where(t => t.Name == "Business").FirstOrDefault();
                         break;
 
                     case Utility.AccountType.TERM_DEPOSIT:
-                        tempType = myContext.AccountTypes.Where(t = t.Name == "Term CD").FirstOrDefault();
+                        tempType = myContext.AccountTypes.Where(t => t.Name == "Term CD").FirstOrDefault();
                         break;
 
                     case Utility.AccountType.LOAN:
-                        tempType = myContext.AccountTypes.Where(t = t.Name == "Loan").FirstOrDefault();
+                        tempType = myContext.AccountTypes.Where(t => t.Name == "Loan").FirstOrDefault();
                         break;
 
                     case Utility.AccountType._COUNT:
