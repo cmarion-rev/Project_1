@@ -24,11 +24,6 @@ namespace Data_Layer.Data_Objects
         [Range(0, double.MaxValue, ErrorMessage = "Only positive number allowed")]
         public double AccountBalance { get; set; }
 
-        [Display(Name = "Last Transaction State")]
-        public int AccountTransactionStateID { get; set; }
-
-        public virtual AccountTransactionState AccountTransactionState { get; set; }
-
         [DataType(DataType.Date)]
         public DateTime MaturityDate { get; set; }
 

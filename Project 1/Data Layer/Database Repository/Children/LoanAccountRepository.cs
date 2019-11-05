@@ -47,7 +47,7 @@ namespace Data_Layer.Database_Repository
                             {
                                 AccountID = currentAccount.ID,
                                 Amount = newAmount,
-                                TransactionCode =  GetTransactionID(Utility.TransactionCodes.LOAN_INSTALLMENT),
+                                AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.LOAN_INSTALLMENT),
                                 TimeStamp = DateTime.Now
                             };
 

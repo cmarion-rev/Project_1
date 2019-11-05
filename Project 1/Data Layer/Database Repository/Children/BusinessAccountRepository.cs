@@ -48,7 +48,7 @@ namespace Data_Layer.Database_Repository
                             {
                                 AccountID = currentAccount.ID,
                                 Amount = newAmount,
-                                TransactionCode =  GetTransactionID(Utility.TransactionCodes.DEPOSIT),
+                                AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.DEPOSIT),
                                 TimeStamp = DateTime.Now
                             };
 
@@ -130,7 +130,7 @@ namespace Data_Layer.Database_Repository
                                         AccountID = accountID,
                                         Amount = currentAccount.AccountBalance - newAmount,
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                        AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                     };
 
                                     AccountTransaction overdraftTransaction = new AccountTransaction()
@@ -138,7 +138,7 @@ namespace Data_Layer.Database_Repository
                                         AccountID = accountID,
                                         Amount = Math.Abs(newAmount - currentAccount.AccountBalance) * ((currentAccount.InterestRate * 0.01) + 1.0),
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_FEE)
+                                        AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_FEE)
                                     };
 
                                     // Update account.
@@ -157,7 +157,7 @@ namespace Data_Layer.Database_Repository
                                         AccountID = accountID,
                                         Amount = newAmount * ((currentAccount.InterestRate * 0.01) + 1.0),
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_FEE)
+                                        AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_FEE)
                                     };
 
                                     // Update account.
@@ -177,7 +177,7 @@ namespace Data_Layer.Database_Repository
                                     AccountID = accountID,
                                     Amount = newAmount,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                    AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                 };
 
                                 // Update account balance.

@@ -51,7 +51,6 @@ namespace Data_Layer
                     AccountTypeID = accountType,
                     IsActive = true,
                     IsOpen = true,
-                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
                     MaturityDate = DateTime.Now,
                 };
                 
@@ -65,7 +64,7 @@ namespace Data_Layer
                 {
                     AccountID = newAccount.ID,
                     Amount = initialBalance,
-                    TransactionCode = GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
+                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
                     TimeStamp = DateTime.Now
                 };
                 myContext.Add(tempTransaction);
@@ -163,7 +162,7 @@ namespace Data_Layer
                             {
                                 AccountID = currentAccount.ID,
                                 Amount = newAmount,
-                                TransactionCode =  GetTransactionID(Utility.TransactionCodes.DEPOSIT),
+                                AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.DEPOSIT),
                                 TimeStamp = DateTime.Now
                             };
 
@@ -248,7 +247,7 @@ namespace Data_Layer
                                     AccountID = accountID,
                                     Amount = newAmount,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode = GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                 };
 
                                 // Add new account withdrawal transaction.
@@ -264,7 +263,7 @@ namespace Data_Layer
                                     AccountID = accountID,
                                     Amount = 0.0,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode = GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
+                                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
                                 };
 
                                 // Add new invalid transaction.
@@ -295,7 +294,7 @@ namespace Data_Layer
                                         AccountID = accountID,
                                         Amount = newAmount,
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode = GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                        AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                     };
 
                                     // Add new account withdrawal transaction.
@@ -311,7 +310,7 @@ namespace Data_Layer
                                         AccountID = accountID,
                                         Amount = 0.0,
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode = GetTransactionID(Utility.TransactionCodes.NON_MATURITY)
+                                        AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.NON_MATURITY)
                                     };
 
                                     // Add new invalid transaction.

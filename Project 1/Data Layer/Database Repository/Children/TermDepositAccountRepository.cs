@@ -80,7 +80,7 @@ namespace Data_Layer.Database_Repository
                                         AccountID = accountID,
                                         Amount = 0.0,
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
+                                        AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
                                     };
 
                                     // Add new invalid transaction.
@@ -97,7 +97,7 @@ namespace Data_Layer.Database_Repository
                                         AccountID = accountID,
                                         Amount = newAmount,
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                        AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                     };
 
                                     // Update account.
@@ -117,7 +117,7 @@ namespace Data_Layer.Database_Repository
                                     AccountID = accountID,
                                     Amount = 0.0,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode =  GetTransactionID(Utility.TransactionCodes.NON_MATURITY)
+                                    AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.NON_MATURITY)
                                 };
 
                                 // Add new invalid transaction.
