@@ -15,5 +15,7 @@ namespace Data_Layer.Database_Repository.Interfaces
         public Account Deposit(int customerID, int accountID, double newAmount);
 
         public Account Withdraw(int customerID, int accountID, double newAmount);
+
+        public Account GetAccountInformation(int customerID, int accountID);
     }
 }

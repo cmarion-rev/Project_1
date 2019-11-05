@@ -13,6 +13,29 @@ namespace Data_Layer
 {
     public partial class Repository : IRepository
     {
+        public Account GetAccountInformation(int customerID, int accountID)
+        {
+            Account result = null;
+
+            try
+            {
+                result = myContext.Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID).FirstOrDefault();
+            }
+            catch(NullReferenceException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+
+
+            return result;
+        }
+
         public virtual Account OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
         {
             Customer tempCustomer = GetCustomer(customerID);
