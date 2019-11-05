@@ -97,9 +97,9 @@
                     @Html.DisplayFor(modelItem => Model.AccountType[index])
                 </td>
                 <td>
-                    @Html.ActionLink("Deposit", "Deposit", "Accounts"); |
-                    @Html.ActionLink("Withdraw", "Withdraw", "Accounts"); |
-                    @Html.ActionLink("Close", "Close", "Accounts"); |
+                    @Html.ActionLink("Deposit", "Deposit", "Accounts", new { id = @Model.Accounts[index].ID }); |
+                    @Html.ActionLink("Withdraw", "Withdraw", "Accounts", new { id = @Model.Accounts[index].ID }); |
+                    @Html.ActionLink("Close", "Close", "Accounts", new { id = @Model.Accounts[index].ID }); |
 
                     @*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
