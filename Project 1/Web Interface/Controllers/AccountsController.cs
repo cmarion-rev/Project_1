@@ -20,32 +20,40 @@ namespace Web_Interface.Controllers
             _repo = repo;
         }
 
-        // GET: Accounts
-        //public async Task<IActionResult> Index()
-        //{
-        //    var mainDbContext = _repo.Accounts.Include(a => a.AccountType).Include(a => a.Customer);
-        //    return View(await mainDbContext.ToListAsync());
-        //}
+        //GET: Accounts
+        public IActionResult Index()
+        {
+            return RedirectToAction(nameof(Index), nameof(CustomersController));
+        }
 
-        // GET: Accounts/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        //GET: Accounts/Details/5
+        public IActionResult Details(int? id)
+        {
+            if (id != null)
+            {
+                Account account = null;
+                try
+                {
+                    string guid = GetUserGuID();
+                    int customerID = _repo.GetCustomer(guid).ID;
+                    account = _repo.GetAccountInformation(customerID, id.Value);
+                   
+                    if (account == null)
+                    {
+                        return NotFound();
+                    }
+                }
+                catch (Exception WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return NotFound();
+                }
 
-        //    var account = await _repo.Accounts
-        //        .Include(a => a.AccountType)
-        //        .Include(a => a.Customer)
-        //        .FirstOrDefaultAsync(m => m.ID == id);
-        //    if (account == null)
-        //    {
-        //        return NotFound();
-        //    }
+                return View(account);
+            }
 
-        //    return View(account);
-        //}
+            return NotFound();
+        }
 
         // GET: Accounts/Create
         public IActionResult Create()
