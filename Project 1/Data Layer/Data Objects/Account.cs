@@ -21,6 +21,7 @@ namespace Data_Layer.Data_Objects
 
         [Display(Name = "Balance")]
         [DataType(DataType.Currency)]
+        [Range(0, double.MaxValue, ErrorMessage = "Only positive number allowed")]
         public double AccountBalance { get; set; }
 
         [Display(Name = "Last Transaction State")]
