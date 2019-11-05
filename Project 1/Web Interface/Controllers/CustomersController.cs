@@ -184,58 +184,87 @@ namespace Web_Interface.Controllers
             return View(customer);
         }
 
-        //// GET: Customers/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Customers/Edit/5
+        public IActionResult Edit(int? id)
+        {
+            Customer customer = null;
 
-        //    var customer = await _context.Customers.FindAsync(id);
-        //    if (customer == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["StateID"] = new SelectList(_context.States, "ID", "Abbreviation", customer.StateID);
-        //    return View(customer);
-        //}
+            if (id == null)
+            {
+                string guid = GetUserGuID();
+                if( _repo.IsCustomerPresent(guid))
+                {
+                    customer = _repo.GetCustomer(guid);
+                }
+                else
+                {
+                    RedirectToAction(nameof(Create));
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
 
-        //// POST: Customers/Edit/5
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Address,City,StateID,ZipCode,PhoneNumber,UserIdentity")] Customer customer)
-        //{
-        //    if (id != customer.ID)
-        //    {
-        //        return NotFound();
-        //    }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(customer);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!CustomerExists(customer.ID))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["StateID"] = new SelectList(_context.States, "ID", "Abbreviation", customer.StateID);
-        //    return View(customer);
-        //}
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["StateID"] = new SelectList(_repo.GetStates(), "ID", "Abbreviation");
+            return View(customer);
+        }
+
+        // POST: Customers/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, [Bind("ID,FirstName,LastName,Address,City,StateID,ZipCode,PhoneNumber,UserIdentity")] Customer customer)
+        {
+            //if (id != customer.ID)
+            //{
+            //    return NotFound();
+            //}
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    bool isValidCustomerID = _repo.IsCustomerIdValid(id, customer.UserIdentity);
+
+                    if (isValidCustomerID)
+                    {
+                        _repo.UpdateCustomer(customer);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                catch (DbUpdateConcurrencyException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    if (!_repo.IsCustomerPresent(customer.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                catch   (Exception WTF)
+                {
+                    Console.WriteLine(WTF);
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["StateID"] = new SelectList(_repo.GetStates(), "ID", "Abbreviation");
+            return View(customer);
+        }
 
         //// GET: Customers/Delete/5
         //public async Task<IActionResult> Delete(int? id)
