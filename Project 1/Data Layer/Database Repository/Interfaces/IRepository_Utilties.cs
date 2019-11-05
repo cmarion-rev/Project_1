@@ -11,15 +11,15 @@ namespace Data_Layer.Database_Repository.Interfaces
     {
         public List<State> GetStates();
 
-        public Task<State> GetState(int ID);
+        public State GetState(int ID);
 
-        public Task<List<AccountTransactionState>> GetTransactionStates();
+        public List<AccountTransactionState> GetTransactionStates();
 
-        public Task<AccountTransactionState> GetTransactionState(int ID);
+        public AccountTransactionState GetTransactionState(int ID);
 
-        public Task<string> GetAccountTypeName(int id);
+        public string GetAccountTypeName(int id);
 
-        public Task<AccountType> GetAccountType(int id);
+        public AccountType GetAccountType(int id);
 
         public int GetAccountTypeID(Utility.AccountType accountType);
 
