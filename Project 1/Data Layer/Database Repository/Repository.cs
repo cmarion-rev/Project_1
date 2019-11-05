@@ -13,17 +13,17 @@ namespace Data_Layer
         public Repository(MainDbContext newContext)
         {
             myContext = newContext;
-            myContext.ConfigureAwait(false);
+            //myContext.ConfigureAwait(false);
 
             // Load all utility tables.
-            LoadUtilities();
+            //LoadUtilities();
         }
 
-        private async void LoadUtilities()
-        {
-            await LoadAccountTypes();
-            await LoadTransactionStates();
-            await LoadStates();
-        }
+        //private async void LoadUtilities()
+        //{
+        //    await LoadAccountTypes();
+        //    await LoadTransactionStates();
+        //    await LoadStates();
+        //}
     }
 }

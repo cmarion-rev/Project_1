@@ -10,22 +10,22 @@ namespace Data_Layer.Database_Repository.Interfaces
 {
     public interface IRepository_Customer
     {
-        Task<Customer> CreateNewCustomer(string guid, string fName = "Person");
+        Customer CreateNewCustomer(string guid, string fName = "Person");
 
-        Task<Customer> GetCustomer(int id);
+        Customer GetCustomer(int id);
 
-        Task<Customer> GetCustomer(string guid);
+        Customer GetCustomer(string guid);
 
-        Task<List<Customer>> GetAllCustomers();
+        List<Customer> GetAllCustomers();
 
-        Task<bool> IsCustomerPresent(string guid);
+        bool IsCustomerPresent(string guid);
         
-        Task<bool> IsCustomerPresent(int id);
+        bool IsCustomerPresent(int id);
 
-        Task<Customer> UpdateCustomer(Customer currentCustomer);
+        Customer UpdateCustomer(Customer currentCustomer);
 
-        Task<CustomerAccountsVM> GetCustomerAccounts(int customerID);
+        CustomerAccountsVM GetCustomerAccounts(int customerID);
 
-        Task<CustomerAccountsVM> GetCustomerAccounts(int customerID, Utility.AccountType accountType);
+        CustomerAccountsVM GetCustomerAccounts(int customerID, Utility.AccountType accountType);
     }
 }
