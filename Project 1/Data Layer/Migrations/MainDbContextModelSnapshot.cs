@@ -29,6 +29,9 @@ namespace Data_Layer.Migrations
                     b.Property<double>("AccountBalance")
                         .HasColumnType("float");
 
+                    b.Property<int>("AccountTransactionStateID")
+                        .HasColumnType("int");
+
                     b.Property<int>("AccountTypeID")
                         .HasColumnType("int");
 
@@ -44,22 +47,16 @@ namespace Data_Layer.Migrations
                     b.Property<bool>("IsOpen")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("LastAccountTransactionStateID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LastTransactionState")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("MaturityDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ID");
 
+                    b.HasIndex("AccountTransactionStateID");
+
                     b.HasIndex("AccountTypeID");
 
                     b.HasIndex("CustomerID");
-
-                    b.HasIndex("LastAccountTransactionStateID");
 
                     b.ToTable("Accounts");
                 });
@@ -558,6 +555,12 @@ namespace Data_Layer.Migrations
 
             modelBuilder.Entity("Data_Layer.Data_Objects.Account", b =>
                 {
+                    b.HasOne("Data_Layer.Data_Objects.AccountTransactionState", "AccountTransactionState")
+                        .WithMany()
+                        .HasForeignKey("AccountTransactionStateID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Data_Layer.Data_Objects.AccountType", "AccountType")
                         .WithMany()
                         .HasForeignKey("AccountTypeID")
@@ -569,10 +572,6 @@ namespace Data_Layer.Migrations
                         .HasForeignKey("CustomerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Data_Layer.Data_Objects.AccountTransactionState", "LastAccountTransactionState")
-                        .WithMany()
-                        .HasForeignKey("LastAccountTransactionStateID");
                 });
 
             modelBuilder.Entity("Data_Layer.Data_Objects.AccountTransaction", b =>

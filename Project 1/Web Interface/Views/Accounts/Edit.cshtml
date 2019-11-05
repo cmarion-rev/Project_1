@@ -1,7 +1,7 @@
 ﻿@model Data_Layer.Data_Objects.Account
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Deposit";
 }
 
 <h1>Edit</h1>
@@ -29,9 +29,9 @@
                 <span asp-validation-for="AccountBalance" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LastTransactionState" class="control-label"></label>
-                <input asp-for="LastTransactionState" class="form-control" />
-                <span asp-validation-for="LastTransactionState" class="text-danger"></span>
+                <label asp-for="AccountTransactionStateID" class="control-label"></label>
+                <input asp-for="AccountTransactionStateID" class="form-control" />
+                <span asp-validation-for="AccountTransactionStateID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="MaturityDate" class="control-label"></label>

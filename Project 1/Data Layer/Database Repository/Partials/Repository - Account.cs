@@ -51,10 +51,19 @@ namespace Data_Layer
                     AccountTypeID = accountType,
                     IsActive = true,
                     IsOpen = true,
-                    LastTransactionState = GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
+                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
                     MaturityDate = DateTime.Now,
                 };
-
+                
+                // Create new transaction record.
+                AccountTransaction tempTransaction = new AccountTransaction()
+                {
+                    AccountID = newAccount.ID,
+                    Amount = initialBalance,
+                    TransactionCode = GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
+                    TimeStamp = DateTime.Now
+                };
+                
                 // Add new account to database.
                 myContext.Add(newAccount);
                 myContext.SaveChanges();

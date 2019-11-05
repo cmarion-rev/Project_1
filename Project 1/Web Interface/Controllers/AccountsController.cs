@@ -71,11 +71,14 @@ namespace Web_Interface.Controllers
         {
             if (ModelState.IsValid)
             {
-                string guid = GetUserGuID();
-                Customer currentCustomer = _repo.GetCustomer(guid);
-                _repo.OpenAccount(currentCustomer.ID, account.AccountTypeID, account.AccountBalance);
-
-                return RedirectToAction(nameof(Details), account.ID);
+                // Check if valid starting balance was entered.
+                if (account.AccountBalance >= 0.0)
+                {
+                    string guid = GetUserGuID();
+                    Customer currentCustomer = _repo.GetCustomer(guid);
+                    _repo.OpenAccount(currentCustomer.ID, account.AccountTypeID, account.AccountBalance);
+                    return RedirectToAction(nameof(Details), account.ID);
+                }
             }
             ViewData["AccountTypeID"] = new SelectList(_repo.GetAllAccountTypes(), "ID", "Name");
             return View(account);

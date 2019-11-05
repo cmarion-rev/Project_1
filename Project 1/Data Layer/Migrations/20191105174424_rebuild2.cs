@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data_Layer.Migrations
 {
-    public partial class InitDbSetup : Migration
+    public partial class rebuild2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -59,7 +59,8 @@ namespace Data_Layer.Migrations
                     City = table.Column<string>(nullable: true),
                     StateID = table.Column<int>(nullable: false),
                     ZipCode = table.Column<int>(nullable: false),
-                    PhoneNumber = table.Column<string>(nullable: true)
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    UserIdentity = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,8 +82,7 @@ namespace Data_Layer.Migrations
                     AccountTypeID = table.Column<int>(nullable: false),
                     CustomerID = table.Column<int>(nullable: false),
                     AccountBalance = table.Column<double>(nullable: false),
-                    LastTransactionState = table.Column<int>(nullable: false),
-                    LastAccountTransactionStateID = table.Column<int>(nullable: true),
+                    AccountTransactionStateID = table.Column<int>(nullable: false),
                     MaturityDate = table.Column<DateTime>(nullable: false),
                     InterestRate = table.Column<float>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
@@ -91,6 +91,12 @@ namespace Data_Layer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Accounts", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Accounts_AccountTransactionStates_AccountTransactionStateID",
+                        column: x => x.AccountTransactionStateID,
+                        principalTable: "AccountTransactionStates",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Accounts_AccountTypes_AccountTypeID",
                         column: x => x.AccountTypeID,
@@ -103,12 +109,6 @@ namespace Data_Layer.Migrations
                         principalTable: "Customers",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Accounts_AccountTransactionStates_LastAccountTransactionStateID",
-                        column: x => x.LastAccountTransactionStateID,
-                        principalTable: "AccountTransactionStates",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,6 +140,95 @@ namespace Data_Layer.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AccountTransactionStates",
+                columns: new[] { "ID", "Name" },
+                values: new object[,]
+                {
+                    { -1, "Open Account" },
+                    { 1, "Close Account" },
+                    { 2, "Deposit" },
+                    { 3, "Withdrawal" },
+                    { 4, "Loan Installment" },
+                    { 5, "Overdraft Fee" },
+                    { 6, "Interest Accrued" },
+                    { 7, "Overdraft Protection" },
+                    { 8, "Maturity Not Reached" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AccountTypes",
+                columns: new[] { "ID", "Name" },
+                values: new object[,]
+                {
+                    { 3, "Loan" },
+                    { 2, "Term CD" },
+                    { -1, "Checking" },
+                    { 1, "Business" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "States",
+                columns: new[] { "ID", "Abbreviation", "Name" },
+                values: new object[,]
+                {
+                    { 35, "OK", "Oklahoma" },
+                    { 26, "NE", "Nebraska" },
+                    { 27, "NV", "Nevada" },
+                    { 28, "NH", "New Hampshire" },
+                    { 29, "NJ", "New Jersey" },
+                    { 30, "NM", "New Mexico" },
+                    { 31, "NY", "New York" },
+                    { 32, "NC", "North Carolina" },
+                    { 33, "ND", "North Dakota" },
+                    { 34, "OH", "Ohio" },
+                    { 36, "OR", "Oregon" },
+                    { 42, "TX", "Texas" },
+                    { 38, "RI", "Rhode Island" },
+                    { 39, "SC", "South Carolina" },
+                    { 40, "SD", "South Dakota" },
+                    { 41, "TN", "Tennessee" },
+                    { 25, "MT", "Montana" },
+                    { 43, "UT", "Utah" },
+                    { 44, "VT", "Vermont" },
+                    { 45, "VA", "Virginia" },
+                    { 46, "WA", "Washington" },
+                    { 47, "WV", "West Virginia" },
+                    { 37, "PA", "Pennsylvania" },
+                    { 24, "MO", "Missouri" },
+                    { 18, "ME", "Maine" },
+                    { 22, "MN", "Minnesota" },
+                    { -1, "AL", "Alabama" },
+                    { 1, "AK", "Alaska" },
+                    { 2, "AZ", "Arizona" },
+                    { 3, "AR", "Arkansas" },
+                    { 4, "CA", "California" },
+                    { 5, "CO", "Colorado" },
+                    { 6, "CT", "Connecticut" },
+                    { 7, "DE", "Delaware" },
+                    { 8, "FL", "Florida" },
+                    { 9, "GA", "Georgia" },
+                    { 23, "MS", "Mississippi" },
+                    { 10, "HI", "Hawaii" },
+                    { 12, "IL", "Illinois" },
+                    { 13, "IN", "Indiana" },
+                    { 14, "IA", "Iowa" },
+                    { 15, "KS", "Kansas" },
+                    { 16, "KY", "Kentucky" },
+                    { 17, "LA", "Louisiana" },
+                    { 48, "WI", "Wisconsin" },
+                    { 19, "MD", "Maryland" },
+                    { 20, "MA", "Massachusetts" },
+                    { 21, "MI", "Michigan" },
+                    { 11, "ID", "Idaho" },
+                    { 49, "WY", "Wyoming" }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_AccountTransactionStateID",
+                table: "Accounts",
+                column: "AccountTransactionStateID");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_AccountTypeID",
                 table: "Accounts",
@@ -149,11 +238,6 @@ namespace Data_Layer.Migrations
                 name: "IX_Accounts_CustomerID",
                 table: "Accounts",
                 column: "CustomerID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Accounts_LastAccountTransactionStateID",
-                table: "Accounts",
-                column: "LastAccountTransactionStateID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountTransactions_AccountID",
@@ -180,13 +264,13 @@ namespace Data_Layer.Migrations
                 name: "Accounts");
 
             migrationBuilder.DropTable(
+                name: "AccountTransactionStates");
+
+            migrationBuilder.DropTable(
                 name: "AccountTypes");
 
             migrationBuilder.DropTable(
                 name: "Customers");
-
-            migrationBuilder.DropTable(
-                name: "AccountTransactionStates");
 
             migrationBuilder.DropTable(
                 name: "States");
