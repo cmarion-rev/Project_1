@@ -128,6 +128,7 @@ namespace Data_Layer
 
             tempCustomer.FirstName = currentCustomer.FirstName;
             tempCustomer.LastName = currentCustomer.LastName;
+            tempCustomer.Address = currentCustomer.Address;
             tempCustomer.City = currentCustomer.City;
             tempCustomer.StateID = currentCustomer.StateID;
             tempCustomer.ZipCode = currentCustomer.ZipCode;

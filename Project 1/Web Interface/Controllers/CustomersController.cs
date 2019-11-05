@@ -135,6 +135,7 @@ namespace Web_Interface.Controllers
 
             if (currentCustomer != null)
             {
+                ViewData["State"] = _repo.GetStates().FirstOrDefault(s => s.ID == currentCustomer.StateID).Name;
                 return View(currentCustomer);
             }
             else
@@ -247,6 +248,7 @@ namespace Web_Interface.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["StateID"] = new SelectList(_repo.GetStates(), "ID", "Abbreviation");
+     
             return View(customer);
         }
 
