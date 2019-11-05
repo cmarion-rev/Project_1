@@ -18,8 +18,8 @@ namespace Data_Layer.Database_Repository.Interfaces
 
         public Account GetAccountInformation(int customerID, int accountID);
 
-        public bool IsAccountDepositable(int accountID);
+        public bool IsAccountDepositable(Account account);
 
-        public bool IsAccountWithdrawable(int accountID);
+        public bool IsAccountWithdrawable(Account account);
     }
 }

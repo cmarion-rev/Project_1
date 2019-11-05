@@ -372,16 +372,38 @@ namespace Data_Layer
             return currentAccount;
         }
 
-        public virtual bool IsAccountDepositable(int accountID)
+        public virtual bool IsAccountDepositable(Account account)
         {
             bool result = false;
+
+            result = IsBusinessAccount(account.AccountTypeID) | IsCheckingAccount(account.AccountTypeID);
 
             return result;
         }
 
-        public virtual bool IsAccountWithdrawable(int accountID)
+        public virtual bool IsAccountWithdrawable(Account account)
         {
             bool result = false;
+
+            switch ((Utility.AccountType)account.AccountTypeID)
+            {
+                case Utility.AccountType.CHECKING:
+                    result = (account.AccountBalance > 0.0);
+                    break;
+                
+                case Utility.AccountType.BUSINESS:
+                    result = true;
+                    break;
+                
+                case Utility.AccountType.TERM_DEPOSIT:
+                    result = account.MaturityDate.Subtract(DateTime.Now).TotalDays < 0;
+                    break;
+                
+                case Utility.AccountType.LOAN:
+                default:
+                    result = false;
+                    break;
+            }
 
             return result;
         }
