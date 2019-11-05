@@ -42,7 +42,6 @@ namespace Data_Layer
             return result;
         }
 
-
         public virtual  Customer GetCustomer(int id)
         {
             Customer result = null;
@@ -95,10 +94,8 @@ namespace Data_Layer
         {
             bool result = false;
 
-                var listResult = myContext.Customers.Where(c => c.UserIdentity == guid).ToList();
-                result = listResult.Count == 1;
-
-            //GC.KeepAlive(myContext);
+            var listResult = myContext.Customers.Where(c => c.UserIdentity == guid).ToList();
+            result = listResult.Count == 1;
 
             return result;
         }
@@ -116,7 +113,17 @@ namespace Data_Layer
 
             return result;
         }
-        
+
+        public bool IsCustomerIdValid(int id, string guid)
+        {
+            bool result = false;
+
+            var listResult = myContext.Customers.Where(c => c.UserIdentity == guid && c.ID == id).ToList();
+            result = listResult.Count == 1;
+
+            return result;
+        }
+
         public virtual Customer UpdateCustomer(Customer currentCustomer)
         {
             myContext.Update(currentCustomer);

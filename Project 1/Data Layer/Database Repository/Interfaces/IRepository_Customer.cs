@@ -22,6 +22,8 @@ namespace Data_Layer.Database_Repository.Interfaces
         
         bool IsCustomerPresent(int id);
 
+        bool IsCustomerIdValid(int id, string guid);
+
         Customer UpdateCustomer(Customer currentCustomer);
 
         CustomerAccountsVM GetCustomerAccounts(int customerID);
