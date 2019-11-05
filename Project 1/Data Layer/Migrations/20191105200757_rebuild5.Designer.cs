@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Layer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20191105200240_rebuild5")]
+    [Migration("20191105200757_rebuild5")]
     partial class rebuild5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

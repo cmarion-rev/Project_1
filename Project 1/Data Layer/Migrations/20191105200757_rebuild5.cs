@@ -137,7 +137,7 @@ namespace Data_Layer.Migrations
                 columns: new[] { "ID", "Name" },
                 values: new object[,]
                 {
-                    { -1, "Open Account" },
+                    { 0, "Open Account" },
                     { 1, "Close Account" },
                     { 2, "Deposit" },
                     { 3, "Withdrawal" },
