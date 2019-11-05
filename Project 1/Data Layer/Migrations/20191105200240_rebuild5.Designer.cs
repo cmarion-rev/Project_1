@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Layer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20191105174957_rebuild3")]
-    partial class rebuild3
+    [Migration("20191105200240_rebuild5")]
+    partial class rebuild5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,9 +30,6 @@ namespace Data_Layer.Migrations
 
                     b.Property<double>("AccountBalance")
                         .HasColumnType("float");
-
-                    b.Property<int>("AccountTransactionStateID")
-                        .HasColumnType("int");
 
                     b.Property<int>("AccountTypeID")
                         .HasColumnType("int");
@@ -54,8 +51,6 @@ namespace Data_Layer.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("AccountTransactionStateID");
-
                     b.HasIndex("AccountTypeID");
 
                     b.HasIndex("CustomerID");
@@ -73,7 +68,7 @@ namespace Data_Layer.Migrations
                     b.Property<int>("AccountID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("AccountTransactionStateID")
+                    b.Property<int>("AccountTransactionStateID")
                         .HasColumnType("int");
 
                     b.Property<double>("Amount")
@@ -81,9 +76,6 @@ namespace Data_Layer.Migrations
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("TransactionCode")
-                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -557,12 +549,6 @@ namespace Data_Layer.Migrations
 
             modelBuilder.Entity("Data_Layer.Data_Objects.Account", b =>
                 {
-                    b.HasOne("Data_Layer.Data_Objects.AccountTransactionState", "AccountTransactionState")
-                        .WithMany()
-                        .HasForeignKey("AccountTransactionStateID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Data_Layer.Data_Objects.AccountType", "AccountType")
                         .WithMany()
                         .HasForeignKey("AccountTypeID")
@@ -586,7 +572,9 @@ namespace Data_Layer.Migrations
 
                     b.HasOne("Data_Layer.Data_Objects.AccountTransactionState", "AccountTransactionState")
                         .WithMany()
-                        .HasForeignKey("AccountTransactionStateID");
+                        .HasForeignKey("AccountTransactionStateID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Data_Layer.Data_Objects.Customer", b =>

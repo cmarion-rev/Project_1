@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data_Layer.Migrations
 {
-    public partial class rebuild3 : Migration
+    public partial class rebuild5 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -82,7 +82,6 @@ namespace Data_Layer.Migrations
                     AccountTypeID = table.Column<int>(nullable: false),
                     CustomerID = table.Column<int>(nullable: false),
                     AccountBalance = table.Column<double>(nullable: false),
-                    AccountTransactionStateID = table.Column<int>(nullable: false),
                     MaturityDate = table.Column<DateTime>(nullable: false),
                     InterestRate = table.Column<float>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
@@ -91,12 +90,6 @@ namespace Data_Layer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Accounts", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Accounts_AccountTransactionStates_AccountTransactionStateID",
-                        column: x => x.AccountTransactionStateID,
-                        principalTable: "AccountTransactionStates",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Accounts_AccountTypes_AccountTypeID",
                         column: x => x.AccountTypeID,
@@ -118,8 +111,7 @@ namespace Data_Layer.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AccountID = table.Column<int>(nullable: false),
-                    TransactionCode = table.Column<int>(nullable: false),
-                    AccountTransactionStateID = table.Column<int>(nullable: true),
+                    AccountTransactionStateID = table.Column<int>(nullable: false),
                     Amount = table.Column<double>(nullable: false),
                     TimeStamp = table.Column<DateTime>(nullable: false)
                 },
@@ -137,7 +129,7 @@ namespace Data_Layer.Migrations
                         column: x => x.AccountTransactionStateID,
                         principalTable: "AccountTransactionStates",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -145,7 +137,7 @@ namespace Data_Layer.Migrations
                 columns: new[] { "ID", "Name" },
                 values: new object[,]
                 {
-                    { 0, "Open Account" },
+                    { -1, "Open Account" },
                     { 1, "Close Account" },
                     { 2, "Deposit" },
                     { 3, "Withdrawal" },
@@ -223,11 +215,6 @@ namespace Data_Layer.Migrations
                     { 11, "ID", "Idaho" },
                     { 49, "WY", "Wyoming" }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Accounts_AccountTransactionStateID",
-                table: "Accounts",
-                column: "AccountTransactionStateID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_AccountTypeID",
