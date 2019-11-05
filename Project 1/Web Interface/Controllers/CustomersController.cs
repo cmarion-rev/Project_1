@@ -26,9 +26,6 @@ namespace Web_Interface.Controllers
         // GET: Customers
         public IActionResult Index()
         {
-            //var mainDbContext = _repo.Customers.Include(c => c.State);
-            //return View(await mainDbContext.ToListAsync());
-
             return RedirectToAction(nameof(Details));
         }
 
@@ -103,7 +100,6 @@ namespace Web_Interface.Controllers
                     try
                     {
                         return RedirectToAction(nameof(Create));
-                        // currentCustomer = _repo.CreateNewCustomer(guid);
                     }
                     catch (Exception WTF)
                     {
@@ -117,22 +113,6 @@ namespace Web_Interface.Controllers
                 }
             }
 
-            /* GET USER ID
-             * 
-            string X = User.Identity.Name;
-            var Y = User.Claims.ToList()[0];
-            string Z = Y.Value;
-             *
-             */
-
-            //var customer = await _context.Customers
-            //    .Include(c => c.State)
-            //    .FirstOrDefaultAsync(m => m.ID == id);
-            //if (customer == null)
-            //{
-            //    return NotFound();
-            //}
-
             if (currentCustomer != null)
             {
                 ViewData["State"] = _repo.GetStates().FirstOrDefault(s => s.ID == currentCustomer.StateID).Name;
@@ -142,15 +122,7 @@ namespace Web_Interface.Controllers
             {
                 return NotFound();
             }
-        }
-
-        private string GetUserGuID()
-        {
-            string userEmail = User.Identity.Name;
-            var userData = User.Claims.ToList()[0];
-            string guid = userData.Value;
-            return guid;
-        }
+        }      
 
         //GET: Customers/Create
         public IActionResult Create()
@@ -207,11 +179,6 @@ namespace Web_Interface.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, [Bind("ID,FirstName,LastName,Address,City,StateID,ZipCode,PhoneNumber")] Customer customer)
         {
-            //if (id != customer.ID)
-            //{
-            //    return NotFound();
-            //}
-
             if (ModelState.IsValid)
             {
                 try
@@ -286,5 +253,13 @@ namespace Web_Interface.Controllers
         //{
         //    return _context.Customers.Any(e => e.ID == id);
         //}
+
+        private string GetUserGuID()
+        {
+            string userEmail = User.Identity.Name;
+            var userData = User.Claims.ToList()[0];
+            string guid = userData.Value;
+            return guid;
+        }
     }
 }
