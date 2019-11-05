@@ -97,17 +97,22 @@
                     @Html.DisplayFor(modelItem => Model.AccountType[index])
                 </td>
                 <td>
-                    @Html.ActionLink("Deposit", "Deposit", "Accounts", new { id = @Model.Accounts[index].ID }); |
-                    @Html.ActionLink("Withdraw", "Withdraw", "Accounts", new { id = @Model.Accounts[index].ID }); |
-                    @Html.ActionLink("Close", "Close", "Accounts", new { id = @Model.Accounts[index].ID }); |
-
-                    @*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
+                    @if (Model.isDepositable[index])
+                    {
+                    @Html.ActionLink("Deposit", "Deposit", "Accounts", new { id = @Model.Accounts[index].ID }) 
+                    }
+                </td>
+                <td>
+                    @if (Model.isWithdrawable[index])
+                    {
+                    @Html.ActionLink("Withdraw", "Withdraw", "Accounts", new { id = @Model.Accounts[index].ID })
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Close", "Close", "Accounts", new { id = @Model.Accounts[index].ID })
                 </td>
             </tr>
-    }
-    
+            }
         </tbody>
     </table>
 }
