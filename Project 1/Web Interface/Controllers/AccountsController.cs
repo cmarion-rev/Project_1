@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
 using Data_Layer;
 using Data_Layer.Data_Objects;
 using Data_Layer.Database_Repository.Interfaces;
+using Data_Layer.View_Models;
 
 namespace Web_Interface.Controllers
 {
@@ -85,7 +87,7 @@ namespace Web_Interface.Controllers
         }
 
         //GET: Accounts/Edit/5
-        public async Task<IActionResult> Deposit(int? id)
+        public IActionResult Deposit(int? id)
         {
             // Check if valid id was presented.
             if (id == null)
@@ -94,12 +96,21 @@ namespace Web_Interface.Controllers
             }
 
 
-            Account currentAccount = null;
+            AccountTransactionVM account = null;
             try
             {
                 string guid = GetUserGuID();
                 Customer currentCustomer = _repo.GetCustomer(guid);
-                currentAccount = _repo.GetAccountInformation(currentCustomer.ID, id.Value);
+                Account currentAccount = _repo.GetAccountInformation(currentCustomer.ID, id.Value);
+
+                if (currentAccount != null)
+                {
+                    account = new AccountTransactionVM()
+                    {
+                        Account = currentAccount,
+                        Amount = 0.0,
+                    };
+                }
             }
             catch (Exception WTF)
             {
@@ -107,15 +118,15 @@ namespace Web_Interface.Controllers
                 return NotFound();
             }
            
-            if (currentAccount == null)
+            if (account == null)
             {
                 return NotFound();
             }
            
-            ViewData["AccountType"] = _repo.GetAccountTypeName(currentAccount.AccountTypeID);
+            ViewData["AccountType"] = _repo.GetAccountTypeName(account.Account.AccountTypeID);
             //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
             //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
-            return View(currentAccount);
+            return View(account);
         }
 
         // POST: Accounts/Edit/5
@@ -123,9 +134,9 @@ namespace Web_Interface.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Deposit(int id, [Bind("ID,AccountTypeID,CustomerID,AccountBalance,MaturityDate,InterestRate,IsActive,IsOpen")] Account account)
+        public IActionResult Deposit(int id, [Bind("Account,Amount")] AccountTransactionVM accountPost)
         {
-            if (id != account.ID)
+            if (id != accountPost.Account.ID)
             {
                 return NotFound();
             }
@@ -136,25 +147,25 @@ namespace Web_Interface.Controllers
                 {
                     string guid = GetUserGuID();
                     Customer currentCustomer = _repo.GetCustomer(guid);
-                    _repo.Deposit(currentCustomer.ID, id, account.AccountBalance);
+                    _repo.Deposit(currentCustomer.ID, id, accountPost.Amount);
                 }
                 catch (DbUpdateConcurrencyException WTF)
                 {
                     Console.WriteLine(WTF);
-                    if (!AccountExists(account.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //if (!AccountExists(account.ID))
+                    //{
+                    //    return NotFound();
+                    //}
+                    //else
+                    //{
+                    //    throw;
+                    //}
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
-            ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
-            return View(account);
+            //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
+            //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
+            return View(accountPost);
         }
 
         // GET: Accounts/Delete/5

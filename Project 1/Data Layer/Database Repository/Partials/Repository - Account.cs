@@ -152,7 +152,7 @@ namespace Data_Layer
                     if (newAmount > 0.0)
                     {
                         // Check if valid account to deposit to.
-                        if ( IsCheckingAccount(accountID) ||  IsBusinessAccount(accountID))
+                        if ( IsCheckingAccount(currentAccount.AccountTypeID) ||  IsBusinessAccount(currentAccount.AccountTypeID))
                         {
                             // Update account balance for new amount.
                             currentAccount.AccountBalance += newAmount;
