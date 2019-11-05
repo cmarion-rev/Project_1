@@ -51,7 +51,24 @@ namespace Data_Layer
                     AccountTypeID = accountType,
                     IsActive = true,
                     IsOpen = true,
-                    MaturityDate = DateTime.Now,
+                };
+
+                // Set maturity date.
+                switch ((Utility.AccountType)accountType)
+                {
+                    case Utility.AccountType.TERM_DEPOSIT:
+                        newAccount.MaturityDate = DateTime.Now.AddYears(1);
+                        break;
+
+                    case Utility.AccountType.LOAN:
+                        newAccount.MaturityDate = DateTime.Now.AddYears(5);
+                        break;
+
+                    case Utility.AccountType.CHECKING:
+                    case Utility.AccountType.BUSINESS:
+                    default:
+                        newAccount.MaturityDate = DateTime.Now;
+                        break;
                 };
 
 
