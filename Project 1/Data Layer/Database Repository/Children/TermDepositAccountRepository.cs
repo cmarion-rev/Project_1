@@ -16,16 +16,16 @@ namespace Data_Layer.Database_Repository
         {
         }
 
-        public override async Task<Account> CloseAccount(int customerID, int accountID)
+        public override  Account CloseAccount(int customerID, int accountID)
         {
-            return await base.CloseAccount(customerID, accountID);
+            return  base.CloseAccount(customerID, accountID);
         }
 
-        public override async Task<Account> Deposit(int customerID, int accountID, double newAmount)
+        public override  Account Deposit(int customerID, int accountID, double newAmount)
         {
             try
             {
-                await myContext.AccountTypes.ToListAsync();
+                 myContext.AccountTypes.ToList();
             }
             catch (Exception WTF)
             {
@@ -38,11 +38,11 @@ namespace Data_Layer.Database_Repository
             }
         }
 
-        public override async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0)
+        public override  Account OpenAccount(int customerID, int accountType, double initialBalance = 0)
         {
             Account newAccount = null;
 
-            newAccount = await base.OpenAccount(customerID, accountType, initialBalance);
+            newAccount =  base.OpenAccount(customerID, accountType, initialBalance);
 
             // Set term period.
             newAccount.MaturityDate = DateTime.Now.AddYears(1);
@@ -50,17 +50,17 @@ namespace Data_Layer.Database_Repository
             return newAccount;
         }
 
-        public override async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
+        public override  Account Withdraw(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
             try
             {
-                int typeID = await GetTermDepositAccountID();
+                int typeID =  GetTermDepositAccountID();
 
                 if (typeID > -1)
                 {
-                    currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+                    currentAccount =  myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefault();
 
                     // Check if owing customer
                     if (currentAccount.CustomerID == customerID)
@@ -80,12 +80,12 @@ namespace Data_Layer.Database_Repository
                                         AccountID = accountID,
                                         Amount = 0.0,
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode = await GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
+                                        TransactionCode =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
                                     };
 
                                     // Add new invalid transaction.
                                     myContext.Add(newTransaction);
-                                    await myContext.SaveChangesAsync();
+                                     myContext.SaveChanges();
 
                                     throw new OverdraftProtectionException(string.Format("ACCOUNT #{0} WAS STOPPED FROM OVERDRAFTING", accountID));
                                 }
@@ -97,7 +97,7 @@ namespace Data_Layer.Database_Repository
                                         AccountID = accountID,
                                         Amount = newAmount,
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                        TransactionCode =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                     };
 
                                     // Update account.
@@ -106,7 +106,7 @@ namespace Data_Layer.Database_Repository
 
                                     // Add new account withdrawal transaction.
                                     myContext.Add(newTransaction);
-                                    await myContext.SaveChangesAsync();
+                                     myContext.SaveChanges();
                                 }
                             }
                             else
@@ -117,12 +117,12 @@ namespace Data_Layer.Database_Repository
                                     AccountID = accountID,
                                     Amount = 0.0,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.NON_MATURITY)
+                                    TransactionCode =  GetTransactionID(Utility.TransactionCodes.NON_MATURITY)
                                 };
 
                                 // Add new invalid transaction.
                                 myContext.Add(newTransaction);
-                                await myContext.SaveChangesAsync();
+                                 myContext.SaveChanges();
 
                                 throw new MaturityValidationException(string.Format("ACCOUNT #{0} HAS NOT REACHED MATURITY DATE", accountID));
                             }
@@ -173,13 +173,13 @@ namespace Data_Layer.Database_Repository
             return currentAccount;
         }
 
-        private async Task<int> GetTermDepositAccountID()
+        private  int GetTermDepositAccountID()
         {
             int result = -1;
 
             try
             {
-                var search = await myContext.AccountTypes.Where(t => t.Name == "Term CD").FirstOrDefaultAsync();
+                var search =  myContext.AccountTypes.Where(t => t.Name == "Term CD").FirstOrDefault();
                 result = search.ID;
             }
             catch (Exception WTF)

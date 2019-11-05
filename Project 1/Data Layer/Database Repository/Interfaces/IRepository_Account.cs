@@ -8,12 +8,12 @@ namespace Data_Layer.Database_Repository.Interfaces
 {
     public interface IRepository_Account
     {
-        Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0);
+        public Account OpenAccount(int customerID, int accountType, double initialBalance = 0.0);
 
-        Task<Account> CloseAccount(int customerID, int accountID);
+        public Account CloseAccount(int customerID, int accountID);
 
-        Task<Account> Deposit(int customerID, int accountID, double newAmount);
+        public Account Deposit(int customerID, int accountID, double newAmount);
 
-        Task<Account> Withdraw(int customerID, int accountID, double newAmount);
+        public Account Withdraw(int customerID, int accountID, double newAmount);
     }
 }

@@ -16,22 +16,22 @@ namespace Data_Layer.Database_Repository
         {
         }
 
-        public override async Task<Account> CloseAccount(int customerID, int accountID)
+        public override  Account CloseAccount(int customerID, int accountID)
         {
-            return await base.CloseAccount(customerID, accountID);
+            return  base.CloseAccount(customerID, accountID);
         }
 
-        public override async Task<Account> Deposit(int customerID, int accountID, double newAmount)
+        public override  Account Deposit(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
             try
             {
-                int typeID = await GetCheckingAccountID();
+                int typeID =  GetCheckingAccountID();
 
                 if (typeID > -1)
                 {
-                    currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+                    currentAccount =  myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefault();
 
                     // Check if owning customer.
                     if (currentAccount.CustomerID == customerID)
@@ -47,7 +47,7 @@ namespace Data_Layer.Database_Repository
                             {
                                 AccountID = currentAccount.ID,
                                 Amount = newAmount,
-                                TransactionCode = await GetTransactionID(Utility.TransactionCodes.DEPOSIT),
+                                TransactionCode =  GetTransactionID(Utility.TransactionCodes.DEPOSIT),
                                 TimeStamp = DateTime.Now
                             };
 
@@ -56,7 +56,7 @@ namespace Data_Layer.Database_Repository
                             // Add new transaction record to database.
                             myContext.Add(tempTransaction);
                             // Post changes to database.
-                            await myContext.SaveChangesAsync();
+                             myContext.SaveChanges();
                         }
                         else
                         {
@@ -94,22 +94,22 @@ namespace Data_Layer.Database_Repository
             return currentAccount;
         }
 
-        public override async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0)
+        public override  Account OpenAccount(int customerID, int accountType, double initialBalance = 0)
         {
-            return await base.OpenAccount(customerID, accountType, initialBalance);
+            return  base.OpenAccount(customerID, accountType, initialBalance);
         }
 
-        public override async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
+        public override  Account Withdraw(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
             try
             {
-                int typeID = await GetCheckingAccountID();
+                int typeID =  GetCheckingAccountID();
 
                 if (typeID > -1)
                 {
-                    currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+                    currentAccount =  myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefault();
 
                     // Check if owing customer
                     if (currentAccount.CustomerID == customerID)
@@ -126,12 +126,12 @@ namespace Data_Layer.Database_Repository
                                     AccountID = accountID,
                                     Amount = 0.0,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
+                                    TransactionCode =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
                                 };
 
                                 // Add new invalid transaction.
                                 myContext.Add(newTransaction);
-                                await myContext.SaveChangesAsync();
+                                 myContext.SaveChanges();
 
                                 throw new OverdraftProtectionException(string.Format("ACCOUNT #{0} WAS STOPPED FROM OVERDRAFTING", accountID));
                             }
@@ -142,7 +142,7 @@ namespace Data_Layer.Database_Repository
                                     AccountID = accountID,
                                     Amount = newAmount,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                    TransactionCode =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                 };
 
                                 // Update account balance.
@@ -151,7 +151,7 @@ namespace Data_Layer.Database_Repository
 
                                 // Add new invalid transaction.
                                 myContext.Add(newTransaction);
-                                await myContext.SaveChangesAsync();
+                                 myContext.SaveChanges();
                             }
                         }
                         else
@@ -195,13 +195,13 @@ namespace Data_Layer.Database_Repository
             return currentAccount;
         }
 
-        private async Task<int> GetCheckingAccountID()
+        private  int GetCheckingAccountID()
         {
             int result = -1;
 
             try
             {
-            var search = await myContext.AccountTypes.Where(t => t.Name == "Checking").FirstOrDefaultAsync();
+            var search =  myContext.AccountTypes.Where(t => t.Name == "Checking").FirstOrDefault();
             result = search.ID;
             }
             catch (Exception WTF)
