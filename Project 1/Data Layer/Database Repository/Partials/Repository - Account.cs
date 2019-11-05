@@ -21,7 +21,7 @@ namespace Data_Layer
             {
                 result = myContext.Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID).FirstOrDefault();
             }
-            catch(NullReferenceException WTF)
+            catch (NullReferenceException WTF)
             {
                 Console.WriteLine(WTF);
                 throw;
@@ -53,12 +53,12 @@ namespace Data_Layer
                     IsOpen = true,
                     MaturityDate = DateTime.Now,
                 };
-                
-                
+
+
                 // Add new account to database.
                 myContext.Add(newAccount);
                 myContext.SaveChanges();
-                
+
                 // Create new transaction record.
                 AccountTransaction tempTransaction = new AccountTransaction()
                 {
@@ -143,7 +143,7 @@ namespace Data_Layer
 
             try
             {
-                currentAccount =  myContext.Accounts.Where(a => a.ID == accountID && a.IsActive && a.IsOpen).FirstOrDefault();
+                currentAccount = myContext.Accounts.Where(a => a.ID == accountID && a.IsActive && a.IsOpen).FirstOrDefault();
 
                 // Check if owning customer.
                 if (currentAccount.CustomerID == customerID)
@@ -152,7 +152,7 @@ namespace Data_Layer
                     if (newAmount > 0.0)
                     {
                         // Check if valid account to deposit to.
-                        if ( IsCheckingAccount(currentAccount.AccountTypeID) ||  IsBusinessAccount(currentAccount.AccountTypeID))
+                        if (IsCheckingAccount(currentAccount.AccountTypeID) || IsBusinessAccount(currentAccount.AccountTypeID))
                         {
                             // Update account balance for new amount.
                             currentAccount.AccountBalance += newAmount;
@@ -162,7 +162,7 @@ namespace Data_Layer
                             {
                                 AccountID = currentAccount.ID,
                                 Amount = newAmount,
-                                AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.DEPOSIT),
+                                AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.DEPOSIT),
                                 TimeStamp = DateTime.Now
                             };
 
@@ -171,7 +171,7 @@ namespace Data_Layer
                             // Add new transaction record to database.
                             myContext.Add(tempTransaction);
                             // Post changes to database.
-                             myContext.SaveChanges();
+                            myContext.SaveChanges();
                         }
                         else
                         {
@@ -370,6 +370,20 @@ namespace Data_Layer
             }
 
             return currentAccount;
+        }
+
+        public virtual bool IsAccountDepositable(int accountID)
+        {
+            bool result = false;
+
+            return result;
+        }
+
+        public virtual bool IsAccountWithdrawable(int accountID)
+        {
+            bool result = false;
+
+            return result;
         }
     }
 }
