@@ -75,7 +75,7 @@ namespace Web_Interface.Controllers
                 Customer currentCustomer = _repo.GetCustomer(guid);
                 _repo.OpenAccount(currentCustomer.ID, account.AccountTypeID, account.AccountBalance);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), account.ID);
             }
             ViewData["AccountTypeID"] = new SelectList(_repo.GetAllAccountTypes(), "ID", "Name");
             return View(account);
