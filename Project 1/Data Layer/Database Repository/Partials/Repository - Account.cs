@@ -190,6 +190,35 @@ namespace Data_Layer
                             // Post changes to database.
                             myContext.SaveChanges();
                         }
+                        else if (IsLoanAccount(currentAccount.AccountTypeID))
+                        {
+                            // Check if new amount does not exceed remaining balance.
+                            if (currentAccount.AccountBalance >= newAmount)
+                            {
+                                // Update account balance for new amount.
+                                currentAccount.AccountBalance -= newAmount;
+
+                                // Create new transaction record.
+                                AccountTransaction tempTransaction = new AccountTransaction()
+                                {
+                                    AccountID = currentAccount.ID,
+                                    Amount = newAmount,
+                                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.LOAN_INSTALLMENT),
+                                    TimeStamp = DateTime.Now
+                                };
+
+                                // Update account record in database.
+                                myContext.Update(currentAccount);
+                                // Add new transaction record to database.
+                                myContext.Add(tempTransaction);
+                                // Post changes to database.
+                                myContext.SaveChanges();
+                            }
+                            else
+                            {
+                                throw new InvalidAmountException(string.Format("ACCOUNT #{0} IS NOT DEPOSITABLE!", accountID));
+                            }
+                        }
                         else
                         {
                             // Invalid account.
