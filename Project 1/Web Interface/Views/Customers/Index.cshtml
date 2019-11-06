@@ -78,6 +78,7 @@
                     @Html.DisplayNameFor(model => model.Accounts[0].AccountTypeID)
                 </th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -88,7 +89,7 @@
                 <td>
                     <a asp-controller="Accounts" asp-action="Details" asp-route-id="@Model.Accounts[index].ID">
                         @Html.DisplayFor(modelItem => Model.Accounts[index].ID)
-                    </a>    
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => Model.Accounts[index].AccountBalance)
@@ -99,20 +100,23 @@
                 <td>
                     @if (Model.isDepositable[index])
                     {
-                    @Html.ActionLink("Deposit", "Deposit", "Accounts", new { id = @Model.Accounts[index].ID }) 
+                        @Html.ActionLink("Deposit", "Deposit", "Accounts", new { id = @Model.Accounts[index].ID })
                     }
                 </td>
                 <td>
                     @if (Model.isWithdrawable[index])
                     {
-                    @Html.ActionLink("Withdraw", "Withdraw", "Accounts", new { id = @Model.Accounts[index].ID })
+                        @Html.ActionLink("Withdraw", "Withdraw", "Accounts", new { id = @Model.Accounts[index].ID })
                     }
                 </td>
                 <td>
                     @if (Model.isLoanPayable[index])
                     {
-                    @Html.ActionLink("Pay Installment", "Installment", "Accounts", new { id = @Model.Accounts[index].ID })
+                        @Html.ActionLink("Pay Installment", "Installment", "Accounts", new { id = @Model.Accounts[index].ID })
                     }
+                </td>
+                <td>
+                    @Html.ActionLink("Transactions", "Transactions", "Accounts", new { id = @Model.Accounts[index].ID })
                 </td>
                 <td>
                     @Html.ActionLink("Close", "Close", "Accounts", new { id = @Model.Accounts[index].ID })
