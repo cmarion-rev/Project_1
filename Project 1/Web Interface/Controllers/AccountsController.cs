@@ -421,6 +421,9 @@ namespace Web_Interface.Controllers
                     {
                         Account currentAccount = _repo.GetAccountInformation(currentCustomer.ID, id.Value);
                         CustomerAccountTransactionsVM customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, id.Value);
+                        customerTransactions.StartDate = DateTime.Now;
+                        customerTransactions.EndDate = DateTime.Now;
+                        customerTransactions.Limit = 0;
 
                         ViewData["TransactionStates"] = _repo.GetTransactionStates();
                         //ViewData["State"] = _repo.GetStates().FirstOrDefault(s => s.ID == currentCustomer.StateID).Name;

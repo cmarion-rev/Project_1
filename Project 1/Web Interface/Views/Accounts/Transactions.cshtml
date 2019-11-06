@@ -1,4 +1,4 @@
-﻿@model Data_Layer.View_Models.CustomerAccountsVM
+﻿@model Data_Layer.View_Models.CustomerAccountTransactionsVM
 
 @{
     ViewData["Title"] = "Index";
@@ -25,99 +25,69 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Customer.LastName)
         </dd>
+    </dl>
+</div>
+
+<div>
+    <h4>Account</h4>
+    <hr />
+    <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer.Address)
+            @Html.DisplayNameFor(model => model.Account.ID)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Customer.Address)
+            @Html.DisplayFor(model => model.Account.ID)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer.City)
+            @Html.DisplayNameFor(model => model.Account.AccountBalance)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Customer.City)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer.State)
-        </dt>
-        <dd class="col-sm-10">
-            @ViewData["State"]
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer.ZipCode)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Customer.ZipCode)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer.PhoneNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Customer.PhoneNumber)
+            @Html.DisplayFor(model => model.Account.AccountBalance)
         </dd>
     </dl>
 </div>
 
-@Html.ActionLink("Create Account", "Create", "Accounts");
-
-@if (Model.Accounts.Count > 0)
+@if (Model.AccountTransactions.Count > 0)
 {
     <h4>
-        Accounts
+        Transactions
     </h4>
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Accounts[0].ID)
+                    @Html.DisplayNameFor(model => model.AccountTransactions[0].ID)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Accounts[0].AccountBalance)
+                    @Html.DisplayNameFor(model => model.AccountTransactions[0].AccountTransactionStateID)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Accounts[0].AccountTypeID)
+                    @Html.DisplayNameFor(model => model.AccountTransactions[0].Amount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AccountTransactions[0].TimeStamp)
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
 
-            @for (int index = 0; index < Model.Accounts.Count; ++index)
+            @foreach (var item in Model.AccountTransactions)
             {
-            <tr>
-                <td>
-                    <a asp-controller="Accounts" asp-action="Details" asp-route-id="@Model.Accounts[index].ID">
-                        @Html.DisplayFor(modelItem => Model.Accounts[index].ID)
-                    </a>    
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Accounts[index].AccountBalance)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.AccountType[index])
-                </td>
-                <td>
-                    @if (Model.isDepositable[index])
-                    {
-                    @Html.ActionLink("Deposit", "Deposit", "Accounts", new { id = @Model.Accounts[index].ID }) 
-                    }
-                </td>
-                <td>
-                    @if (Model.isWithdrawable[index])
-                    {
-                    @Html.ActionLink("Withdraw", "Withdraw", "Accounts", new { id = @Model.Accounts[index].ID })
-                    }
-                </td>
-                <td>
-                    @if (Model.isLoanPayable[index])
-                    {
-                    @Html.ActionLink("Pay Installment", "Installment", "Accounts", new { id = @Model.Accounts[index].ID })
-                    }
-                </td>
-                <td>
-                    @Html.ActionLink("Close", "Close", "Accounts", new { id = @Model.Accounts[index].ID })
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @item.ID
+                    </td>
+                    <td>
+                        @ViewBag.TransactionState[item.AccountTransactionStateID]
+                    </td>
+                    <td>
+                        @item.Amount
+                    </td>
+                    <td>
+                        @item.TimeStamp
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
