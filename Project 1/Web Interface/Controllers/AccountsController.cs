@@ -401,6 +401,46 @@ namespace Web_Interface.Controllers
             return View(accountPost);
         }
 
+        public IActionResult Transactions(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            
+            // Check if customer is registered.
+            string guid = GetUserGuID();
+            if (_repo.IsCustomerPresent(guid))
+            {
+                // Display Main Account page.
+                try
+                {
+                    Customer currentCustomer = _repo.GetCustomer(guid);
+
+                    if (currentCustomer != null)
+                    {
+                        Account currentAccount = _repo.GetAccountInformation(currentCustomer.ID, id.Value);
+                        CustomerAccountTransactionsVM customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, id.Value);
+
+                        //ViewData["State"] = _repo.GetStates().FirstOrDefault(s => s.ID == currentCustomer.StateID).Name;
+                        //ViewData["Account Types"] = _repo.GetAllAccountTypes();
+
+                        return View(customerTransactions);
+                    }
+                }
+                catch (Exception WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                // Redirect to create customer information page.
+                return RedirectToAction(nameof(Create), "Customers");
+            }
+        }
 
         // GET: Accounts/Delete/5
         //public async Task<IActionResult> Delete(int? id)

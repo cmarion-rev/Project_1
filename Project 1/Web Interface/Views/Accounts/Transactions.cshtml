@@ -1,0 +1,124 @@
+﻿@model Data_Layer.View_Models.CustomerAccountsVM
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    @*<a asp-action="Create">Create New</a>*@
+</p>
+<div>
+    <h4>Customer</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer.City)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.City)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer.State)
+        </dt>
+        <dd class="col-sm-10">
+            @ViewData["State"]
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer.ZipCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.ZipCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.PhoneNumber)
+        </dd>
+    </dl>
+</div>
+
+@Html.ActionLink("Create Account", "Create", "Accounts");
+
+@if (Model.Accounts.Count > 0)
+{
+    <h4>
+        Accounts
+    </h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Accounts[0].ID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Accounts[0].AccountBalance)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Accounts[0].AccountTypeID)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @for (int index = 0; index < Model.Accounts.Count; ++index)
+            {
+            <tr>
+                <td>
+                    <a asp-controller="Accounts" asp-action="Details" asp-route-id="@Model.Accounts[index].ID">
+                        @Html.DisplayFor(modelItem => Model.Accounts[index].ID)
+                    </a>    
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Accounts[index].AccountBalance)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.AccountType[index])
+                </td>
+                <td>
+                    @if (Model.isDepositable[index])
+                    {
+                    @Html.ActionLink("Deposit", "Deposit", "Accounts", new { id = @Model.Accounts[index].ID }) 
+                    }
+                </td>
+                <td>
+                    @if (Model.isWithdrawable[index])
+                    {
+                    @Html.ActionLink("Withdraw", "Withdraw", "Accounts", new { id = @Model.Accounts[index].ID })
+                    }
+                </td>
+                <td>
+                    @if (Model.isLoanPayable[index])
+                    {
+                    @Html.ActionLink("Pay Installment", "Installment", "Accounts", new { id = @Model.Accounts[index].ID })
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Close", "Close", "Accounts", new { id = @Model.Accounts[index].ID })
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
