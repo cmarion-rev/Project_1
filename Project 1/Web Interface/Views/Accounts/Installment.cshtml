@@ -4,7 +4,6 @@
     ViewData["Title"] = "Loan Installment";
 }
 
-
 <h1>Account</h1>
 <h4>Loan Payment Installment</h4>
 <hr />
@@ -23,8 +22,12 @@
                 <span asp-validation-for="Account.AccountBalance" class="text-danger"></span>
             </div>
             <div class="form-group">
+                @if (ViewData.ContainsKey("ErrorMessage"))
+                {
+                <span class="text-danger">@ViewData["ErrorMessage"]</span>
+                }
                 <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control"/>
+                <input asp-for="Amount" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
             <div class="form-group">

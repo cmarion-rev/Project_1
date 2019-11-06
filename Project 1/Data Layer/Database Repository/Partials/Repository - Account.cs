@@ -216,7 +216,7 @@ namespace Data_Layer
                             }
                             else
                             {
-                                throw new InvalidAmountException(string.Format("ACCOUNT #{0} IS NOT DEPOSITABLE!", accountID));
+                                throw new InvalidAmountException(string.Format("LOAN ACCOUNT #{0} REMAINING BALANCE EXCEEDED!", accountID));
                             }
                         }
                         else
@@ -228,7 +228,7 @@ namespace Data_Layer
                     else
                     {
                         // Invalid amount for deposit.
-                        throw new InvalidAmountException(string.Format("DEPOSIT AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
+                        throw new InvalidAmountException(string.Format("AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
                     }
                 }
                 else

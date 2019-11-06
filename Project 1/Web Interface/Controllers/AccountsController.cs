@@ -10,6 +10,7 @@ using Data_Layer;
 using Data_Layer.Data_Objects;
 using Data_Layer.Database_Repository.Interfaces;
 using Data_Layer.View_Models;
+using Data_Layer.Errors;
 
 namespace Web_Interface.Controllers
 {
@@ -319,6 +320,23 @@ namespace Web_Interface.Controllers
                     Customer currentCustomer = _repo.GetCustomer(guid);
                     _repo.Deposit(currentCustomer.ID, id, accountPost.Amount);
                 }
+                catch (InvalidAccountException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (InvalidAmountException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    accountPost.Amount = 0;
+                    ViewData["ErrorMessage"] = "Installment Amount Exceeded Remaining Balance!";
+                    return View(accountPost);
+                }
+                catch (UnauthorizedAccessException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
                 catch (DbUpdateConcurrencyException WTF)
                 {
                     Console.WriteLine(WTF);
@@ -330,6 +348,11 @@ namespace Web_Interface.Controllers
                     //{
                     //    throw;
                     //}
+                }
+                catch (Exception WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
                 }
                 return RedirectToAction(nameof(Index));
             }
