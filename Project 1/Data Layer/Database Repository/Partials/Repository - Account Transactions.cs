@@ -26,7 +26,7 @@ namespace Data_Layer
                 {
                     List<AccountTransaction> tempTransactions =  myContext.AccountTransactions.
                                                                         Where(t => t.AccountID == accountID).
-                                                                        OrderByDescending(t => t.TimeStamp).ToList();
+                                                                        OrderBy(t => t.TimeStamp).ToList();
 
                     // Prepare view model for return.
                     result.Customer = tempCustomer;
@@ -74,7 +74,7 @@ namespace Data_Layer
                                                                         Where(t => t.AccountID == accountID &&
                                                                               startDate <= t.TimeStamp &&
                                                                               t.TimeStamp <= endDate).
-                                                                        OrderByDescending(t => t.TimeStamp).ToList();
+                                                                        OrderBy(t => t.TimeStamp).ToList();
 
                     // Prepare view model for return.
                     result.Customer = tempCustomer;
@@ -119,7 +119,7 @@ namespace Data_Layer
                 {
                     List<AccountTransaction> tempTransactions =  myContext.AccountTransactions.
                                                                         Where(t => t.AccountID == accountID).
-                                                                        OrderByDescending(t => t.TimeStamp).
+                                                                        OrderBy(t => t.TimeStamp).
                                                                         Take(resultLimit).ToList();
 
                     // Prepare view model for return.
@@ -168,7 +168,7 @@ namespace Data_Layer
                                                                         Where(t => t.AccountID == accountID &&
                                                                               startDate <= t.TimeStamp &&
                                                                               t.TimeStamp <= endDate).
-                                                                        OrderByDescending(t => t.TimeStamp).
+                                                                        OrderBy(t => t.TimeStamp).
                                                                         Take(resultLimit).ToList();
 
                     // Prepare view model for return.
