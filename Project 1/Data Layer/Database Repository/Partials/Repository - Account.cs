@@ -473,5 +473,54 @@ namespace Data_Layer
 
             return result;
         }
+
+        public List<Account> GetDepositAccounts(int customerID)
+        {
+            List<Account> result = null;
+
+            try
+            {
+                int checkingID = GetAccountTypeID(Utility.AccountType.CHECKING);
+                int businessID = GetAccountTypeID(Utility.AccountType.CHECKING);
+
+                result = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                                                     a.IsActive &&
+                                                     a.IsOpen &&
+                                                     (a.AccountTypeID == businessID || a.AccountTypeID == checkingID)).ToList();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+
+            return result;
+        }
+
+        public List<Account> GetWithdrawAccounts(int customerID)
+        {
+            List<Account> result = null;
+
+            try
+            {
+                int checkingID = GetAccountTypeID(Utility.AccountType.CHECKING);
+                int businessID = GetAccountTypeID(Utility.AccountType.CHECKING);
+                int termID = GetAccountTypeID(Utility.AccountType.TERM_DEPOSIT);
+
+                result = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                                                     a.IsActive &&
+                                                     a.IsOpen &&
+                                                     ((a.AccountTypeID == businessID) ||
+                                                      (a.AccountTypeID == checkingID && a.AccountBalance > 0.0) ||
+                                                      (a.AccountTypeID == termID && a.MaturityDate.Subtract(DateTime.Now).TotalDays < 0 && a.AccountBalance > 0.0))).ToList();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+
+            return result;
+        }
     }
 }
