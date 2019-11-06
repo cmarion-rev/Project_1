@@ -40,7 +40,7 @@ namespace Web_Interface.Controllers
                     string guid = GetUserGuID();
                     int customerID = _repo.GetCustomer(guid).ID;
                     account = _repo.GetAccountInformation(customerID, id.Value);
-                   
+
                     if (account == null)
                     {
                         return NotFound();
@@ -118,12 +118,12 @@ namespace Web_Interface.Controllers
                 Console.WriteLine(WTF);
                 return NotFound();
             }
-           
+
             if (account == null)
             {
                 return NotFound();
             }
-           
+
             ViewData["AccountType"] = _repo.GetAccountTypeName(account.Account.AccountTypeID);
             //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
             //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
@@ -193,7 +193,7 @@ namespace Web_Interface.Controllers
             {
                 return NotFound();
             }
-            
+
             AccountTransactionVM account = null;
             try
             {
@@ -407,7 +407,7 @@ namespace Web_Interface.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            
+
             // Check if customer is registered.
             string guid = GetUserGuID();
             if (_repo.IsCustomerPresent(guid))
@@ -475,7 +475,7 @@ namespace Web_Interface.Controllers
                     if (currentCustomer != null)
                     {
                         Account currentAccount = _repo.GetAccountInformation(currentCustomer.ID, id.Value);
-                        CustomerAccountTransactionsVM customerTransactions = null;                     
+                        CustomerAccountTransactionsVM customerTransactions = null;
 
                         // Check limit settings.
                         int limit = -1;
@@ -681,6 +681,48 @@ namespace Web_Interface.Controllers
         //{
         //    return _repo.Accounts.Any(e => e.ID == id);
         //}
+
+        public IActionResult Transfer()
+        {
+            AccountTransferVM transfer = null;
+            try
+            {
+                string guid = GetUserGuID();
+                Customer currentCustomer = _repo.GetCustomer(guid);
+
+                // Get all withdrawable accounts.
+
+                // Get all depositable accounts.
+
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (transfer==null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(transfer);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Transfer([Bind("SourceID,DestinationID,Amount,SourceAccounts,DestinationAccounts")] AccountTransferVM transferPost)
+        {
+            // Check if user is valid for each account.
+
+            // Check if source account and destination account are not the same.
+
+            // Check if withdraw amount is valid.
+
+            // Deposit amount to destination account.
+
+            return View(transferPost);
+        }
 
         private string GetUserGuID()
         {
