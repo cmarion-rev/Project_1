@@ -13,6 +13,7 @@ namespace Data_Layer.Data_Objects
 
         public virtual Account Account { get; set; }
 
+        [Display(Name = "Transaction State")]
         public int AccountTransactionStateID { get; set; }
 
         public virtual AccountTransactionState AccountTransactionState { get; set; }
