@@ -19,7 +19,7 @@ namespace Data_Layer
 
             try
             {
-                result = myContext.Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID).FirstOrDefault();
+                result = myContext.Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID && a.IsOpen && a.IsActive).FirstOrDefault();
             }
             catch (NullReferenceException WTF)
             {
@@ -102,7 +102,6 @@ namespace Data_Layer
                 // Check if owning customer.
                 if (result.CustomerID == customerID)
                 {
-
                     // Check if account balance is valid for closing.
                     if (result.AccountBalance == 0.0)
                     {
