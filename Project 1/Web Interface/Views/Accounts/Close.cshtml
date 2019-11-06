@@ -1,0 +1,48 @@
+﻿@model Data_Layer.Data_Objects.Account
+
+@{
+    ViewData["Title"] = "Close Account";
+}
+
+<h1>Account</h1>
+<h4>Close Account</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Close">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="AccountTypeID" class="control-label"></label>
+                <input type="text" value="@ViewData["AccountType"]" class="form-control" readonly="readonly" />
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountBalance" class="control-label"></label>
+                <input asp-for="AccountBalance" class="form-control" readonly="readonly" />
+                <span asp-validation-for="AccountBalance" class="text-danger"></span>
+            </div>
+            @if (Model.AccountBalance == 0.0)
+            {
+                <div class="form-group">
+                    <input type="submit" value="Confirm Close Account" class="btn btn-primary" />
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <h3 style="color:red">
+                        Account can not be closed with a balance remaining!
+                    </h3>
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -560,6 +560,91 @@ namespace Web_Interface.Controllers
             }
         }
 
+        //GET: Accounts/Edit/5
+        public IActionResult Close(int? id)
+        {
+            // Check if valid id was presented.
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Account currentAccount = null;
+            try
+            {
+                string guid = GetUserGuID();
+                Customer currentCustomer = _repo.GetCustomer(guid);
+                currentAccount = _repo.GetAccountInformation(currentCustomer.ID, id.Value);
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (currentAccount == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["AccountType"] = _repo.GetAccountTypeName(currentAccount.AccountTypeID);
+            return View(currentAccount);
+        }
+
+        // POST: Accounts/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Close(int id, [Bind("ID,AccountTypeID,CustomerID,AccountBalance,MaturityDate,InterestRate,IsActive,IsOpen")] Account accountPost)
+        {
+            if (id != accountPost.ID)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string guid = GetUserGuID();
+                    Customer currentCustomer = _repo.GetCustomer(guid);
+                    _repo.CloseAccount(currentCustomer.ID, id);
+                }
+                catch (UnauthorizedAccessException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (InvalidAccountException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    //if (!AccountExists(account.ID))
+                    //{
+                    //    return NotFound();
+                    //}
+                    //else
+                    //{
+                    //    throw;
+                    //}
+                }
+                catch (Exception WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                    //return NotFound();
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["AccountType"] = _repo.GetAccountTypeName(accountPost.AccountTypeID);
+            return View(accountPost);
+        }
 
         // GET: Accounts/Delete/5
         //public async Task<IActionResult> Delete(int? id)
