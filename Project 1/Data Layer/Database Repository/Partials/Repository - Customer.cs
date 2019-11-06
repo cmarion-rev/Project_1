@@ -160,6 +160,8 @@ namespace Data_Layer
                 result.AccountType = new List<string>();
                 result.isDepositable = new System.Collections.BitArray(result.Accounts.Count);
                 result.isWithdrawable = new System.Collections.BitArray(result.Accounts.Count);
+                result.isLoanPayable = new System.Collections.BitArray(result.Accounts.Count);
+
                 int index = 0;
                 foreach (var item in result.Accounts)
                 {
@@ -171,6 +173,9 @@ namespace Data_Layer
 
                     // Set flag for withdraw account.
                     result.isWithdrawable.Set(index, IsAccountWithdrawable(item));
+
+                    // Set flag for loan payment account.
+                    result.isLoanPayable.Set(index, IsLoanAccount(item.AccountTypeID) && item.AccountBalance > 0.0);
 
                     ++index;
                 }
@@ -209,6 +214,8 @@ namespace Data_Layer
                 result.AccountType = new List<string>();
                 result.isDepositable = new System.Collections.BitArray(result.Accounts.Count);
                 result.isWithdrawable = new System.Collections.BitArray(result.Accounts.Count);
+                result.isLoanPayable = new System.Collections.BitArray(result.Accounts.Count);
+
                 int index = 0;
                 foreach (var item in result.Accounts)
                 {
@@ -220,6 +227,9 @@ namespace Data_Layer
                     
                     // Set flag for withdraw account.
                     result.isWithdrawable.Set(index, IsAccountWithdrawable(item));
+
+                    // Set flag for loan payment account.
+                    result.isLoanPayable.Set(index, IsLoanAccount(item.AccountTypeID) && item.AccountBalance > 0.0);
 
                     ++index;
                 }
