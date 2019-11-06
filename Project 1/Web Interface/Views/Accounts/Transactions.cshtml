@@ -1,7 +1,7 @@
 ﻿@model Data_Layer.View_Models.CustomerAccountTransactionsVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Transactions";
 }
 
 <h1>Index</h1>
@@ -49,48 +49,80 @@
 
 @if (Model.AccountTransactions.Count > 0)
 {
-    <h4>
-        Transactions
-    </h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.AccountTransactions[0].ID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AccountTransactions[0].AccountTransactionStateID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AccountTransactions[0].Amount)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AccountTransactions[0].TimeStamp)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-
-            @foreach (var item in Model.AccountTransactions)
-            {
+<div>
+    <form asp-action="Transactions">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Customer" />
+        <input type="hidden" asp-for="Account" />
+        <input type="hidden" asp-for="AccountTransactions" />
+        <input type="hidden" asp-for="AccountTransactionStates" />
+        <div class="form-group">
+            <label asp-for="StartDate" class="control-label"></label>
+            <input asp-for="StartDate" class="form-control" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate" class="control-label"></label>
+            <input asp-for="EndDate" class="form-control" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Limit" class="control-label"></label>
+            <select asp-for="Limit" class="form-control" asp-items="ViewBag.Limit" >
+                @*<option value="0">All</option>
+                <option value="1">10</option>
+                <option value="2">25</option>
+                <option value="3">50</option>*@
+            </select>
+        </div>
+        <br />
+        <div class="form-group">
+            <input type="submit" value="Select" class="btn btn-primary" />
+        </div>
+    </form>
+        <h4>
+            Transactions
+        </h4>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @item.ID
-                    </td>
-                    <td>
-                        @Model.AccountTransactionStates[item.AccountTransactionStateID].Name
-                    </td>
-                    <td>
-                        @item.Amount
-                    </td>
-                    <td>
-                        @item.TimeStamp
-                    </td>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountTransactions[0].ID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountTransactions[0].AccountTransactionStateID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountTransactions[0].Amount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountTransactions[0].TimeStamp)
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.AccountTransactions)
+                {
+                    <tr>
+                        <td>
+                            @item.ID
+                        </td>
+                        <td>
+                            @Model.AccountTransactionStates[item.AccountTransactionStateID].Name
+                        </td>
+                        <td>
+                            @item.Amount
+                        </td>
+                        <td>
+                            @item.TimeStamp
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>
 }
 
 <div>

@@ -426,7 +426,15 @@ namespace Web_Interface.Controllers
                         customerTransactions.Limit = 0;
                         customerTransactions.AccountTransactionStates = _repo.GetTransactionStates();
 
-                        //ViewData["State"] = _repo.GetStates().FirstOrDefault(s => s.ID == currentCustomer.StateID).Name;
+                        List<TransactionLimitVM> tempList = new List<TransactionLimitVM>()
+                        {
+                           new TransactionLimitVM(){ ID = 0, Name = "All" },
+                           new TransactionLimitVM(){ ID = 1, Name = "10" },
+                           new TransactionLimitVM(){ ID = 2, Name = "25" },
+                           new TransactionLimitVM(){ ID = 3, Name = "50" },
+                        };
+
+                        ViewData["Limit"] = new SelectList(tempList, "ID", "Name", customerTransactions.Limit);
                         //ViewData["Account Types"] = _repo.GetAllAccountTypes();
 
                         return View(customerTransactions);
@@ -445,6 +453,113 @@ namespace Web_Interface.Controllers
                 return RedirectToAction(nameof(Create), "Customers");
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Transactions(int? id, [Bind("Customer,Account,AccountTransaction,StartDate,EndDate,Limit,AccountTransactionStates")] CustomerAccountTransactionsVM accountPost)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Check if customer is registered.
+            string guid = GetUserGuID();
+            if (_repo.IsCustomerPresent(guid))
+            {
+                // Display Main Account page.
+                try
+                {
+                    Customer currentCustomer = _repo.GetCustomer(guid);
+
+                    if (currentCustomer != null)
+                    {
+                        Account currentAccount = _repo.GetAccountInformation(currentCustomer.ID, id.Value);
+                        CustomerAccountTransactionsVM customerTransactions = null;                     
+
+                        // Check limit settings.
+                        int limit = -1;
+                        switch (accountPost.Limit)
+                        {
+                            case 3:
+                                // Limit 10.
+                                limit = 50;
+                                break;
+
+                            case 2:
+                                // Limit 10.
+                                limit = 25;
+                                break;
+
+                            case 1:
+                                // Limit 10.
+                                limit = 10;
+                                break;
+
+                            case 0:
+                            default:
+                                // All transactions.
+                                limit = -1;
+                                break;
+                        }
+
+                        // Check if date ranges are not the same.
+                        if (Math.Abs(accountPost.StartDate.Subtract(accountPost.EndDate).TotalDays) > 0)
+                        {
+                            // Check if limit was set.
+                            if (limit > 0)
+                            {
+                                _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, accountPost.StartDate, accountPost.EndDate, limit);
+                            }
+                            else
+                            {
+                                _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, limit);
+                            }
+                        }
+                        else
+                        {
+                            // Check if limit was set.
+                            if (limit > 0)
+                            {
+                                _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, limit);
+                            }
+                            else
+                            {
+                                _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID);
+                            }
+                        }
+                        // Restore old values.
+                        customerTransactions.StartDate = accountPost.StartDate;
+                        customerTransactions.EndDate = accountPost.EndDate;
+                        customerTransactions.Limit = accountPost.Limit;
+                        customerTransactions.AccountTransactionStates = _repo.GetTransactionStates();
+
+                        List<TransactionLimitVM> tempList = new List<TransactionLimitVM>()
+                        {
+                           new TransactionLimitVM(){ ID = 0, Name = "All" },
+                           new TransactionLimitVM(){ ID = 1, Name = "10" },
+                           new TransactionLimitVM(){ ID = 2, Name = "25" },
+                           new TransactionLimitVM(){ ID = 3, Name = "50" },
+                        };
+                        ViewData["Limit"] = new SelectList(tempList, "ID", "Name", customerTransactions.Limit);
+
+                        return View(customerTransactions);
+                    }
+                }
+                catch (Exception WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                // Redirect to create customer information page.
+                return RedirectToAction(nameof(Create), "Customers");
+            }
+        }
+
 
         // GET: Accounts/Delete/5
         //public async Task<IActionResult> Delete(int? id)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Data_Layer.Data_Objects
@@ -16,6 +17,7 @@ namespace Data_Layer.Data_Objects
 
         public virtual AccountTransactionState AccountTransactionState { get; set; }
 
+        [DataType(DataType.Currency)]
         public double Amount { get; set; }
 
         public DateTime TimeStamp { get; set; }
