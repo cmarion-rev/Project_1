@@ -481,7 +481,7 @@ namespace Data_Layer
             try
             {
                 int checkingID = GetAccountTypeID(Utility.AccountType.CHECKING);
-                int businessID = GetAccountTypeID(Utility.AccountType.CHECKING);
+                int businessID = GetAccountTypeID(Utility.AccountType.BUSINESS);
 
                 result = myContext.Accounts.Where(a => a.CustomerID == customerID &&
                                                      a.IsActive &&
@@ -504,15 +504,46 @@ namespace Data_Layer
             try
             {
                 int checkingID = GetAccountTypeID(Utility.AccountType.CHECKING);
-                int businessID = GetAccountTypeID(Utility.AccountType.CHECKING);
+                int businessID = GetAccountTypeID(Utility.AccountType.BUSINESS);
                 int termID = GetAccountTypeID(Utility.AccountType.TERM_DEPOSIT);
 
-                result = myContext.Accounts.Where(a => a.CustomerID == customerID &&
-                                                     a.IsActive &&
-                                                     a.IsOpen &&
-                                                     ((a.AccountTypeID == businessID) ||
-                                                      (a.AccountTypeID == checkingID && a.AccountBalance > 0.0) ||
-                                                      (a.AccountTypeID == termID && a.MaturityDate.Subtract(DateTime.Now).TotalDays < 0 && a.AccountBalance > 0.0))).ToList();
+                //result = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                //                                     a.IsActive &&
+                //                                     a.IsOpen &&
+                //                                     ((a.AccountTypeID == businessID) ||
+                //                                      (a.AccountTypeID == checkingID && a.AccountBalance > 0.0) ||
+                //                                      (a.AccountTypeID == termID && a.MaturityDate.Subtract(DateTime.Now).TotalDays < 0 && a.AccountBalance > 0.0))).ToList();
+
+                var businessQuery = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                                                             a.IsActive &&
+                                                             a.IsOpen &&
+                                                             a.AccountTypeID == businessID);
+                var checkingQuery = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                                                             a.IsActive &&
+                                                             a.IsOpen &&
+                                                             a.AccountTypeID == checkingID && 
+                                                             a.AccountBalance > 0.0);
+                //var termQuery = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                //                                             a.IsActive &&
+                //                                             a.IsOpen &&
+                //                                             a.AccountTypeID == termID && 
+                //                                             a.MaturityDate.Subtract(DateTime.Now).TotalDays < 0 && 
+                //                                             a.AccountBalance > 0.0);
+                var termQuery = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                                                            a.IsActive &&
+                                                            a.IsOpen &&
+                                                            a.AccountTypeID == termID &&
+                                                            a.AccountBalance > 0.0);
+
+                result = businessQuery.ToList();
+                result.AddRange(checkingQuery.ToList());
+                foreach (var item in termQuery)
+                {
+                    if (item.MaturityDate.Subtract(DateTime.Now).TotalDays<0)
+                    {
+                        result.Add(item);
+                    }
+                }
             }
             catch (Exception WTF)
             {

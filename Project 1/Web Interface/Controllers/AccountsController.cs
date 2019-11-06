@@ -11,9 +11,11 @@ using Data_Layer.Data_Objects;
 using Data_Layer.Database_Repository.Interfaces;
 using Data_Layer.View_Models;
 using Data_Layer.Errors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web_Interface.Controllers
 {
+    [Authorize]
     public class AccountsController : Controller
     {
         private readonly IRepository _repo;
@@ -774,6 +776,7 @@ namespace Web_Interface.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewData["ErrorMessage"] = "Same account can NOT be selected for both source and destination of a transfer!";
             return View(transfer);
         }
 

@@ -16,7 +16,7 @@
                 <select asp-for="SourceID" class="form-control">
                     @foreach (var item in Model.SourceAccounts)
                     {
-                        <option value="@item.ID" data="@item.ID"></option>
+                    <option value="@item.ID">@item.ID</option>
                     }
                 </select>
             </div>
@@ -25,7 +25,7 @@
                 <select asp-for="DestinationID" class="form-control">
                     @foreach (var item in Model.DestinationAccounts)
                     {
-                        <option value="@item.ID" data="@item.ID"></option>
+                    <option value="@item.ID">@item.ID</option>
                     }
                 </select>
             </div>
@@ -33,7 +33,11 @@
                 @if (ViewData.ContainsKey("ErrorMessage"))
                 {
                 <p>
-                    @ViewData["ErrorMessage"]
+                   <span style="color:red">
+                       <strong>
+                           @ViewData["ErrorMessage"]
+                       </strong>
+                   </span> 
                 </p>
                 }
                 <label asp-for="Amount" class="control-label"></label>
