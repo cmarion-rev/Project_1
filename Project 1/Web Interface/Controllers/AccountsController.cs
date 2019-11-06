@@ -205,7 +205,8 @@ namespace Web_Interface.Controllers
 
             if (account == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
+                //return NotFound();
             }
 
             ViewData["AccountType"] = _repo.GetAccountTypeName(account.Account.AccountTypeID);
@@ -288,7 +289,8 @@ namespace Web_Interface.Controllers
 
             if (account == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
+                //return NotFound();
             }
 
             ViewData["AccountType"] = _repo.GetAccountTypeName(account.Account.AccountTypeID);
