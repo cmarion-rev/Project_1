@@ -21,5 +21,7 @@ namespace Data_Layer.Database_Repository.Interfaces
         public bool IsAccountDepositable(Account account);
 
         public bool IsAccountWithdrawable(Account account);
+
+        public bool IsAccountLoanPayable(Account account);
     }
 }

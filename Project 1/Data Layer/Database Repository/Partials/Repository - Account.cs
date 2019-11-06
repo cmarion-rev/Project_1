@@ -407,16 +407,37 @@ namespace Data_Layer
                 case Utility.AccountType.CHECKING:
                     result = (account.AccountBalance > 0.0);
                     break;
-                
+
                 case Utility.AccountType.BUSINESS:
                     result = true;
                     break;
-                
+
                 case Utility.AccountType.TERM_DEPOSIT:
                     result = account.MaturityDate.Subtract(DateTime.Now).TotalDays < 0;
                     break;
-                
+
                 case Utility.AccountType.LOAN:
+                default:
+                    result = false;
+                    break;
+            }
+
+            return result;
+        }
+
+        public bool IsAccountLoanPayable(Account account)
+        {
+            bool result = false;
+
+            switch ((Utility.AccountType)account.AccountTypeID)
+            {
+                case Utility.AccountType.LOAN:
+                    result = account.AccountBalance > 0.0;
+                    break;
+
+                case Utility.AccountType.CHECKING:
+                case Utility.AccountType.BUSINESS:
+                case Utility.AccountType.TERM_DEPOSIT:
                 default:
                     result = false;
                     break;
