@@ -8,16 +8,26 @@ using System.Threading.Tasks;
 
 namespace Data_Layer.Database_Repository.Interfaces
 {
-    interface IRepository_Customer
+    public interface IRepository_Customer
     {
-        Task<Customer> GetCustomer(int id);
+        Customer CreateNewCustomer(string guid, Customer newCustomer);
 
-        Task<List<Customer>> GetAllCustomers();
+        Customer GetCustomer(int id);
 
-        Task<Customer> UpdateCustomer(Customer currentCustomer);
+        Customer GetCustomer(string guid);
 
-        Task<CustomerAccountsVM> GetCustomerAccounts(int customerID);
+        List<Customer> GetAllCustomers();
 
-        Task<CustomerAccountsVM> GetCustomerAccounts(int customerID, Utility.AccountType accountType);
+        bool IsCustomerPresent(string guid);
+        
+        bool IsCustomerPresent(int id);
+
+        bool IsCustomerIdValid(int id, string guid);
+
+        Customer UpdateCustomer(Customer currentCustomer);
+
+        CustomerAccountsVM GetCustomerAccounts(int customerID);
+
+        CustomerAccountsVM GetCustomerAccounts(int customerID, Utility.AccountType accountType);
     }
 }

@@ -13,13 +13,40 @@ namespace Data_Layer
 {
     public partial class Repository : IRepository
     {
-        public virtual async Task<Customer> GetCustomer(int id)
+        public virtual Customer CreateNewCustomer(string guid, Customer newCustomer)
+        {
+            Customer result = null;
+
+            // Check if return was valid.
+            if (result == null)
+            {
+                result = new Customer()
+                {
+                    ID = 0,
+                    FirstName = newCustomer.FirstName,
+                    LastName = newCustomer.LastName,
+                    Address = newCustomer.Address,
+                    City = newCustomer.City,
+                    StateID = newCustomer.StateID,
+                    ZipCode = newCustomer.ZipCode,
+                    PhoneNumber = newCustomer.PhoneNumber,
+                    UserIdentity = guid,
+                };
+
+                myContext.Customers.Add(result);
+                myContext.SaveChanges();
+            }
+
+            return result;
+        }
+
+        public virtual  Customer GetCustomer(int id)
         {
             Customer result = null;
 
             try
             {
-                result = await myContext.Customers.Where(c => c.ID == id).FirstOrDefaultAsync();
+                result = myContext.Customers.Where(c => c.ID == id).FirstOrDefault();
             }
             catch (Exception WTF)
             {
@@ -33,32 +60,125 @@ namespace Data_Layer
             return result;
         }
 
-        public virtual async Task<List<Customer>> GetAllCustomers()
+        public virtual  Customer GetCustomer(string guid)
         {
-            List<Customer> results = await myContext.Customers.ToListAsync();
+            Customer result = null;
+
+            try
+            {
+                result = myContext.Customers.Where(c => c.UserIdentity == guid).FirstOrDefault();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            finally
+            {
+                
+            }
+
+            return result;
+        }
+
+        public virtual List<Customer> GetAllCustomers()
+        {
+            List<Customer> results = myContext.Customers.ToList();
 
             return results;
         }
 
-        public virtual async Task<Customer> UpdateCustomer(Customer currentCustomer)
+        public virtual bool IsCustomerPresent(string guid)
         {
-            myContext.Update(currentCustomer);
-            await myContext.SaveChangesAsync();
+            bool result = false;
+
+            var listResult = myContext.Customers.Where(c => c.UserIdentity == guid).ToList();
+            result = listResult.Count == 1;
+
+            return result;
+        }
+        
+        public virtual bool IsCustomerPresent(int id)
+        {
+            bool result = false;
+
+            using (var context = myContext)
+            {
+                var query = context.Customers;
+                var listResult = query.Where(c => c.ID == id).ToList();
+                result = listResult.Count == 1;
+            }
+
+            return result;
+        }
+
+        public bool IsCustomerIdValid(int id, string guid)
+        {
+            bool result = false;
+
+            var listResult = myContext.Customers.Where(c => c.UserIdentity == guid && c.ID == id).ToList();
+            result = listResult.Count == 1;
+
+            return result;
+        }
+
+        public virtual Customer UpdateCustomer(Customer currentCustomer)
+        {
+            Customer tempCustomer = myContext.Customers.Where(c => c.ID == currentCustomer.ID).FirstOrDefault();
+
+            tempCustomer.FirstName = currentCustomer.FirstName;
+            tempCustomer.LastName = currentCustomer.LastName;
+            tempCustomer.Address = currentCustomer.Address;
+            tempCustomer.City = currentCustomer.City;
+            tempCustomer.StateID = currentCustomer.StateID;
+            tempCustomer.ZipCode = currentCustomer.ZipCode;
+            tempCustomer.PhoneNumber = currentCustomer.PhoneNumber;
+            tempCustomer.UserIdentity = currentCustomer.UserIdentity;
+
+            myContext.Update(tempCustomer);
+            myContext.SaveChanges();
 
             return currentCustomer;
         }
 
-        public virtual async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID)
+        public virtual  CustomerAccountsVM GetCustomerAccounts(int customerID)
         {
             CustomerAccountsVM result = new CustomerAccountsVM();
 
             try
             {
-                result.Customer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
-                result.Accounts = await myContext.Accounts.
+                result.Customer =  myContext.Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                result.Accounts =  myContext.Accounts.
                                             Where(a => a.CustomerID == customerID && 
                                                   a.IsOpen && 
-                                                  a.IsActive).ToListAsync();
+                                                  a.IsActive).ToList();
+
+                // Define each account type name.
+                List<AccountType> allAccountTypes = GetAllAccountTypes();
+
+                // Check all accounts for type and deposit/withdrawability.
+                result.AccountType = new List<string>();
+                result.isDepositable = new System.Collections.BitArray(result.Accounts.Count);
+                result.isWithdrawable = new System.Collections.BitArray(result.Accounts.Count);
+                result.isLoanPayable = new System.Collections.BitArray(result.Accounts.Count);
+
+                int index = 0;
+                foreach (var item in result.Accounts)
+                {
+                    // Set account type name.
+                    result.AccountType.Add(allAccountTypes[item.AccountTypeID].Name);
+
+                    // Set flag for deposit account.
+                    result.isDepositable.Set(index, IsAccountDepositable(item));
+
+                    // Set flag for withdraw account.
+                    result.isWithdrawable.Set(index, IsAccountWithdrawable(item));
+
+                    // Set flag for loan payment account.
+                    result.isLoanPayable.Set(index, IsLoanAccount(item.AccountTypeID) && item.AccountBalance > 0.0);
+
+                    ++index;
+                }
             }
             catch (Exception WTF)
             {
@@ -73,19 +193,47 @@ namespace Data_Layer
             return result;
         }
 
-        public virtual async Task<CustomerAccountsVM> GetCustomerAccounts(int customerID, Utility.AccountType accountType)
+        public virtual  CustomerAccountsVM GetCustomerAccounts(int customerID, Utility.AccountType accountType)
         {
             CustomerAccountsVM result = new CustomerAccountsVM();
 
             try
             {
-                int accountTypeID = await GetAccountTypeID(accountType);
-                result.Customer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
-                result.Accounts = await myContext.Accounts.
+                int accountTypeID =  GetAccountTypeID(accountType);
+                result.Customer =  myContext.Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                result.Accounts =  myContext.Accounts.
                                             Where(a => a.CustomerID == customerID && 
                                                   a.AccountTypeID == accountTypeID && 
                                                   a.IsOpen && 
-                                                  a.IsActive).ToListAsync();
+                                                  a.IsActive).ToList();
+
+                // Define each account type name.
+                List<AccountType> allAccountTypes = GetAllAccountTypes();
+
+                // Check all accounts for type and deposit/withdrawability.
+                result.AccountType = new List<string>();
+                result.isDepositable = new System.Collections.BitArray(result.Accounts.Count);
+                result.isWithdrawable = new System.Collections.BitArray(result.Accounts.Count);
+                result.isLoanPayable = new System.Collections.BitArray(result.Accounts.Count);
+
+                int index = 0;
+                foreach (var item in result.Accounts)
+                {
+                    // Set account type name.
+                    result.AccountType.Add(allAccountTypes[item.AccountTypeID].Name);
+                    
+                    // Set flag for deposit account.
+                    result.isDepositable.Set(index, IsAccountDepositable(item));
+                    
+                    // Set flag for withdraw account.
+                    result.isWithdrawable.Set(index, IsAccountWithdrawable(item));
+
+                    // Set flag for loan payment account.
+                    result.isLoanPayable.Set(index, IsLoanAccount(item.AccountTypeID) && item.AccountBalance > 0.0);
+
+                    ++index;
+                }
+
             }
             catch (Exception WTF)
             {

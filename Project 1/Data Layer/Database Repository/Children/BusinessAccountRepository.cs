@@ -3,35 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 using Data_Layer.Data_Objects;
 using Data_Layer.Errors;
 using Data_Layer.Resources;
-using Microsoft.EntityFrameworkCore;
 
 namespace Data_Layer.Database_Repository
 {
-    public class CheckingAccountRepository : Repository
+    public class BusinessAccountRepository : Repository
     {
-        public CheckingAccountRepository(MainDbContext newContext) : base(newContext)
+        public BusinessAccountRepository(MainDbContext newContext) : base(newContext)
         {
         }
 
-        public override async Task<Account> CloseAccount(int customerID, int accountID)
+        public override Account CloseAccount(int customerID, int accountID)
         {
-            return await base.CloseAccount(customerID, accountID);
+            return base.CloseAccount(customerID, accountID);
         }
 
-        public override async Task<Account> Deposit(int customerID, int accountID, double newAmount)
+        public override Account Deposit(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
             try
             {
-                int typeID = await GetCheckingAccountID();
+                int typeID = GetBusinessAccountID();
 
                 if (typeID > -1)
                 {
-                    currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+                    currentAccount = myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefault();
 
                     // Check if owning customer.
                     if (currentAccount.CustomerID == customerID)
@@ -47,7 +48,7 @@ namespace Data_Layer.Database_Repository
                             {
                                 AccountID = currentAccount.ID,
                                 Amount = newAmount,
-                                TransactionCode = await GetTransactionID(Utility.TransactionCodes.DEPOSIT),
+                                AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.DEPOSIT),
                                 TimeStamp = DateTime.Now
                             };
 
@@ -56,7 +57,7 @@ namespace Data_Layer.Database_Repository
                             // Add new transaction record to database.
                             myContext.Add(tempTransaction);
                             // Post changes to database.
-                            await myContext.SaveChangesAsync();
+                             myContext.SaveChanges();
                         }
                         else
                         {
@@ -94,22 +95,22 @@ namespace Data_Layer.Database_Repository
             return currentAccount;
         }
 
-        public override async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0)
+        public override Account OpenAccount(int customerID, int accountType, double initialBalance = 0)
         {
-            return await base.OpenAccount(customerID, accountType, initialBalance);
+            return  base.OpenAccount(customerID, accountType, initialBalance);
         }
 
-        public override async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
+        public override Account Withdraw(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
             try
             {
-                int typeID = await GetCheckingAccountID();
+                int typeID =  GetBusinessAccountID();
 
                 if (typeID > -1)
                 {
-                    currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+                    currentAccount =  myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefault();
 
                     // Check if owing customer
                     if (currentAccount.CustomerID == customerID)
@@ -120,38 +121,72 @@ namespace Data_Layer.Database_Repository
                             // Check if withdrawal is over account amount.
                             if (newAmount > currentAccount.AccountBalance)
                             {
-                                // Create new transaction for overdraft protection.
-                                AccountTransaction newTransaction = new AccountTransaction()
+                                // Check if current balance is positive.
+                                if (currentAccount.AccountBalance >= 0.0)
                                 {
-                                    AccountID = accountID,
-                                    Amount = 0.0,
-                                    TimeStamp = DateTime.Now,
-                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
-                                };
+                                    // Create new transaction for withdrawal.
+                                    AccountTransaction withdrawTransaction = new AccountTransaction()
+                                    {
+                                        AccountID = accountID,
+                                        Amount = currentAccount.AccountBalance - newAmount,
+                                        TimeStamp = DateTime.Now,
+                                        AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                    };
 
-                                // Add new invalid transaction.
-                                myContext.Add(newTransaction);
-                                await myContext.SaveChangesAsync();
+                                    AccountTransaction overdraftTransaction = new AccountTransaction()
+                                    {
+                                        AccountID = accountID,
+                                        Amount = Math.Abs(newAmount - currentAccount.AccountBalance) * ((currentAccount.InterestRate * 0.01) + 1.0),
+                                        TimeStamp = DateTime.Now,
+                                        AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_FEE)
+                                    };
 
-                                throw new OverdraftProtectionException(string.Format("ACCOUNT #{0} WAS STOPPED FROM OVERDRAFTING", accountID));
+                                    // Update account.
+                                    currentAccount.AccountBalance -= withdrawTransaction.Amount + overdraftTransaction.Amount;
+                                    myContext.Update(currentAccount);
+
+                                    // Add new account withdrawal transaction.
+                                    myContext.Add(withdrawTransaction);
+                                    myContext.Add(overdraftTransaction);
+                                     myContext.SaveChanges();
+                                }
+                                else
+                                {
+                                    AccountTransaction overdraftTransaction = new AccountTransaction()
+                                    {
+                                        AccountID = accountID,
+                                        Amount = newAmount * ((currentAccount.InterestRate * 0.01) + 1.0),
+                                        TimeStamp = DateTime.Now,
+                                        AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.OVERDRAFT_FEE)
+                                    };
+
+                                    // Update account.
+                                    currentAccount.AccountBalance -= overdraftTransaction.Amount;
+                                    myContext.Update(currentAccount);
+
+                                    // Add new account withdrawal transaction.
+                                    myContext.Add(overdraftTransaction);
+                                     myContext.SaveChanges();
+                                }                               
                             }
                             else
                             {
+                                // Create new transaction for withdrawal.
                                 AccountTransaction newTransaction = new AccountTransaction()
                                 {
                                     AccountID = accountID,
                                     Amount = newAmount,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                    AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                 };
 
                                 // Update account balance.
                                 currentAccount.AccountBalance -= newAmount;
                                 myContext.Update(currentAccount);
 
-                                // Add new invalid transaction.
+                                // Add new account withdrawal transaction.
                                 myContext.Add(newTransaction);
-                                await myContext.SaveChangesAsync();
+                                 myContext.SaveChanges();
                             }
                         }
                         else
@@ -177,11 +212,6 @@ namespace Data_Layer.Database_Repository
                 Console.WriteLine(WTF);
                 throw;
             }
-            catch (OverdraftProtectionException WTF)
-            {
-                Console.WriteLine(WTF);
-                throw;
-            }
             catch (Exception WTF)
             {
                 Console.WriteLine(WTF);
@@ -195,14 +225,14 @@ namespace Data_Layer.Database_Repository
             return currentAccount;
         }
 
-        private async Task<int> GetCheckingAccountID()
+        private  int GetBusinessAccountID()
         {
             int result = -1;
 
             try
             {
-            var search = await myContext.AccountTypes.Where(t => t.Name == "Checking").FirstOrDefaultAsync();
-            result = search.ID;
+                var search =  myContext.AccountTypes.Where(t => t.Name == "Business").FirstOrDefault();
+                result = search.ID;
             }
             catch (Exception WTF)
             {

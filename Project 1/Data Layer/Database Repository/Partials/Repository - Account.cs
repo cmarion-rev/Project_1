@@ -13,9 +13,32 @@ namespace Data_Layer
 {
     public partial class Repository : IRepository
     {
-        public virtual async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
+        public Account GetAccountInformation(int customerID, int accountID)
         {
-            Customer tempCustomer = await GetCustomer(customerID);
+            Account result = null;
+
+            try
+            {
+                result = myContext.Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID && a.IsOpen && a.IsActive).FirstOrDefault();
+            }
+            catch (NullReferenceException WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+
+
+            return result;
+        }
+
+        public virtual Account OpenAccount(int customerID, int accountType, double initialBalance = 0.0)
+        {
+            Customer tempCustomer = GetCustomer(customerID);
             Account newAccount = null;
 
             // Check if customer is valid.
@@ -23,35 +46,62 @@ namespace Data_Layer
             {
                 newAccount = new Account()
                 {
-                    AccountBalance = initialBalance > 0 ? initialBalance : 0.0,
+                    AccountBalance = initialBalance > 0 ? Math.Round(initialBalance, 2) : 0.0,
                     CustomerID = customerID,
                     AccountTypeID = accountType,
                     IsActive = true,
                     IsOpen = true,
-                    LastTransactionState = await GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
-                    MaturityDate = DateTime.Now,
                 };
+
+                // Set maturity date.
+                switch ((Utility.AccountType)accountType)
+                {
+                    case Utility.AccountType.TERM_DEPOSIT:
+                        newAccount.MaturityDate = DateTime.Now.AddYears(1);
+                        break;
+
+                    case Utility.AccountType.LOAN:
+                        newAccount.MaturityDate = DateTime.Now.AddYears(5);
+                        break;
+
+                    case Utility.AccountType.CHECKING:
+                    case Utility.AccountType.BUSINESS:
+                    default:
+                        newAccount.MaturityDate = DateTime.Now;
+                        break;
+                };
+
 
                 // Add new account to database.
                 myContext.Add(newAccount);
-                await myContext.SaveChangesAsync();
+                myContext.SaveChanges();
+
+                // Create new transaction record.
+                AccountTransaction tempTransaction = new AccountTransaction()
+                {
+                    AccountID = newAccount.ID,
+                    Amount = initialBalance,
+                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.OPEN_ACCOUNT),
+                    TimeStamp = DateTime.Now
+                };
+                myContext.Add(tempTransaction);
+                myContext.SaveChanges();
             }
 
             return newAccount;
         }
 
-        public virtual async Task<Account> CloseAccount(int customerID, int accountID)
+        public virtual Account CloseAccount(int customerID, int accountID)
         {
             Account result = null;
 
             try
             {
-                result = await myContext.Accounts.Where(a => a.ID == accountID && a.IsOpen && a.IsActive).FirstOrDefaultAsync();
+                result = myContext.Accounts.Where(a => a.ID == accountID && a.IsOpen && a.IsActive).FirstOrDefault();
 
                 // Check if owning customer.
                 if (result.CustomerID == customerID)
                 {
-
                     // Check if account balance is valid for closing.
                     if (result.AccountBalance == 0.0)
                     {
@@ -59,7 +109,7 @@ namespace Data_Layer
                         result.IsActive = false;
                         result.IsOpen = false;
                         myContext.Update(result);
-                        await myContext.SaveChangesAsync();
+                        myContext.SaveChanges();
 
                         // Remove account from customer list.
                     }
@@ -103,13 +153,13 @@ namespace Data_Layer
             return result;
         }
 
-        public virtual async Task<Account> Deposit(int customerID, int accountID, double newAmount)
+        public virtual Account Deposit(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
             try
             {
-                currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+                currentAccount = myContext.Accounts.Where(a => a.ID == accountID && a.IsActive && a.IsOpen).FirstOrDefault();
 
                 // Check if owning customer.
                 if (currentAccount.CustomerID == customerID)
@@ -118,7 +168,7 @@ namespace Data_Layer
                     if (newAmount > 0.0)
                     {
                         // Check if valid account to deposit to.
-                        if (await IsCheckingAccount(accountID) || await IsBusinessAccount(accountID))
+                        if (IsCheckingAccount(currentAccount.AccountTypeID) || IsBusinessAccount(currentAccount.AccountTypeID))
                         {
                             // Update account balance for new amount.
                             currentAccount.AccountBalance += newAmount;
@@ -128,7 +178,7 @@ namespace Data_Layer
                             {
                                 AccountID = currentAccount.ID,
                                 Amount = newAmount,
-                                TransactionCode = await GetTransactionID(Utility.TransactionCodes.DEPOSIT),
+                                AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.DEPOSIT),
                                 TimeStamp = DateTime.Now
                             };
 
@@ -137,7 +187,36 @@ namespace Data_Layer
                             // Add new transaction record to database.
                             myContext.Add(tempTransaction);
                             // Post changes to database.
-                            await myContext.SaveChangesAsync();
+                            myContext.SaveChanges();
+                        }
+                        else if (IsLoanAccount(currentAccount.AccountTypeID))
+                        {
+                            // Check if new amount does not exceed remaining balance.
+                            if (currentAccount.AccountBalance >= newAmount)
+                            {
+                                // Update account balance for new amount.
+                                currentAccount.AccountBalance -= newAmount;
+
+                                // Create new transaction record.
+                                AccountTransaction tempTransaction = new AccountTransaction()
+                                {
+                                    AccountID = currentAccount.ID,
+                                    Amount = newAmount,
+                                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.LOAN_INSTALLMENT),
+                                    TimeStamp = DateTime.Now
+                                };
+
+                                // Update account record in database.
+                                myContext.Update(currentAccount);
+                                // Add new transaction record to database.
+                                myContext.Add(tempTransaction);
+                                // Post changes to database.
+                                myContext.SaveChanges();
+                            }
+                            else
+                            {
+                                throw new InvalidAmountException(string.Format("LOAN ACCOUNT #{0} REMAINING BALANCE EXCEEDED!", accountID));
+                            }
                         }
                         else
                         {
@@ -148,7 +227,7 @@ namespace Data_Layer
                     else
                     {
                         // Invalid amount for deposit.
-                        throw new InvalidAmountException(string.Format("DEPOSIT AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
+                        throw new InvalidAmountException(string.Format("AMOUNT ${0} IS NOT A VALID AMOUNT!", newAmount));
                     }
                 }
                 else
@@ -185,13 +264,13 @@ namespace Data_Layer
             return currentAccount;
         }
 
-        public virtual async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
+        public virtual Account Withdraw(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
             try
             {
-                currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+                currentAccount = myContext.Accounts.Where(a => a.ID == accountID && a.IsActive && a.IsOpen).FirstOrDefault();
 
                 // Check if owing customer
                 if (currentAccount.CustomerID == customerID)
@@ -203,7 +282,7 @@ namespace Data_Layer
                         if (newAmount > currentAccount.AccountBalance)
                         {
                             // Check if valid business account.
-                            if (await IsBusinessAccount(accountID))
+                            if (IsBusinessAccount(currentAccount.AccountTypeID))
                             {
                                 currentAccount.AccountBalance -= newAmount;
 
@@ -213,15 +292,15 @@ namespace Data_Layer
                                     AccountID = accountID,
                                     Amount = newAmount,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                 };
 
                                 // Add new account withdrawal transaction.
                                 myContext.Update(currentAccount);
                                 myContext.Add(newTransaction);
-                                await myContext.SaveChangesAsync();
+                                myContext.SaveChanges();
                             }
-                            else if (await IsCheckingAccount(accountID))
+                            else if (IsCheckingAccount(currentAccount.AccountTypeID))
                             {
                                 // Create new transaction for overdraft protection.
                                 AccountTransaction newTransaction = new AccountTransaction()
@@ -229,12 +308,12 @@ namespace Data_Layer
                                     AccountID = accountID,
                                     Amount = 0.0,
                                     TimeStamp = DateTime.Now,
-                                    TransactionCode = await GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
+                                    AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.OVERDRAFT_PROTECTION)
                                 };
 
                                 // Add new invalid transaction.
                                 myContext.Add(newTransaction);
-                                await myContext.SaveChangesAsync();
+                                myContext.SaveChanges();
 
                                 throw new OverdraftProtectionException(string.Format("ACCOUNT #{0} WAS STOPPED FROM OVERDRAFTING", accountID));
                             }
@@ -247,7 +326,7 @@ namespace Data_Layer
                         else
                         {
                             // Check if account is withdrawable.
-                            if (!(await IsLoanAccount(accountID)))
+                            if (!(IsLoanAccount(currentAccount.AccountTypeID)))
                             {
                                 // Check maturity date.
                                 if (currentAccount.MaturityDate.Subtract(DateTime.Now).TotalDays < 0)
@@ -260,13 +339,13 @@ namespace Data_Layer
                                         AccountID = accountID,
                                         Amount = newAmount,
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode = await GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
+                                        AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.WITHDRAWAL)
                                     };
 
                                     // Add new account withdrawal transaction.
                                     myContext.Update(currentAccount);
                                     myContext.Add(newTransaction);
-                                    await myContext.SaveChangesAsync();
+                                    myContext.SaveChanges();
                                 }
                                 else
                                 {
@@ -276,12 +355,12 @@ namespace Data_Layer
                                         AccountID = accountID,
                                         Amount = 0.0,
                                         TimeStamp = DateTime.Now,
-                                        TransactionCode = await GetTransactionID(Utility.TransactionCodes.NON_MATURITY)
+                                        AccountTransactionStateID = GetTransactionID(Utility.TransactionCodes.NON_MATURITY)
                                     };
 
                                     // Add new invalid transaction.
                                     myContext.Add(newTransaction);
-                                    await myContext.SaveChangesAsync();
+                                    myContext.SaveChanges();
 
                                     throw new MaturityValidationException(string.Format("ACCOUNT #{0} HAS NOT REACHED MATURITY DATE", accountID));
                                 }
@@ -336,6 +415,143 @@ namespace Data_Layer
             }
 
             return currentAccount;
+        }
+
+        public virtual bool IsAccountDepositable(Account account)
+        {
+            bool result = false;
+
+            result = IsBusinessAccount(account.AccountTypeID) | IsCheckingAccount(account.AccountTypeID);
+
+            return result;
+        }
+
+        public virtual bool IsAccountWithdrawable(Account account)
+        {
+            bool result = false;
+
+            switch ((Utility.AccountType)account.AccountTypeID)
+            {
+                case Utility.AccountType.CHECKING:
+                    result = (account.AccountBalance > 0.0);
+                    break;
+
+                case Utility.AccountType.BUSINESS:
+                    result = true;
+                    break;
+
+                case Utility.AccountType.TERM_DEPOSIT:
+                    result = account.MaturityDate.Subtract(DateTime.Now).TotalDays < 0;
+                    break;
+
+                case Utility.AccountType.LOAN:
+                default:
+                    result = false;
+                    break;
+            }
+
+            return result;
+        }
+
+        public bool IsAccountLoanPayable(Account account)
+        {
+            bool result = false;
+
+            switch ((Utility.AccountType)account.AccountTypeID)
+            {
+                case Utility.AccountType.LOAN:
+                    result = account.AccountBalance > 0.0;
+                    break;
+
+                case Utility.AccountType.CHECKING:
+                case Utility.AccountType.BUSINESS:
+                case Utility.AccountType.TERM_DEPOSIT:
+                default:
+                    result = false;
+                    break;
+            }
+
+            return result;
+        }
+
+        public List<Account> GetDepositAccounts(int customerID)
+        {
+            List<Account> result = null;
+
+            try
+            {
+                int checkingID = GetAccountTypeID(Utility.AccountType.CHECKING);
+                int businessID = GetAccountTypeID(Utility.AccountType.BUSINESS);
+
+                result = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                                                     a.IsActive &&
+                                                     a.IsOpen &&
+                                                     (a.AccountTypeID == businessID || a.AccountTypeID == checkingID)).ToList();
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+
+            return result;
+        }
+
+        public List<Account> GetWithdrawAccounts(int customerID)
+        {
+            List<Account> result = null;
+
+            try
+            {
+                int checkingID = GetAccountTypeID(Utility.AccountType.CHECKING);
+                int businessID = GetAccountTypeID(Utility.AccountType.BUSINESS);
+                int termID = GetAccountTypeID(Utility.AccountType.TERM_DEPOSIT);
+
+                //result = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                //                                     a.IsActive &&
+                //                                     a.IsOpen &&
+                //                                     ((a.AccountTypeID == businessID) ||
+                //                                      (a.AccountTypeID == checkingID && a.AccountBalance > 0.0) ||
+                //                                      (a.AccountTypeID == termID && a.MaturityDate.Subtract(DateTime.Now).TotalDays < 0 && a.AccountBalance > 0.0))).ToList();
+
+                var businessQuery = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                                                             a.IsActive &&
+                                                             a.IsOpen &&
+                                                             a.AccountTypeID == businessID);
+                var checkingQuery = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                                                             a.IsActive &&
+                                                             a.IsOpen &&
+                                                             a.AccountTypeID == checkingID && 
+                                                             a.AccountBalance > 0.0);
+                //var termQuery = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                //                                             a.IsActive &&
+                //                                             a.IsOpen &&
+                //                                             a.AccountTypeID == termID && 
+                //                                             a.MaturityDate.Subtract(DateTime.Now).TotalDays < 0 && 
+                //                                             a.AccountBalance > 0.0);
+                var termQuery = myContext.Accounts.Where(a => a.CustomerID == customerID &&
+                                                            a.IsActive &&
+                                                            a.IsOpen &&
+                                                            a.AccountTypeID == termID &&
+                                                            a.AccountBalance > 0.0);
+
+                result = businessQuery.ToList();
+                result.AddRange(checkingQuery.ToList());
+                foreach (var item in termQuery)
+                {
+                    if (item.MaturityDate.Subtract(DateTime.Now).TotalDays<0)
+                    {
+                        result.Add(item);
+                    }
+                }
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                throw;
+            }
+
+            return result;
         }
     }
 }

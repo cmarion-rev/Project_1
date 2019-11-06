@@ -7,8 +7,10 @@ namespace Data_Layer.Data_Objects
 {
     public class Account
     {
+        [Display(Name = "Account Number")]
         public int ID { get; set; }
 
+        [Display(Name = "Account Type")]
         public int AccountTypeID { get; set; }
 
         [Display(Name = "Account Type")]
@@ -20,12 +22,8 @@ namespace Data_Layer.Data_Objects
 
         [Display(Name = "Balance")]
         [DataType(DataType.Currency)]
+        [Range(0, double.MaxValue, ErrorMessage = "Only positive number allowed")]
         public double AccountBalance { get; set; }
-
-        [Display(Name = "Last Transaction State")]
-        public int LastTransactionState { get; set; }
-
-        public virtual AccountTransactionState LastAccountTransactionState { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime MaturityDate { get; set; }

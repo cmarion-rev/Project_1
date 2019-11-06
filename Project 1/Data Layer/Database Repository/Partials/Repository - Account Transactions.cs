@@ -12,21 +12,21 @@ namespace Data_Layer
 {
     public partial class Repository : IRepository
     {
-        public async Task<CustomerAccountTransactionsVM> GetAllTransactions(int customerID, int accountID)
+        public  CustomerAccountTransactionsVM GetAllTransactions(int customerID, int accountID)
         {
             CustomerAccountTransactionsVM result = new CustomerAccountTransactionsVM();
 
             try
             {
-                Customer tempCustomer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
-                Account tempAccount = await myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefaultAsync();
+                Customer tempCustomer =  myContext.Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                Account tempAccount =  myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefault();
 
                 // Check if owning customer.
                 if (tempAccount.CustomerID == tempCustomer.ID)
                 {
-                    List<AccountTransaction> tempTransactions = await myContext.AccountTransactions.
+                    List<AccountTransaction> tempTransactions =  myContext.AccountTransactions.
                                                                         Where(t => t.AccountID == accountID).
-                                                                        OrderByDescending(t => t.TimeStamp).ToListAsync();
+                                                                        OrderBy(t => t.TimeStamp).ToList();
 
                     // Prepare view model for return.
                     result.Customer = tempCustomer;
@@ -57,24 +57,24 @@ namespace Data_Layer
             return result;
         }
 
-        public async Task<CustomerAccountTransactionsVM> GetAllTransactions(int customerID, int accountID, DateTime startDate, DateTime endDate)
+        public  CustomerAccountTransactionsVM GetAllTransactions(int customerID, int accountID, DateTime startDate, DateTime endDate)
         {
             CustomerAccountTransactionsVM result = new CustomerAccountTransactionsVM();
 
             try
             {
-                Customer tempCustomer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
-                Account tempAccount = await myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefaultAsync();
+                Customer tempCustomer =  myContext.Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                Account tempAccount =  myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefault();
 
                 // Check if owning customer.
                 if (tempAccount.CustomerID == tempCustomer.ID)
                 {
                     // Limit return transaction list to specified period.
-                    List<AccountTransaction> tempTransactions = await myContext.AccountTransactions.
+                    List<AccountTransaction> tempTransactions =  myContext.AccountTransactions.
                                                                         Where(t => t.AccountID == accountID &&
                                                                               startDate <= t.TimeStamp &&
                                                                               t.TimeStamp <= endDate).
-                                                                        OrderByDescending(t => t.TimeStamp).ToListAsync();
+                                                                        OrderBy(t => t.TimeStamp).ToList();
 
                     // Prepare view model for return.
                     result.Customer = tempCustomer;
@@ -105,22 +105,22 @@ namespace Data_Layer
             return result;
         }
 
-        public async Task<CustomerAccountTransactionsVM> GetAllTransactions(int customerID, int accountID, int resultLimit)
+        public  CustomerAccountTransactionsVM GetAllTransactions(int customerID, int accountID, int resultLimit)
         {
             CustomerAccountTransactionsVM result = new CustomerAccountTransactionsVM();
 
             try
             {
-                Customer tempCustomer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
-                Account tempAccount = await myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefaultAsync();
+                Customer tempCustomer =  myContext.Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                Account tempAccount =  myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefault();
 
                 // Check if owning customer.
                 if (tempAccount.CustomerID == tempCustomer.ID)
                 {
-                    List<AccountTransaction> tempTransactions = await myContext.AccountTransactions.
+                    List<AccountTransaction> tempTransactions =  myContext.AccountTransactions.
                                                                         Where(t => t.AccountID == accountID).
-                                                                        OrderByDescending(t => t.TimeStamp).
-                                                                        Take(resultLimit).ToListAsync();
+                                                                        OrderBy(t => t.TimeStamp).
+                                                                        Take(resultLimit).ToList();
 
                     // Prepare view model for return.
                     result.Customer = tempCustomer;
@@ -151,25 +151,25 @@ namespace Data_Layer
             return result;
         }
 
-        public async Task<CustomerAccountTransactionsVM> GetAllTransactions(int customerID, int accountID, DateTime startDate, DateTime endDate, int resultLimit)
+        public  CustomerAccountTransactionsVM GetAllTransactions(int customerID, int accountID, DateTime startDate, DateTime endDate, int resultLimit)
         {
             CustomerAccountTransactionsVM result = new CustomerAccountTransactionsVM();
 
             try
             {
-                Customer tempCustomer = await myContext.Customers.Where(c => c.ID == customerID).FirstOrDefaultAsync();
-                Account tempAccount = await myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefaultAsync();
+                Customer tempCustomer =  myContext.Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                Account tempAccount =  myContext.Accounts.Where(a => a.ID == accountID).FirstOrDefault();
 
                 // Check if owning customer.
                 if (tempAccount.CustomerID == tempCustomer.ID)
                 {
                     // Limit return transaction list to specified period.
-                    List<AccountTransaction> tempTransactions = await myContext.AccountTransactions.
+                    List<AccountTransaction> tempTransactions =  myContext.AccountTransactions.
                                                                         Where(t => t.AccountID == accountID &&
                                                                               startDate <= t.TimeStamp &&
                                                                               t.TimeStamp <= endDate).
-                                                                        OrderByDescending(t => t.TimeStamp).
-                                                                        Take(resultLimit).ToListAsync();
+                                                                        OrderBy(t => t.TimeStamp).
+                                                                        Take(resultLimit).ToList();
 
                     // Prepare view model for return.
                     result.Customer = tempCustomer;

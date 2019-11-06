@@ -16,22 +16,22 @@ namespace Data_Layer.Database_Repository
         {
         }
 
-        public override async Task<Account> CloseAccount(int customerID, int accountID)
+        public override  Account CloseAccount(int customerID, int accountID)
         {
-            return await base.CloseAccount(customerID, accountID);
+            return  base.CloseAccount(customerID, accountID);
         }
 
-        public override async Task<Account> Deposit(int customerID, int accountID, double newAmount)
+        public override  Account Deposit(int customerID, int accountID, double newAmount)
         {
             Account currentAccount = null;
 
             try
             {
-                int typeID = await GetLoanAccountID();
+                int typeID =  GetLoanAccountID();
 
                 if (typeID > -1)
                 {
-                    currentAccount = await myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefaultAsync();
+                    currentAccount =  myContext.Accounts.Where(a => a.ID == accountID && a.AccountTypeID == typeID && a.IsActive && a.IsOpen).FirstOrDefault();
 
                     // Check if owning customer.
                     if (currentAccount.CustomerID == customerID)
@@ -47,7 +47,7 @@ namespace Data_Layer.Database_Repository
                             {
                                 AccountID = currentAccount.ID,
                                 Amount = newAmount,
-                                TransactionCode = await GetTransactionID(Utility.TransactionCodes.LOAN_INSTALLMENT),
+                                AccountTransactionStateID =  GetTransactionID(Utility.TransactionCodes.LOAN_INSTALLMENT),
                                 TimeStamp = DateTime.Now
                             };
 
@@ -56,7 +56,7 @@ namespace Data_Layer.Database_Repository
                             // Add new transaction record to database.
                             myContext.Add(tempTransaction);
                             // Post changes to database.
-                            await myContext.SaveChangesAsync();
+                             myContext.SaveChanges();
                         }
                         else
                         {
@@ -94,11 +94,11 @@ namespace Data_Layer.Database_Repository
             return currentAccount;
         }
 
-        public override async Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0)
+        public override  Account OpenAccount(int customerID, int accountType, double initialBalance = 0)
         {
             Account newAccount = null;
 
-            newAccount = await base.OpenAccount(customerID, accountType, initialBalance);
+            newAccount =  base.OpenAccount(customerID, accountType, initialBalance);
 
             // Set loan period.
             newAccount.MaturityDate = DateTime.Now.AddYears(5);
@@ -106,11 +106,11 @@ namespace Data_Layer.Database_Repository
             return newAccount; 
         }
 
-        public override async Task<Account> Withdraw(int customerID, int accountID, double newAmount)
+        public override  Account Withdraw(int customerID, int accountID, double newAmount)
         {
             try
             {
-                await myContext.AccountTypes.ToListAsync();
+                 myContext.AccountTypes.ToList();
             }
             catch (Exception WTF)
             {
@@ -123,13 +123,13 @@ namespace Data_Layer.Database_Repository
             }
         }
 
-        private async Task<int> GetLoanAccountID()
+        private  int GetLoanAccountID()
         {
             int result = -1;
 
             try
             {
-                var search = await myContext.AccountTypes.Where(t => t.Name == "Loan").FirstOrDefaultAsync();
+                var search =  myContext.AccountTypes.Where(t => t.Name == "Loan").FirstOrDefault();
                 result = search.ID;
             }
             catch (Exception WTF)

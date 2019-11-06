@@ -1,0 +1,130 @@
+﻿@model Data_Layer.View_Models.CustomerAccountTransactionsVM
+
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<h1>Index</h1>
+
+<p>
+    @*<a asp-action="Create">Create New</a>*@
+</p>
+<div>
+    <h4>Customer</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.LastName)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <h4>Account</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Account.ID)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Account.ID)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Account.AccountBalance)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Account.AccountBalance)
+        </dd>
+    </dl>
+</div>
+
+@if (Model.AccountTransactions.Count > 0)
+{
+<div>
+    <form asp-action="Transactions">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Customer" />
+        <input type="hidden" asp-for="Account" />
+        <input type="hidden" asp-for="AccountTransactions" />
+        <input type="hidden" asp-for="AccountTransactionStates" />
+        <div class="form-group">
+            <label asp-for="StartDate" class="control-label"></label>
+            <input asp-for="StartDate" class="form-control" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate" class="control-label"></label>
+            <input asp-for="EndDate" class="form-control" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Limit" class="control-label"></label>
+            <select asp-for="Limit" class="form-control" asp-items="ViewBag.Limit" >
+                @*<option value="0">All</option>
+                <option value="1">10</option>
+                <option value="2">25</option>
+                <option value="3">50</option>*@
+            </select>
+        </div>
+        <br />
+        <div class="form-group">
+            <input type="submit" value="Select" class="btn btn-primary" />
+        </div>
+    </form>
+        <h4>
+            Transactions
+        </h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    @*<th>
+                        @Html.DisplayNameFor(model => model.AccountTransactions[0].ID)
+                    </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountTransactions[0].AccountTransactionStateID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountTransactions[0].Amount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccountTransactions[0].TimeStamp)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.AccountTransactions)
+                {
+                    <tr>
+                        @*<td>
+                            @item.ID
+                        </td>*@
+                        <td>
+                            @Model.AccountTransactionStates[item.AccountTransactionStateID].Name
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.Amount)
+                        </td>
+                        <td>
+                            @item.TimeStamp
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>
+}
+
+<div>
+    <a asp-action="Index" asp-controller="Customers">Back to Main List</a>
+</div>

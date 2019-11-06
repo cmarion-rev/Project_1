@@ -11,7 +11,7 @@ namespace Data_Layer
 {
     public partial class Repository
     {
-        protected async Task<int> GetTransactionID(Utility.TransactionCodes transactionCodes)
+        protected int GetTransactionID(Utility.TransactionCodes transactionCodes)
         {
             int result = -1;
 
@@ -22,47 +22,47 @@ namespace Data_Layer
                 switch (transactionCodes)
                 {
                     case Utility.TransactionCodes.OPEN_ACCOUNT:
-                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Open Account").FirstOrDefaultAsync();
+                        item = myContext.AccountTransactionStates.Where(s => s.Name == "Open Account").FirstOrDefault();
                         result = item.ID;
                         break;
 
                     case Utility.TransactionCodes.CLOSE_ACCOUNT:
-                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Close Account").FirstOrDefaultAsync();
+                        item = myContext.AccountTransactionStates.Where(s => s.Name == "Close Account").FirstOrDefault();
                         result = item.ID;
                         break;
 
                     case Utility.TransactionCodes.DEPOSIT:
-                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Deposit").FirstOrDefaultAsync();
+                        item = myContext.AccountTransactionStates.Where(s => s.Name == "Deposit").FirstOrDefault();
                         result = item.ID;
                         break;
 
                     case Utility.TransactionCodes.WITHDRAWAL:
-                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Withdrawal").FirstOrDefaultAsync();
+                        item = myContext.AccountTransactionStates.Where(s => s.Name == "Withdrawal").FirstOrDefault();
                         result = item.ID;
                         break;
 
                     case Utility.TransactionCodes.LOAN_INSTALLMENT:
-                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Loan Installment").FirstOrDefaultAsync();
+                        item = myContext.AccountTransactionStates.Where(s => s.Name == "Loan Installment").FirstOrDefault();
                         result = item.ID;
                         break;
 
                     case Utility.TransactionCodes.OVERDRAFT_FEE:
-                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Overdraft Fee").FirstOrDefaultAsync();
+                        item = myContext.AccountTransactionStates.Where(s => s.Name == "Overdraft Fee").FirstOrDefault();
                         result = item.ID;
                         break;
 
                     case Utility.TransactionCodes.OVERDRAFT_PROTECTION:
-                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Overdraft Protection").FirstOrDefaultAsync();
+                        item = myContext.AccountTransactionStates.Where(s => s.Name == "Overdraft Protection").FirstOrDefault();
                         result = item.ID;
                         break;
 
                     case Utility.TransactionCodes.NON_MATURITY:
-                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Maturity Not Reached").FirstOrDefaultAsync();
+                        item = myContext.AccountTransactionStates.Where(s => s.Name == "Maturity Not Reached").FirstOrDefault();
                         result = item.ID;
                         break;
 
                     case Utility.TransactionCodes.INTEREST_ACCRUED:
-                        item = await myContext.AccountTransactionStates.Where(s => s.Name == "Interest Accrued").FirstOrDefaultAsync();
+                        item = myContext.AccountTransactionStates.Where(s => s.Name == "Interest Accrued").FirstOrDefault();
                         result = item.ID;
                         break;
 
@@ -83,13 +83,13 @@ namespace Data_Layer
             return result;
         }
 
-        private async Task<bool> IsLoanAccount(int accountTypeID)
+        private bool IsLoanAccount(int accountTypeID)
         {
             bool result = false;
 
             try
             {
-                var item = await myContext.AccountTypes.Where(t => t.ID == accountTypeID).FirstOrDefaultAsync();
+                var item = myContext.AccountTypes.Where(t => t.ID == accountTypeID).FirstOrDefault();
                 result = item.Name.CompareTo("Loan") == 0;
             }
             catch (Exception WTF)
@@ -105,13 +105,13 @@ namespace Data_Layer
             return result;
         }
 
-        private async Task<bool> IsTermAccount(int accountTypeID)
+        private bool IsTermAccount(int accountTypeID)
         {
             bool result = false;
 
             try
             {
-                var item = await myContext.AccountTypes.Where(t => t.ID == accountTypeID).FirstOrDefaultAsync();
+                var item = myContext.AccountTypes.Where(t => t.ID == accountTypeID).FirstOrDefault();
                 result = item.Name.CompareTo("Term CD") == 0;
             }
             catch (Exception WTF)
@@ -127,13 +127,13 @@ namespace Data_Layer
             return result;
         }
 
-        private async Task<bool> IsCheckingAccount(int accountTypeID)
+        private bool IsCheckingAccount(int accountTypeID)
         {
             bool result = false;
 
             try
             {
-                var item = await myContext.AccountTypes.Where(t => t.ID == accountTypeID).FirstOrDefaultAsync();
+                var item = myContext.AccountTypes.Where(t => t.ID == accountTypeID).FirstOrDefault();
                 result = item.Name.CompareTo("Checking") == 0;
             }
             catch (Exception WTF)
@@ -149,13 +149,13 @@ namespace Data_Layer
             return result;
         }
 
-        private async Task<bool> IsBusinessAccount(int accountTypeID)
+        private bool IsBusinessAccount(int accountTypeID)
         {
             bool result = false;
 
             try
             {
-                var item = await myContext.AccountTypes.Where(t => t.ID == accountTypeID).FirstOrDefaultAsync();
+                var item = myContext.AccountTypes.Where(t => t.ID == accountTypeID).FirstOrDefault();
                 result = item.Name.CompareTo("Business") == 0;
             }
             catch (Exception WTF)

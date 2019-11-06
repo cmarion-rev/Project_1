@@ -10,6 +10,7 @@ namespace Data_Layer.Data_Objects
         public int ID { get; set; }
 
         [Required]
+        [Display(Name = "State")]
         public string Name { get; set; }
 
         [Required]

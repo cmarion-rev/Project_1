@@ -6,14 +6,26 @@ using System.Threading.Tasks;
 
 namespace Data_Layer.Database_Repository.Interfaces
 {
-    interface IRepository_Account
+    public interface IRepository_Account
     {
-        Task<Account> OpenAccount(int customerID, int accountType, double initialBalance = 0.0);
+        public Account OpenAccount(int customerID, int accountType, double initialBalance = 0.0);
 
-        Task<Account> CloseAccount(int customerID, int accountID);
+        public Account CloseAccount(int customerID, int accountID);
 
-        Task<Account> Deposit(int customerID, int accountID, double newAmount);
+        public Account Deposit(int customerID, int accountID, double newAmount);
 
-        Task<Account> Withdraw(int customerID, int accountID, double newAmount);
+        public Account Withdraw(int customerID, int accountID, double newAmount);
+
+        public Account GetAccountInformation(int customerID, int accountID);
+
+        public bool IsAccountDepositable(Account account);
+
+        public bool IsAccountWithdrawable(Account account);
+
+        public bool IsAccountLoanPayable(Account account);
+
+        public List<Account> GetDepositAccounts(int customerID);
+
+        public List<Account> GetWithdrawAccounts(int customerID);
     }
 }
