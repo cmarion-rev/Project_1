@@ -24,7 +24,7 @@
             <div class="form-group">
                 @if (ViewData.ContainsKey("ErrorMessage"))
                 {
-                <span class="text-danger">@ViewData["ErrorMessage"]</span>
+                <p class="text-danger">@ViewData["ErrorMessage"]</p>
                 }
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" class="form-control" />

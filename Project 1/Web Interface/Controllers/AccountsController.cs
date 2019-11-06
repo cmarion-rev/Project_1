@@ -150,6 +150,16 @@ namespace Web_Interface.Controllers
                     Customer currentCustomer = _repo.GetCustomer(guid);
                     _repo.Deposit(currentCustomer.ID, id, accountPost.Amount);
                 }
+                catch (UnauthorizedAccessException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (InvalidAccountException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
                 catch (DbUpdateConcurrencyException WTF)
                 {
                     Console.WriteLine(WTF);
@@ -161,6 +171,12 @@ namespace Web_Interface.Controllers
                     //{
                     //    throw;
                     //}
+                }
+                catch (Exception WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                    //return NotFound();
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -234,6 +250,22 @@ namespace Web_Interface.Controllers
                     Customer currentCustomer = _repo.GetCustomer(guid);
                     _repo.Withdraw(currentCustomer.ID, id, accountPost.Amount);
                 }
+                catch (UnauthorizedAccessException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (InvalidAccountException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (OverdraftProtectionException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    ViewData["ErrorMessage"] = "Overdraft Protection! Withdrawal amount exceeded current balance!";
+                    return View(accountPost);
+                }
                 catch (DbUpdateConcurrencyException WTF)
                 {
                     Console.WriteLine(WTF);
@@ -246,6 +278,13 @@ namespace Web_Interface.Controllers
                     //    throw;
                     //}
                 }
+                catch (Exception WTF)
+                {
+                    Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
+                    //return NotFound();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(accountPost);
@@ -285,7 +324,8 @@ namespace Web_Interface.Controllers
             catch (Exception WTF)
             {
                 Console.WriteLine(WTF);
-                return NotFound();
+                return RedirectToAction(nameof(Index));
+                //return NotFound();
             }
 
             if (account == null)
