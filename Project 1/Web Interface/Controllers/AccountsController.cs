@@ -249,6 +249,94 @@ namespace Web_Interface.Controllers
             return View(accountPost);
         }
 
+
+        //GET: Accounts/Edit/5
+        public IActionResult Installment(int? id)
+        {
+            // Check if valid id was presented.
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+
+            AccountTransactionVM account = null;
+            try
+            {
+                string guid = GetUserGuID();
+                Customer currentCustomer = _repo.GetCustomer(guid);
+                Account currentAccount = _repo.GetAccountInformation(currentCustomer.ID, id.Value);
+
+                if (currentAccount != null)
+                {
+                    // Check if valid loan account.
+                    if (_repo.IsAccountLoanPayable(currentAccount))
+                    {
+                        account = new AccountTransactionVM()
+                        {
+                            Account = currentAccount,
+                            Amount = 0.0,
+                        };
+                    }
+                }
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                return NotFound();
+            }
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["AccountType"] = _repo.GetAccountTypeName(account.Account.AccountTypeID);
+            //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
+            //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
+            return View(account);
+        }
+
+        // POST: Accounts/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Installment(int id, [Bind("Account,Amount")] AccountTransactionVM accountPost)
+        {
+            if (id != accountPost.Account.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string guid = GetUserGuID();
+                    Customer currentCustomer = _repo.GetCustomer(guid);
+                    _repo.Deposit(currentCustomer.ID, id, accountPost.Amount);
+                }
+                catch (DbUpdateConcurrencyException WTF)
+                {
+                    Console.WriteLine(WTF);
+                    //if (!AccountExists(account.ID))
+                    //{
+                    //    return NotFound();
+                    //}
+                    //else
+                    //{
+                    //    throw;
+                    //}
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
+            //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
+            return View(accountPost);
+        }
+
+
         // GET: Accounts/Delete/5
         //public async Task<IActionResult> Delete(int? id)
         //{
