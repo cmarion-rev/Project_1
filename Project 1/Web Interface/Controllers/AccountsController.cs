@@ -690,10 +690,18 @@ namespace Web_Interface.Controllers
                 string guid = GetUserGuID();
                 Customer currentCustomer = _repo.GetCustomer(guid);
 
+                transfer = new AccountTransferVM
+                {
+                    Amount = 0,
+                };
+
                 // Get all withdrawable accounts.
+                transfer.SourceAccounts = _repo.GetWithdrawAccounts(currentCustomer.ID);
+                transfer.SourceID = transfer.SourceAccounts[0].ID;
 
                 // Get all depositable accounts.
-
+                transfer.DestinationAccounts = _repo.GetDepositAccounts(currentCustomer.ID);
+                transfer.DestinationID = transfer.DestinationAccounts[0].ID;
             }
             catch (Exception WTF)
             {
@@ -701,7 +709,7 @@ namespace Web_Interface.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (transfer==null)
+            if (transfer == null)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -713,15 +721,60 @@ namespace Web_Interface.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Transfer([Bind("SourceID,DestinationID,Amount,SourceAccounts,DestinationAccounts")] AccountTransferVM transferPost)
         {
-            // Check if user is valid for each account.
+            AccountTransferVM transfer = null;
 
-            // Check if source account and destination account are not the same.
+            try
+            {
+                // Check if user is valid for each account.
+                string guid = GetUserGuID();
+                Customer currentCustomer = _repo.GetCustomer(guid);
 
-            // Check if withdraw amount is valid.
+                transfer = new AccountTransferVM
+                {
+                    Amount = 0,
+                };
 
-            // Deposit amount to destination account.
+                // Get all withdrawable accounts.
+                transfer.SourceAccounts = _repo.GetWithdrawAccounts(currentCustomer.ID);
+                transfer.SourceID = transfer.SourceAccounts[0].ID;
 
-            return View(transferPost);
+                // Get all depositable accounts.
+                transfer.DestinationAccounts = _repo.GetDepositAccounts(currentCustomer.ID);
+                transfer.DestinationID = transfer.DestinationAccounts[0].ID;
+
+                Account sourceAccount = _repo.GetAccountInformation(currentCustomer.ID, transferPost.SourceID);
+                Account destinationAccount = _repo.GetAccountInformation(currentCustomer.ID, transferPost.DestinationID);
+
+                // Check if source account and destination account are not the same.
+                if (sourceAccount.ID != destinationAccount.ID)
+                {
+                    // Check if withdraw amount is valid.
+                    sourceAccount = _repo.Withdraw(currentCustomer.ID, sourceAccount.ID, transferPost.Amount);
+
+                    // Deposit amount to destination account.
+                    destinationAccount = _repo.Deposit(currentCustomer.ID, destinationAccount.ID, transferPost.Amount);
+
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (OverdraftProtectionException WTF)
+            {
+                Console.WriteLine(WTF);
+                ViewData["ErrorMessage"] = "Overdraft Protection! Withdrawal amount exceeded current balance!";
+
+                if (transfer == null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(transfer);
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(transfer);
         }
 
         private string GetUserGuID()

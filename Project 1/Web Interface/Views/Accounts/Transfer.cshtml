@@ -30,6 +30,12 @@
                 </select>
             </div>
             <div>
+                @if (ViewData.ContainsKey("ErrorMessage"))
+                {
+                <p>
+                    @ViewData["ErrorMessage"]
+                </p>
+                }
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
