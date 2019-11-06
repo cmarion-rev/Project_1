@@ -17,5 +17,7 @@ namespace Data_Layer.View_Models
         public BitArray isDepositable { get; set; }
 
         public BitArray isWithdrawable { get; set; }
+
+        public BitArray isLoanPayable { get; set; }
     }
 }

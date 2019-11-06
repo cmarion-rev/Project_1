@@ -109,6 +109,12 @@
                     }
                 </td>
                 <td>
+                    @if (Model.isLoanPayable[index])
+                    {
+                    @Html.ActionLink("Pay Installment", "Installment", "Accounts", new { id = @Model.Accounts[index].ID })
+                    }
+                </td>
+                <td>
                     @Html.ActionLink("Close", "Close", "Accounts", new { id = @Model.Accounts[index].ID })
                 </td>
             </tr>
