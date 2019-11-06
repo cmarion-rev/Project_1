@@ -254,7 +254,7 @@ namespace Data_Layer
                         if (newAmount > currentAccount.AccountBalance)
                         {
                             // Check if valid business account.
-                            if (IsBusinessAccount(accountID))
+                            if (IsBusinessAccount(currentAccount.AccountTypeID))
                             {
                                 currentAccount.AccountBalance -= newAmount;
 
@@ -272,7 +272,7 @@ namespace Data_Layer
                                 myContext.Add(newTransaction);
                                 myContext.SaveChanges();
                             }
-                            else if (IsCheckingAccount(accountID))
+                            else if (IsCheckingAccount(currentAccount.AccountTypeID))
                             {
                                 // Create new transaction for overdraft protection.
                                 AccountTransaction newTransaction = new AccountTransaction()
@@ -298,7 +298,7 @@ namespace Data_Layer
                         else
                         {
                             // Check if account is withdrawable.
-                            if (!(IsLoanAccount(accountID)))
+                            if (!(IsLoanAccount(currentAccount.AccountTypeID)))
                             {
                                 // Check maturity date.
                                 if (currentAccount.MaturityDate.Subtract(DateTime.Now).TotalDays < 0)
