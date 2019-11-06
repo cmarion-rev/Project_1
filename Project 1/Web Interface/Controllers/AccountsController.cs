@@ -509,11 +509,11 @@ namespace Web_Interface.Controllers
                             // Check if limit was set.
                             if (limit > 0)
                             {
-                                _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, accountPost.StartDate, accountPost.EndDate, limit);
+                                customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, accountPost.StartDate, accountPost.EndDate, limit);
                             }
                             else
                             {
-                                _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, limit);
+                                customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, limit);
                             }
                         }
                         else
@@ -521,11 +521,11 @@ namespace Web_Interface.Controllers
                             // Check if limit was set.
                             if (limit > 0)
                             {
-                                _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, limit);
+                                customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, limit);
                             }
                             else
                             {
-                                _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID);
+                                customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID);
                             }
                         }
                         // Restore old values.
