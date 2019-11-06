@@ -23,5 +23,7 @@ namespace Data_Layer.View_Models
         public DateTime EndDate { get; set; }
 
         public int Limit { get; set; }
+
+        public List<AccountTransactionState> AccountTransactionStates { get; set; }
     }
 }

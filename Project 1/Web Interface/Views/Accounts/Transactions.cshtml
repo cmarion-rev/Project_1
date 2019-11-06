@@ -79,7 +79,7 @@
                         @item.ID
                     </td>
                     <td>
-                        @ViewBag.TransactionState[item.AccountTransactionStateID]
+                        @Model.AccountTransactionStates[item.AccountTransactionStateID].Name
                     </td>
                     <td>
                         @item.Amount

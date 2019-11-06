@@ -424,8 +424,8 @@ namespace Web_Interface.Controllers
                         customerTransactions.StartDate = DateTime.Now;
                         customerTransactions.EndDate = DateTime.Now;
                         customerTransactions.Limit = 0;
+                        customerTransactions.AccountTransactionStates = _repo.GetTransactionStates();
 
-                        ViewData["TransactionStates"] = _repo.GetTransactionStates();
                         //ViewData["State"] = _repo.GetStates().FirstOrDefault(s => s.ID == currentCustomer.StateID).Name;
                         //ViewData["Account Types"] = _repo.GetAllAccountTypes();
 
