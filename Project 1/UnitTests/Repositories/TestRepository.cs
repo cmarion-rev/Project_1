@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Data_Layer.Data_Objects;
@@ -29,7 +30,7 @@ namespace UnitTests.Repositories
                      StateID = 1,
                      ZipCode=10000,
                      PhoneNumber = "111-111-1111",
-                     UserIdentity="",
+                     UserIdentity="UserA",
                 },
 
                 new Customer()
@@ -42,7 +43,7 @@ namespace UnitTests.Repositories
                     StateID = 2,
                     ZipCode = 99999,
                     PhoneNumber = "999-999-9999",
-                    UserIdentity = "",
+                    UserIdentity = "UserB",
                 }
             };
 
@@ -215,7 +216,15 @@ namespace UnitTests.Repositories
 
         public List<State> GetStates()
         {
-            throw new NotImplementedException();
+           return new List<State>()
+           {
+               new State()
+               {
+                   ID = 0,
+                   Name = "Florida",
+                   Abbreviation = "FL"
+               }
+           };
         }
 
         public AccountTransactionState GetTransactionState(int ID)
@@ -255,12 +264,20 @@ namespace UnitTests.Repositories
 
         public bool IsCustomerPresent(string guid)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            result = Customers.Where(c => c.UserIdentity == guid).Count() == 1;
+
+            return result;
         }
 
         public bool IsCustomerPresent(int id)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            result = Customers.Where(c => c.ID == id).Count() == 1;
+
+            return result;
         }
 
         public Account OpenAccount(int customerID, int accountType, double initialBalance = 0)
