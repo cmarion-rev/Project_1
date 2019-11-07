@@ -489,7 +489,7 @@ namespace UnitTests
 
             #region ACT
 
-            var tResult = tController.Details(null) as ViewResult;
+            var tResult = tController.Index() as ViewResult;
 
             #endregion
 
@@ -497,6 +497,7 @@ namespace UnitTests
 
             var tValue = tResult.Model as CustomerAccountsVM;
             Assert.AreEqual(tValue.Customer.FirstName, "John");
+            Assert.AreEqual(tValue.Accounts.Count, 2);
 
             #endregion
         }
