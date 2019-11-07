@@ -341,7 +341,12 @@ namespace UnitTests.Repositories
 
         public bool IsCustomerIdValid(int id, string guid)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            var query = Customers.Where(c => c.ID == id && c.UserIdentity == guid);
+            result = query.Count() == 1;
+
+            return result;
         }
 
         public bool IsCustomerPresent(string guid)
