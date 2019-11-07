@@ -11,6 +11,113 @@ namespace UnitTests.Repositories
 {
     class TestRepository : IRepository
     {
+        readonly List<Account> Accounts;
+        readonly List<Customer> Customers;
+        readonly List<AccountTransaction> AccountTransactions;
+
+        public TestRepository()
+        {
+            Customers = new List<Customer>()
+            {
+                new Customer()
+                {
+                     ID=0,
+                     FirstName = "John",
+                     LastName = "Doe",
+                     Address = "123 A Street",
+                     City = "Here",
+                     StateID = 1,
+                     ZipCode=10000,
+                     PhoneNumber = "111-111-1111",
+                     UserIdentity="",
+                },
+
+                new Customer()
+                {
+                    ID = 1,
+                    FirstName = "Mary",
+                    LastName = "Sue",
+                    Address = "999 Q Avenue",
+                    City = "There",
+                    StateID = 2,
+                    ZipCode = 99999,
+                    PhoneNumber = "999-999-9999",
+                    UserIdentity = "",
+                }
+            };
+
+            Accounts = new List<Account>()
+            {
+                new Account()
+                {
+                     ID=0,
+                      AccountBalance = 1000.0,
+                       AccountTypeID= (int)Utility.AccountType.CHECKING,
+                        CustomerID = 0,
+                         InterestRate=0.015f,
+                          IsActive=true,
+                           IsOpen=true,
+                            MaturityDate = DateTime.Now,
+                },
+
+                new Account()
+                {
+                     ID=1,
+                      AccountBalance = 500.0,
+                       AccountTypeID= (int)Utility.AccountType.BUSINESS,
+                        CustomerID = 0,
+                         InterestRate=0.001f,
+                          IsActive=true,
+                           IsOpen=true,
+                            MaturityDate = DateTime.Now,
+                },
+                
+                new Account()
+                {
+                     ID=1,
+                      AccountBalance = 50000.0,
+                       AccountTypeID= (int)Utility.AccountType.TERM_DEPOSIT,
+                        CustomerID = 0,
+                         InterestRate=0.001f,
+                          IsActive=true,
+                           IsOpen=true,
+                            MaturityDate = DateTime.Now.AddYears(-1),
+                },
+            };
+
+            AccountTransactions = new List<AccountTransaction>()
+            {
+                new AccountTransaction()
+                {
+                    ID = 0,
+                   AccountID = 0,
+                    AccountTransactionStateID = (int)Utility.TransactionCodes.OPEN_ACCOUNT,
+                     Amount= 500.0,
+                      TimeStamp = DateTime.Now.AddMonths(-1),
+                },
+
+                new AccountTransaction()
+                {
+                  ID = 1,
+                   AccountID = 0,
+                    AccountTransactionStateID = (int)Utility.TransactionCodes.DEPOSIT,
+                     Amount= 250.0,
+                      TimeStamp = DateTime.Now.AddDays(-20),
+                },
+                
+                new AccountTransaction()
+                {
+                  ID = 2,
+                   AccountID = 0,
+                    AccountTransactionStateID = (int)Utility.TransactionCodes.DEPOSIT,
+                     Amount= 250.0,
+                      TimeStamp = DateTime.Now.AddDays(-10),
+                },
+            };
+
+
+        }
+
         public Account CloseAccount(int customerID, int accountID)
         {
             throw new NotImplementedException();
