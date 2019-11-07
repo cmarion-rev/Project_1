@@ -53,6 +53,10 @@ namespace Data_Layer
                     IsOpen = true,
                 };
 
+                // Set interest rate.
+                var interestRate = myContext.AccountInterestRates.Where(i => i.AccountTypeID == accountType).FirstOrDefault();
+                newAccount.InterestRate = interestRate.Rate;
+
                 // Set maturity date.
                 switch ((Utility.AccountType)accountType)
                 {
