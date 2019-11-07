@@ -191,12 +191,13 @@ namespace Web_Interface.Controllers
                     }
                     else
                     {
-                        throw;
+                        return Unauthorized();
                     }
                 }
-                catch   (Exception WTF)
+                catch(Exception WTF)
                 {
                     Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
                 }
 
                 return RedirectToAction(nameof(Index));
