@@ -86,7 +86,7 @@ namespace UnitTests.Repositories
                      ID=accountID++,
                       AccountBalance = 50000.0,
                        AccountTypeID= (int)Utility.AccountType.TERM_DEPOSIT,
-                        CustomerID = 0,
+                        CustomerID = 1,
                          InterestRate=0.001f,
                           IsActive=true,
                            IsOpen=true,
@@ -184,7 +184,29 @@ namespace UnitTests.Repositories
 
         public List<AccountType> GetAllAccountTypes()
         {
-            throw new NotImplementedException();
+           return new List<AccountType>()
+           {
+              new AccountType()
+              {
+                   ID=0,
+                   Name = "Checking"
+              },
+              new AccountType()
+              {
+                   ID=1,
+                   Name = "Business"
+              },
+              new AccountType()
+              {
+                   ID=2,
+                   Name = "Term CD"
+              },
+              new AccountType()
+              {
+                   ID=3,
+                   Name = "Loan"
+              },
+           };
         }
 
         public List<Customer> GetAllCustomers()
@@ -233,7 +255,24 @@ namespace UnitTests.Repositories
 
         public CustomerAccountsVM GetCustomerAccounts(int customerID)
         {
-            throw new NotImplementedException();
+            CustomerAccountsVM result = null;
+
+            var customerQuery = Customers.Where(c => c.ID == customerID);
+            var accountQuery = Accounts.Where(a => a.CustomerID == customerID);
+
+            if (customerQuery.Count() > 0)
+            {
+                if (accountQuery.Count() > 0)
+                {
+                    result = new CustomerAccountsVM()
+                    {
+                        Customer = customerQuery.First(),
+                        Accounts = accountQuery.ToList()
+                    };
+                }
+            }
+
+            return result;
         }
 
         public CustomerAccountsVM GetCustomerAccounts(int customerID, Utility.AccountType accountType)
