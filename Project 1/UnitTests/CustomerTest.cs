@@ -501,5 +501,123 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestEdit_ExistingCustomer()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            CustomersController tController = null;
+
+            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
+
+            var validPrincipal = new ClaimsPrincipal(
+                new[]
+                {
+                     new ClaimsIdentity(
+                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserB")})
+                });
+
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
+            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
+                .Returns(tempDataFactoryMock.Object);
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
+                .Returns(UrlFactoryMock.Object);
+
+            var httpContext = Substitute.For<HttpContext>();
+            httpContext.RequestServices = serviceProviderMock.Object;
+            httpContext.User.Returns(validPrincipal);
+
+            var contContext = Substitute.For<ControllerContext>();
+            contContext.HttpContext = httpContext;
+
+
+            tController = new CustomersController(tRepo)
+            {
+                ControllerContext = contContext,
+                //HttpContext = httpContext,
+            };
+
+            #endregion
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Edit(10) as ViewResult;
+
+            #endregion
+
+            #region ASSERT
+
+            var tValue = tResult.Model as Customer;
+            Assert.AreEqual(tValue.FirstName, "Mary");
+
+            #endregion
+        }
+
+        [TestMethod]
+        public void TestEdit_ExistingCustomer_InvalidUser()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            CustomersController tController = null;
+
+            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
+
+            var validPrincipal = new ClaimsPrincipal(
+                new[]
+                {
+                     new ClaimsIdentity(
+                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserA")})
+                });
+
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
+            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
+                .Returns(tempDataFactoryMock.Object);
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
+                .Returns(UrlFactoryMock.Object);
+
+            var httpContext = Substitute.For<HttpContext>();
+            httpContext.RequestServices = serviceProviderMock.Object;
+            httpContext.User.Returns(validPrincipal);
+
+            var contContext = Substitute.For<ControllerContext>();
+            contContext.HttpContext = httpContext;
+
+
+            tController = new CustomersController(tRepo)
+            {
+                ControllerContext = contContext,
+                //HttpContext = httpContext,
+            };
+
+            #endregion
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Edit(10) as ViewResult;
+
+            #endregion
+
+            #region ASSERT
+
+            var tValue = tResult.Model as Customer;
+            Assert.AreNotEqual(tValue.FirstName, "Mary");
+
+            #endregion
+        }
     }
 }
