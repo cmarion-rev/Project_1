@@ -223,6 +223,12 @@ namespace UnitTests.Repositories
                    ID = 0,
                    Name = "Florida",
                    Abbreviation = "FL"
+               },
+               new State()
+               {
+                   ID = 1,
+                   Name = "Texas",
+                   Abbreviation = "TX"
                }
            };
         }
