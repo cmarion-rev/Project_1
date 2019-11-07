@@ -4,14 +4,16 @@ using Data_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Layer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191107200738_AddInterestRate")]
+    partial class AddInterestRate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,32 +76,6 @@ namespace Data_Layer.Migrations
                     b.HasIndex("AccountTypeID");
 
                     b.ToTable("AccountInterestRates");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            AccountTypeID = 0,
-                            Rate = 0.0075f
-                        },
-                        new
-                        {
-                            ID = 2,
-                            AccountTypeID = 1,
-                            Rate = 0.015f
-                        },
-                        new
-                        {
-                            ID = 3,
-                            AccountTypeID = 2,
-                            Rate = 0.0345f
-                        },
-                        new
-                        {
-                            ID = 4,
-                            AccountTypeID = 3,
-                            Rate = 0.0425f
-                        });
                 });
 
             modelBuilder.Entity("Data_Layer.Data_Objects.AccountTransaction", b =>

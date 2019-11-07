@@ -20,6 +20,8 @@ namespace Data_Layer
 
         public DbSet<Customer> Customers { get; set; }
 
+        public DbSet<AccountInterestRate> AccountInterestRates { get; set; }
+
         public MainDbContext()
         {
         }
@@ -44,6 +46,12 @@ namespace Data_Layer
             modelBuilder.Entity<AccountType>().HasData(new AccountType() { ID = 1, Name = "Business" });
             modelBuilder.Entity<AccountType>().HasData(new AccountType() { ID = 2, Name = "Term CD" });
             modelBuilder.Entity<AccountType>().HasData(new AccountType() { ID = 3, Name = "Loan" });
+
+            // Account Type Interest Rates.
+            modelBuilder.Entity<AccountInterestRate>().HasData(new AccountInterestRate() { ID = 1, AccountTypeID = 0, Rate = 0.0075f });
+            modelBuilder.Entity<AccountInterestRate>().HasData(new AccountInterestRate() { ID = 2, AccountTypeID = 1, Rate = 0.015f });
+            modelBuilder.Entity<AccountInterestRate>().HasData(new AccountInterestRate() { ID = 3, AccountTypeID = 2, Rate = 0.0345f });
+            modelBuilder.Entity<AccountInterestRate>().HasData(new AccountInterestRate() { ID = 4, AccountTypeID = 3, Rate = 0.0425f });
 
             // Transaction Codes.
             modelBuilder.Entity<AccountTransactionState>().HasData(new AccountTransactionState() { ID = -1, Name = "Open Account" });
