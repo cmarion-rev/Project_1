@@ -66,7 +66,7 @@ namespace UnitTests
 
             #region ACT
 
-            var tResult = tController.Create() as ViewResult;
+            var tResult = tController.Index() as ViewResult;
 
             #endregion
 

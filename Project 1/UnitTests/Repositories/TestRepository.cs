@@ -129,7 +129,7 @@ namespace UnitTests.Repositories
 
         public bool CanTransferBalance(int customerID)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public Account CloseAccount(int customerID, int accountID)
