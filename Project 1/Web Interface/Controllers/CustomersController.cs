@@ -147,7 +147,7 @@ namespace Web_Interface.Controllers
             }
             else
             {
-                RedirectToAction(nameof(Create));
+                return RedirectToAction(nameof(Create));
             }
 
             if (customer == null)
