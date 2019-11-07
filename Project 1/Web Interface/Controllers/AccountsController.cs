@@ -515,7 +515,7 @@ namespace Web_Interface.Controllers
                             }
                             else
                             {
-                                customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, limit);
+                                customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, accountPost.StartDate, accountPost.EndDate);
                             }
                         }
                         else
