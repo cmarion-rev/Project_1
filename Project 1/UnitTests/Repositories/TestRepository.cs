@@ -16,13 +16,21 @@ namespace UnitTests.Repositories
         readonly List<Customer> Customers;
         readonly List<AccountTransaction> AccountTransactions;
 
+        int customerID = 0;
+        int accountID = 0;
+        int transactionID = 0;
+
         public TestRepository()
         {
+            customerID = 0;
+            accountID = 0;
+            transactionID = 0;
+
             Customers = new List<Customer>()
             {
                 new Customer()
                 {
-                     ID=0,
+                     ID=customerID++,
                      FirstName = "John",
                      LastName = "Doe",
                      Address = "123 A Street",
@@ -35,7 +43,7 @@ namespace UnitTests.Repositories
 
                 new Customer()
                 {
-                    ID = 1,
+                    ID = customerID++,
                     FirstName = "Mary",
                     LastName = "Sue",
                     Address = "999 Q Avenue",
@@ -51,7 +59,7 @@ namespace UnitTests.Repositories
             {
                 new Account()
                 {
-                     ID=0,
+                     ID=accountID++,
                       AccountBalance = 1000.0,
                        AccountTypeID= (int)Utility.AccountType.CHECKING,
                         CustomerID = 0,
@@ -63,7 +71,7 @@ namespace UnitTests.Repositories
 
                 new Account()
                 {
-                     ID=1,
+                     ID=accountID++,
                       AccountBalance = 500.0,
                        AccountTypeID= (int)Utility.AccountType.BUSINESS,
                         CustomerID = 0,
@@ -75,7 +83,7 @@ namespace UnitTests.Repositories
                 
                 new Account()
                 {
-                     ID=1,
+                     ID=accountID++,
                       AccountBalance = 50000.0,
                        AccountTypeID= (int)Utility.AccountType.TERM_DEPOSIT,
                         CustomerID = 0,
@@ -90,7 +98,7 @@ namespace UnitTests.Repositories
             {
                 new AccountTransaction()
                 {
-                    ID = 0,
+                    ID = transactionID++,
                    AccountID = 0,
                     AccountTransactionStateID = (int)Utility.TransactionCodes.OPEN_ACCOUNT,
                      Amount= 500.0,
@@ -99,7 +107,7 @@ namespace UnitTests.Repositories
 
                 new AccountTransaction()
                 {
-                  ID = 1,
+                  ID = transactionID++,
                    AccountID = 0,
                     AccountTransactionStateID = (int)Utility.TransactionCodes.DEPOSIT,
                      Amount= 250.0,
@@ -108,7 +116,7 @@ namespace UnitTests.Repositories
                 
                 new AccountTransaction()
                 {
-                  ID = 2,
+                  ID = transactionID++,
                    AccountID = 0,
                     AccountTransactionStateID = (int)Utility.TransactionCodes.DEPOSIT,
                      Amount= 250.0,
@@ -126,7 +134,27 @@ namespace UnitTests.Repositories
 
         public Customer CreateNewCustomer(string guid, Customer newCustomer)
         {
-            throw new NotImplementedException();
+            Customer currentCustomer = null;
+
+            if (Customers.Where(c => c.UserIdentity == guid).Count() < 0)
+            {
+                currentCustomer = new Customer()
+                {
+                    ID = customerID++,
+                    FirstName = newCustomer.FirstName,
+                    LastName = newCustomer.LastName,
+                    Address = newCustomer.Address,
+                    City = newCustomer.City,
+                    StateID = newCustomer.StateID,
+                    ZipCode = newCustomer.ZipCode,
+                    PhoneNumber = newCustomer.PhoneNumber,
+                    UserIdentity = guid,
+                };
+
+                Customers.Add(newCustomer);
+            }
+
+            return currentCustomer;
         }
 
         public Account Deposit(int customerID, int accountID, double newAmount)
@@ -191,7 +219,14 @@ namespace UnitTests.Repositories
 
         public Customer GetCustomer(string guid)
         {
-            throw new NotImplementedException();
+            Customer result = null;
+
+            var query = Customers.Where(c => c.UserIdentity == guid);
+            
+            
+            //result = 
+
+            return result;
         }
 
         public CustomerAccountsVM GetCustomerAccounts(int customerID)
