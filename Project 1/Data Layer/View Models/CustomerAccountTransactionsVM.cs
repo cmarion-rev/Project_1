@@ -19,7 +19,7 @@ namespace Data_Layer.View_Models
         public DateTime StartDate { get; set; }
 
         [DataType(DataType.Date)]
-        [Display(Name = "Start Date")]
+        [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
 
         public int Limit { get; set; }

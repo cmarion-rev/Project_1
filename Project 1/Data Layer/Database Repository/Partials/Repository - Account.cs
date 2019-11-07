@@ -557,5 +557,46 @@ namespace Data_Layer
 
             return result;
         }
+
+        public bool CanTransferBalance(int customerID)
+        {
+            bool result = false;
+
+            try
+            {
+                List<Account> deposits = GetDepositAccounts(customerID);
+                List<Account> withdraws = GetWithdrawAccounts(customerID);
+
+                // Check if withdrawable has only one.
+                if (withdraws.Count == 1)
+                {
+                    if (deposits.Count > 1)
+                    {
+                        result = true;
+                    }
+                    else if (deposits.Count == 1)
+                    {
+                        result = deposits.Where(a => a.ID == withdraws.First().ID).Count() == 0;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+                else if(withdraws.Count > 1)
+                {
+                    if (deposits.Count > 0)
+                    {
+                        result = true;
+                    }
+                }
+            }
+            catch (Exception WTF)
+            {
+                Console.WriteLine(WTF);
+            }
+
+            return result;
+        }
     }
 }

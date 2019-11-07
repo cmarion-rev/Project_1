@@ -117,10 +117,12 @@ namespace Data_Layer
                 // Check if owning customer.
                 if (tempAccount.CustomerID == tempCustomer.ID)
                 {
-                    List<AccountTransaction> tempTransactions =  myContext.AccountTransactions.
-                                                                        Where(t => t.AccountID == accountID).
-                                                                        OrderBy(t => t.TimeStamp).
-                                                                        Take(resultLimit).ToList();
+                    // Build query results.
+                    var query = myContext.AccountTransactions.Where(t => t.AccountID == accountID).
+                                                              OrderBy(t => t.TimeStamp);
+
+                    // Take last limit number from query, or whole query if too small.
+                    List<AccountTransaction> tempTransactions = query.Skip(Math.Max(0, query.Count() - resultLimit)).ToList();
 
                     // Prepare view model for return.
                     result.Customer = tempCustomer;
@@ -163,13 +165,14 @@ namespace Data_Layer
                 // Check if owning customer.
                 if (tempAccount.CustomerID == tempCustomer.ID)
                 {
-                    // Limit return transaction list to specified period.
-                    List<AccountTransaction> tempTransactions =  myContext.AccountTransactions.
-                                                                        Where(t => t.AccountID == accountID &&
-                                                                              startDate <= t.TimeStamp &&
-                                                                              t.TimeStamp <= endDate).
-                                                                        OrderBy(t => t.TimeStamp).
-                                                                        Take(resultLimit).ToList();
+                    // Build query results, based on time span.
+                    var query = myContext.AccountTransactions.Where(t => t.AccountID == accountID &&
+                                                                    startDate <= t.TimeStamp &&
+                                                                    t.TimeStamp <= endDate).
+                                                                     OrderBy(t => t.TimeStamp);
+
+                    // Take last limit number from query, or whole query if too small.
+                    List<AccountTransaction> tempTransactions = query.Skip(Math.Max(0, query.Count() - resultLimit)).ToList();
 
                     // Prepare view model for return.
                     result.Customer = tempCustomer;

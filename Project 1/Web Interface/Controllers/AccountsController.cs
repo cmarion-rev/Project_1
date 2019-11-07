@@ -515,7 +515,7 @@ namespace Web_Interface.Controllers
                             }
                             else
                             {
-                                customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, limit);
+                                customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID, accountPost.StartDate, accountPost.EndDate);
                             }
                         }
                         else
@@ -762,7 +762,7 @@ namespace Web_Interface.Controllers
             catch (OverdraftProtectionException WTF)
             {
                 Console.WriteLine(WTF);
-                ViewData["ErrorMessage"] = "Overdraft Protection! Withdrawal amount exceeded current balance!";
+                ViewData["ErrorMessage"] = "Overdraft Protection! Withdrawal amount exceeded current balance of source account!";
 
                 if (transfer == null)
                 {
