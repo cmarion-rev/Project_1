@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Data_Layer.Data_Objects
 {
-    class AccountInterestRate
+    public class AccountInterestRate
     {
         public int ID { get; set; }
 
