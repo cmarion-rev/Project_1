@@ -503,7 +503,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestEdit_ExistingCustomer()
+        public void TestEditGet_ExistingCustomer()
         {
             #region ASSIGN
 
@@ -562,7 +562,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestEdit_ExistingCustomer_InvalidUser()
+        public void TestEditGet_ExistingCustomer_InvalidUser()
         {
             #region ASSIGN
 
@@ -621,7 +621,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestEdit_NewCustomer()
+        public void TestEditGet_NewCustomer()
         {
             #region ASSIGN
 
