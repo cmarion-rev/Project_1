@@ -222,9 +222,11 @@ namespace UnitTests.Repositories
             Customer result = null;
 
             var query = Customers.Where(c => c.UserIdentity == guid);
-            
-            
-            //result = 
+
+            if (query.Count() > 0)
+            {
+                result = query.First();
+            }
 
             return result;
         }
