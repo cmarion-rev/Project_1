@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Data_Layer.Data_Objects;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace UnitTests
 {
@@ -135,6 +136,129 @@ namespace UnitTests
             var tItem = tList.Where(a => a.Value == "1").FirstOrDefault().Text;
 
             Assert.AreNotEqual(tItem, "FL");
+
+            #endregion
+        }
+
+        [TestMethod]
+        public void TestCreatePost_NewCustomer()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            CustomersController tController = null;
+
+            Customer newCustomer = new Customer()
+            {
+                FirstName = "Me",
+                LastName = "Guy",
+                StateID = 0
+            };
+
+            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
+
+            var validPrincipal = new ClaimsPrincipal(
+                new[]
+                {
+                     new ClaimsIdentity(
+                         new[] {new Claim(ClaimTypes.NameIdentifier, "User")})
+                });
+
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
+            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
+                .Returns(tempDataFactoryMock.Object);
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
+                .Returns(UrlFactoryMock.Object);
+
+            var httpContext = Substitute.For<HttpContext>();
+            httpContext.RequestServices = serviceProviderMock.Object;
+            httpContext.User.Returns(validPrincipal);
+
+            var contContext = Substitute.For<ControllerContext>();
+            contContext.HttpContext = httpContext;
+
+
+            tController = new CustomersController(tRepo)
+            {
+                ControllerContext = contContext,
+                //HttpContext = httpContext,
+            };
+
+            #endregion
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Create(newCustomer);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
+
+            #endregion
+        }
+
+        [TestMethod]
+        public void TestCreateGet_ExistingCustomer()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            CustomersController tController = null;
+
+            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
+
+            var validPrincipal = new ClaimsPrincipal(
+                new[]
+                {
+                     new ClaimsIdentity(
+                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserA")})
+                });
+
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
+            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
+                .Returns(tempDataFactoryMock.Object);
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
+                .Returns(UrlFactoryMock.Object);
+
+            var httpContext = Substitute.For<HttpContext>();
+            httpContext.RequestServices = serviceProviderMock.Object;
+            httpContext.User.Returns(validPrincipal);
+
+            var contContext = Substitute.For<ControllerContext>();
+            contContext.HttpContext = httpContext;
+
+
+            tController = new CustomersController(tRepo)
+            {
+                ControllerContext = contContext,
+                //HttpContext = httpContext,
+            };
+
+            #endregion
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Create();
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
 
             #endregion
         }
