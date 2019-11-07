@@ -578,6 +578,17 @@ namespace Data_Layer
                     {
                         result = deposits.Where(a => a.ID == withdraws.First().ID).Count() == 0;
                     }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+                else if(withdraws.Count > 1)
+                {
+                    if (deposits.Count > 0)
+                    {
+                        result = true;
+                    }
                 }
             }
             catch (Exception WTF)

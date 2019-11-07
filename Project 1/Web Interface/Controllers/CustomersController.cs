@@ -38,6 +38,8 @@ namespace Web_Interface.Controllers
                     Customer currentCustomer = _repo.GetCustomer(guid);
                     CustomerAccountsVM customerAccounts = _repo.GetCustomerAccounts(currentCustomer.ID);
 
+                    ViewData["CanMove"] = _repo.CanTransferBalance(currentCustomer.ID);
+
                     ViewData["State"] = _repo.GetStates().FirstOrDefault(s => s.ID == currentCustomer.StateID).Name;
                     ViewData["Account Types"] = _repo.GetAllAccountTypes();
                     return View(customerAccounts);

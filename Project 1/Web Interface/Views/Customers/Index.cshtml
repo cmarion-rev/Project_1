@@ -59,6 +59,12 @@
 </div>
 
 @Html.ActionLink("Create Account", "Create", "Accounts");
+@if ((bool)ViewData["CanMove"])
+{
+    <br />
+    @Html.ActionLink("Transfer Balance", "Transfer", "Accounts");
+}
+<br />
 
 @if (Model.Accounts.Count > 0)
 {
