@@ -27,5 +27,7 @@ namespace Data_Layer.Database_Repository.Interfaces
         public List<Account> GetDepositAccounts(int customerID);
 
         public List<Account> GetWithdrawAccounts(int customerID);
+
+        public bool CanTransferBalance(int customerID);
     }
 }
