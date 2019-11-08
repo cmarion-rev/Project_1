@@ -60,15 +60,21 @@
     </dl>
 </div>
 
-<h5>
-    @Html.ActionLink("Create Account", "Create", "Accounts");
+<br />
+<hr />
+<h4>
+    @Html.ActionLink("Create Account", "Create", "Accounts")
     @if ((bool)ViewData["CanMove"])
     {
+        <br />
         <br />
         @Html.ActionLink("Transfer Balance", "Transfer", "Accounts");
     }
     <br />
-</h5>
+</h4>
+<hr />
+<br />
+<br />
 
 @if (Model.Accounts.Count > 0)
 {
