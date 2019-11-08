@@ -400,7 +400,11 @@ namespace UnitTests.Repositories
 
         public bool IsAccountLoanPayable(Account account)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            result = (account.AccountTypeID == (int)Utility.AccountType.LOAN) & (account.AccountBalance > 0.0);
+
+            return result;
         }
 
         public bool IsAccountWithdrawable(Account account)
