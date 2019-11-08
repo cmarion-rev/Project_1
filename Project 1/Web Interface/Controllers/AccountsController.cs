@@ -295,16 +295,14 @@ namespace Web_Interface.Controllers
             return View(accountPost);
         }
 
-
         //GET: Accounts/Edit/5
         public IActionResult Installment(int? id)
         {
             // Check if valid id was presented.
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
-
 
             AccountTransactionVM account = null;
             try
@@ -324,24 +322,24 @@ namespace Web_Interface.Controllers
                             Amount = 0.0,
                         };
                     }
+                    else
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
             }
             catch (Exception WTF)
             {
                 Console.WriteLine(WTF);
                 return RedirectToAction(nameof(Index));
-                //return NotFound();
             }
 
             if (account == null)
             {
                 return RedirectToAction(nameof(Index));
-                //return NotFound();
             }
 
             ViewData["AccountType"] = _repo.GetAccountTypeName(account.Account.AccountTypeID);
-            //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
-            //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
             return View(account);
         }
 
