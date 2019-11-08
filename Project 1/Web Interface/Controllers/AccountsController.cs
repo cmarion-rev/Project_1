@@ -51,7 +51,7 @@ namespace Web_Interface.Controllers
                 catch (Exception WTF)
                 {
                     Console.WriteLine(WTF);
-                    return NotFound();
+                    return RedirectToAction(nameof(Index), "Customers");
                 }
 
                 return View(account);
