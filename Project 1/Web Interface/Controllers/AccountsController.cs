@@ -436,7 +436,6 @@ namespace Web_Interface.Controllers
                         };
 
                         ViewData["Limit"] = new SelectList(tempList, "ID", "Name", customerTransactions.Limit);
-                        //ViewData["Account Types"] = _repo.GetAllAccountTypes();
 
                         return View(customerTransactions);
                     }
