@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Data_Layer.Data_Objects;
 using Data_Layer.Errors;
 using Data_Layer.Resources;
-using Microsoft.EntityFrameworkCore;
 
 namespace Data_Layer.Database_Repository
 {
