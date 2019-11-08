@@ -53,5 +53,38 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestTransferGet_ValidTransfer()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Transfer();
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is ViewResult);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransferVM).Amount, 0.0);
+            Assert.IsTrue(((tResult as ViewResult).Model as AccountTransferVM).SourceAccounts.Count > 0);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransferVM).SourceID, 0);
+            Assert.IsTrue(((tResult as ViewResult).Model as AccountTransferVM).DestinationAccounts.Count > 0);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransferVM).DestinationID, 0);
+
+            #endregion
+        }
     }
 }
