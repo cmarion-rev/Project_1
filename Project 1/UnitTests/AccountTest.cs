@@ -319,5 +319,64 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestCreate()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+
+            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
+
+            var validPrincipal = new ClaimsPrincipal(
+                new[]
+                {
+                     new ClaimsIdentity(
+                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserA")})
+                });
+
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
+            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
+                .Returns(tempDataFactoryMock.Object);
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
+                .Returns(UrlFactoryMock.Object);
+
+
+            var httpContext = Substitute.For<HttpContext>();
+            httpContext.RequestServices = serviceProviderMock.Object;
+            httpContext.User.Returns(validPrincipal);
+
+            var contContext = Substitute.For<ControllerContext>();
+            contContext.HttpContext = httpContext;
+
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = contContext,
+            };
+
+            #endregion
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Create();
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is ViewResult);
+            Assert.AreEqual(((tResult as ViewResult).ViewData["AccountTypeID"] as SelectList).Where(t=>t.Value == "0").FirstOrDefault().Text, "Checking");
+
+            #endregion
+        }
     }
 }
