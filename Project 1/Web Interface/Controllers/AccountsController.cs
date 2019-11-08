@@ -576,7 +576,7 @@ namespace Web_Interface.Controllers
             // Check if valid id was presented.
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
             Account currentAccount = null;
