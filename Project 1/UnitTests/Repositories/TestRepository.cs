@@ -5,6 +5,7 @@ using System.Text;
 
 using Data_Layer.Data_Objects;
 using Data_Layer.Database_Repository.Interfaces;
+using Data_Layer.Errors;
 using Data_Layer.Resources;
 using Data_Layer.View_Models;
 
@@ -164,7 +165,29 @@ namespace UnitTests.Repositories
 
         public Account Deposit(int customerID, int accountID, double newAmount)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            // Get account query.
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+
+            // Check if account owner id was valid.
+            if (query.Count() < 1)
+            {
+                throw new UnauthorizedAccessException("UNAUTHORIZED ACCOUNT USER");
+            }
+
+            // Get valid account from query.
+            result = query.FirstOrDefault();
+
+            // Check if account is despoitable.
+            if (IsAccountDepositable(result))
+            {
+                throw new InvalidAccountException("NON-DEPOSIT ACCOUNT");
+            }
+
+            result.AccountBalance += newAmount;
+
+            return result;
         }
 
         public Account GetAccountInformation(int customerID, int accountID)
