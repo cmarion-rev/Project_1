@@ -191,5 +191,41 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestTransferPost_OverdraftError()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            AccountTransferVM tVM = new AccountTransferVM()
+            {
+                DestinationID = 1,
+                SourceID = 0,
+                Amount = 5000.0,
+            };
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Transfer(tVM);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is ViewResult);
+            Assert.IsNotNull((tResult as ViewResult).ViewData["ErrorMessage"]);
+            Assert.IsTrue((tResult as ViewResult).ViewData["ErrorMessage"].ToString().Contains("Overdraft"));
+
+            #endregion
+        }
     }
 }
