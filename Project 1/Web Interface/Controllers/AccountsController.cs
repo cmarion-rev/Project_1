@@ -649,7 +649,7 @@ namespace Web_Interface.Controllers
                     return RedirectToAction(nameof(Index));
                     //return NotFound();
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Customers");
             }
 
             ViewData["AccountType"] = _repo.GetAccountTypeName(accountPost.AccountTypeID);
