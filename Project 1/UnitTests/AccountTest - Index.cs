@@ -23,7 +23,7 @@ using UnitTests.Resources;
 namespace UnitTests
 {
     [TestClass]
-    public class AccountTest
+    public class AccountTest_Index
     {
         [TestMethod]
         public void TestIndex()
