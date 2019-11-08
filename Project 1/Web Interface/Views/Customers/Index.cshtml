@@ -1,7 +1,7 @@
 ﻿@model Data_Layer.View_Models.CustomerAccountsVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Customer Accounts";
 }
 
 <h1>Index</h1>
@@ -11,6 +11,8 @@
 </p>
 <div>
     <h4>Customer</h4>
+    <hr />
+    @Html.ActionLink("Edit Information", "Edit", "Customers", new { id = Model.Customer.ID })
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
