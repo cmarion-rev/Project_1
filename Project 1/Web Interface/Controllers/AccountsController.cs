@@ -352,7 +352,7 @@ namespace Web_Interface.Controllers
         {
             if (id != accountPost.Account.ID)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
             if (ModelState.IsValid)
@@ -399,8 +399,6 @@ namespace Web_Interface.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
-            //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
             return View(accountPost);
         }
 
