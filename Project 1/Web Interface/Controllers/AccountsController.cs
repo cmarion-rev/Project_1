@@ -784,6 +784,11 @@ namespace Web_Interface.Controllers
                 }
                 return View(transfer);
             }
+            catch(UnauthorizedAccessException WTF)
+            {
+                Console.WriteLine(WTF);
+                return RedirectToAction(nameof(Index));
+            }
             catch (Exception WTF)
             {
                 Console.WriteLine(WTF);
