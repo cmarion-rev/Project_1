@@ -4,8 +4,9 @@ using Data_Layer.View_Models;
 using Web_Interface.Controllers;
 using UnitTests.Repositories;
 using UnitTests.Resources;
+using Data_Layer.Data_Objects;
 
-namespace UnitTests.Account
+namespace UnitTests.AccountTests
 {
     [TestClass]
     public class AccountTest_Deposit

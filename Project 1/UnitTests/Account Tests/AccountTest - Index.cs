@@ -4,7 +4,7 @@ using Web_Interface.Controllers;
 using UnitTests.Repositories;
 using UnitTests.Resources;
 
-namespace UnitTests.Account
+namespace UnitTests.AccountTests
 {
     [TestClass]
     public class AccountTest_Index

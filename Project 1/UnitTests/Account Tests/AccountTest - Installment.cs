@@ -5,8 +5,9 @@ using Web_Interface.Controllers;
 using UnitTests.Repositories;
 using Data_Layer.Resources;
 using UnitTests.Resources;
+using Data_Layer.Data_Objects;
 
-namespace UnitTests.Account
+namespace UnitTests.AccountTests
 {
     [TestClass]
     public class AccountTest_Installment
