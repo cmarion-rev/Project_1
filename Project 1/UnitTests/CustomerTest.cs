@@ -17,6 +17,7 @@ using Data_Layer.Data_Objects;
 using Data_Layer.View_Models;
 using Web_Interface.Controllers;
 using UnitTests.Repositories;
+using UnitTests.Resources;
 
 namespace UnitTests
 {
@@ -31,37 +32,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "User")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var urlHelperFactory = new Mock<ITempDataDictionaryFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(urlHelperFactory.Object);
-
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
             };
-
-            #endregion
 
             #endregion
 
@@ -90,37 +64,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "User")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var urlHelperFactory = new Mock<ITempDataDictionaryFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(urlHelperFactory.Object);
-
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
             };
-
-            #endregion
 
             #endregion
 
@@ -156,40 +103,10 @@ namespace UnitTests
                 StateID = 0
             };
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "User")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
             };
-
-            #endregion
 
             #endregion
 
@@ -214,40 +131,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserA")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
             };
-
-            #endregion
 
             #endregion
 
@@ -273,40 +160,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserA")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
             };
-
-            #endregion
 
             #endregion
 
@@ -332,40 +189,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "User")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
             };
-
-            #endregion
 
             #endregion
 
@@ -391,40 +218,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "User")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
             };
-
-            #endregion
 
             #endregion
 
@@ -450,40 +247,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserA")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
             };
-
-            #endregion
 
             #endregion
 
@@ -510,40 +277,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserB")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserB"),
             };
-
-            #endregion
 
             #endregion
 
@@ -569,40 +306,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserA")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
             };
-
-            #endregion
 
             #endregion
 
@@ -628,40 +335,10 @@ namespace UnitTests
             TestRepository tRepo = new TestRepository();
             CustomersController tController = null;
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "User")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
             };
-
-            #endregion
 
             #endregion
 
@@ -693,40 +370,10 @@ namespace UnitTests
                 UserIdentity = "UserB"
             };
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserB")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserB"),
             };
-
-            #endregion
 
             #endregion
 
@@ -758,40 +405,10 @@ namespace UnitTests
                 UserIdentity = "UserB"
             };
 
-            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
-
-            var validPrincipal = new ClaimsPrincipal(
-                new[]
-                {
-                     new ClaimsIdentity(
-                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserB")})
-                });
-
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
-            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(tempDataFactoryMock.Object);
-            serviceProviderMock
-                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
-                .Returns(UrlFactoryMock.Object);
-
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.RequestServices = serviceProviderMock.Object;
-            httpContext.User.Returns(validPrincipal);
-
-            var contContext = Substitute.For<ControllerContext>();
-            contContext.HttpContext = httpContext;
-
-
             tController = new CustomersController(tRepo)
             {
-                ControllerContext = contContext,
-                //HttpContext = httpContext,
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserB"),
             };
-
-            #endregion
 
             #endregion
 
