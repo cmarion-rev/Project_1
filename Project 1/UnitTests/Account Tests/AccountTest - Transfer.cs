@@ -156,5 +156,40 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestTransferPost_SameAccountSelection()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            AccountTransferVM tVM = new AccountTransferVM()
+            {
+                DestinationID = 0,
+                SourceID = 0,
+                Amount = 1.0,
+            };
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Transfer(tVM);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is ViewResult);
+            Assert.IsNotNull((tResult as ViewResult).ViewData["ErrorMessage"]);
+
+            #endregion
+        }
     }
 }
