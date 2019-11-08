@@ -54,6 +54,33 @@ namespace UnitTests
             #endregion
         }
 
-        
+        [TestMethod]
+        public void TestCloseGet_UnauthorizedAccountOwner()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Close(0);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+
+            #endregion
+        }
     }
 }
