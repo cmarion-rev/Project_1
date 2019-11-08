@@ -25,8 +25,6 @@ namespace UnitTests
     [TestClass]
     public class AccountTest_Installment
     {
-        #region INSTALLMENT
-
         [TestMethod]
         public void TestInstallmentGet_Null()
         {
@@ -303,7 +301,5 @@ namespace UnitTests
 
             #endregion
         }
-
-        #endregion
     }
 }

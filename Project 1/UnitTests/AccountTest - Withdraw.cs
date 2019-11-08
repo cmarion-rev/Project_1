@@ -25,8 +25,6 @@ namespace UnitTests
     [TestClass]
     public class AccountTest_Withdraw
     {
-        #region WITHDRAW
-
         [TestMethod]
         public void TestWithdrawGet_Null()
         {
@@ -302,7 +300,5 @@ namespace UnitTests
 
             #endregion
         }
-
-        #endregion
     }
 }

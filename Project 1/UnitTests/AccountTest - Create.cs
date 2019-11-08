@@ -25,8 +25,6 @@ namespace UnitTests
     [TestClass]
     public class AccountTest_Create
     {       
-        #region CREATE
-
         [TestMethod]
         public void TestCreateGet()
         {
@@ -122,7 +120,5 @@ namespace UnitTests
 
             #endregion
         }
-
-        #endregion
     }
 }

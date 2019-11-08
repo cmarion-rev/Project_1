@@ -25,8 +25,6 @@ namespace UnitTests
     [TestClass]
     public class AccountTest_Transactions
     {
-        #region TRANSACTIONS
-
         [TestMethod]
         public void TestTransactionGet_Null()
         {
@@ -329,8 +327,5 @@ namespace UnitTests
 
             #endregion
         }
-
-       
-        #endregion
     }
 }
