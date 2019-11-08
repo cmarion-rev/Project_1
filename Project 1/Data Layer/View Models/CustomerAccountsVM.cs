@@ -1,8 +1,6 @@
 ﻿using Data_Layer.Data_Objects;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Data_Layer.View_Models
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Data_Layer.Data_Objects;
 using Data_Layer.Resources;
 using Data_Layer.View_Models;

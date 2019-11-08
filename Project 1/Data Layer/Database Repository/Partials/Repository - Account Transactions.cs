@@ -1,12 +1,9 @@
 ﻿using Data_Layer.Data_Objects;
 using Data_Layer.Database_Repository.Interfaces;
 using Data_Layer.View_Models;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data_Layer
 {
