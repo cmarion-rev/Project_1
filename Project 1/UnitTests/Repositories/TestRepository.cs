@@ -438,7 +438,15 @@ namespace UnitTests.Repositories
 
         public List<Account> GetDepositAccounts(int customerID)
         {
-            throw new NotImplementedException();
+            List<Account> result = null;
+
+            var query = Accounts.Where(a => a.CustomerID == customerID && (a.AccountTypeID == (int)Utility.AccountType.CHECKING || a.AccountTypeID == (int)Utility.AccountType.BUSINESS));
+            if (query.Count() > 0)
+            {
+                result = query.ToList();
+            }
+
+            return result;
         }
 
         public State GetState(int ID)
@@ -505,7 +513,20 @@ namespace UnitTests.Repositories
 
         public List<Account> GetWithdrawAccounts(int customerID)
         {
-            throw new NotImplementedException();
+            List<Account> result = null;
+
+            var query = Accounts.Where(a => a.CustomerID == customerID &&
+                                      (
+                                       (a.AccountTypeID == (int)Utility.AccountType.CHECKING && a.AccountBalance > 0.0) ||
+                                       (a.AccountTypeID == (int)Utility.AccountType.BUSINESS) ||
+                                       (a.AccountTypeID == (int)Utility.AccountType.TERM_DEPOSIT && a.MaturityDate < DateTime.Now)
+                                      ));
+            if (query.Count() > 0)
+            {
+                result = query.ToList();
+            }
+
+            return result;
         }
 
         public bool IsAccountDepositable(Account account)
