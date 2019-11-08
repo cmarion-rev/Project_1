@@ -196,7 +196,7 @@ namespace Web_Interface.Controllers
             // Check if valid id was presented.
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
             AccountTransactionVM account = null;
@@ -222,13 +222,12 @@ namespace Web_Interface.Controllers
             catch (Exception WTF)
             {
                 Console.WriteLine(WTF);
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
             if (account == null)
             {
                 return RedirectToAction(nameof(Index));
-                //return NotFound();
             }
 
             ViewData["AccountType"] = _repo.GetAccountTypeName(account.Account.AccountTypeID);
