@@ -227,5 +227,45 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestTransferPost_Valid()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            AccountTransferVM tVM = new AccountTransferVM()
+            {
+                DestinationID = 1,
+                SourceID = 0,
+                Amount = 500.0,
+            };
+            Account tData1 = tRepo.GetAccountInformation(0, 0);
+            Account tData2 = tRepo.GetAccountInformation(0, 1);
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Transfer(tVM);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+            Assert.AreEqual((tResult as RedirectToActionResult).ControllerName, "Customers");
+            Assert.AreEqual(tData1.AccountBalance, 500.0);
+            Assert.AreEqual(tData2.AccountBalance, 1000.0);
+
+            #endregion
+        }
     }
 }
