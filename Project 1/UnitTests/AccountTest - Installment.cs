@@ -23,42 +23,12 @@ using UnitTests.Resources;
 namespace UnitTests
 {
     [TestClass]
-    public class AccountTest
+    public class AccountTest_Installment
     {
-        [TestMethod]
-        public void TestIndex()
-        {
-            #region ASSIGN
-
-            TestRepository tRepo = new TestRepository();
-            AccountsController tController = null;
-
-            tController = new AccountsController(tRepo)
-            {
-                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
-            };
-
-            #endregion
-
-            #region ACT
-
-            var tResult = tController.Index();
-
-            #endregion
-
-            #region ASSERT
-
-            Assert.IsTrue(tResult is RedirectToActionResult);
-            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
-            Assert.AreEqual((tResult as RedirectToActionResult).ControllerName, "Customers");
-
-            #endregion
-        }
-
-        #region TRANSACTIONS
+        #region INSTALLMENT
 
         [TestMethod]
-        public void TestTransactionGet_Null()
+        public void TestInstallmentGet_Null()
         {
             #region ASSIGN
 
@@ -70,11 +40,11 @@ namespace UnitTests
                 ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
             };
 
-           #endregion
+             #endregion
 
             #region ACT
 
-            var tResult = tController.Transactions(null);
+            var tResult = tController.Installment(null);
 
             #endregion
 
@@ -87,7 +57,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestTransactionsGet_NewUserInvalid()
+        public void TestInstallmentGet_UnautorizedAccountOwner()
         {
             #region ASSIGN
 
@@ -103,21 +73,20 @@ namespace UnitTests
 
             #region ACT
 
-            var tResult = tController.Transactions(0);
+            var tResult = tController.Installment(2);
 
             #endregion
 
             #region ASSERT
 
             Assert.IsTrue(tResult is RedirectToActionResult);
-            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Create");
-            Assert.AreEqual((tResult as RedirectToActionResult).ControllerName, "Customers");
-
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+            
             #endregion
         }
 
         [TestMethod]
-        public void TestTransactionsGet_UnauthorizedAccountOwner()
+        public void TestInstallmentGet_NonLoanAccount()
         {
             #region ASSIGN
 
@@ -133,7 +102,7 @@ namespace UnitTests
 
             #region ACT
 
-            var tResult = tController.Transactions(0);
+            var tResult = tController.Installment(2);
 
             #endregion
 
@@ -146,166 +115,12 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestTransactionsGet_Valid()
+        public void TestInstallmentGet_ValidAccount()
         {
             #region ASSIGN
 
             TestRepository tRepo = new TestRepository();
             AccountsController tController = null;
-
-            tController = new AccountsController(tRepo)
-            {
-                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
-            };
-
-            #endregion
-
-            #region ACT
-
-            var tResult = tController.Transactions(0);
-
-            #endregion
-
-            #region ASSERT
-
-            Assert.IsTrue(tResult is ViewResult);
-            Assert.AreEqual(((tResult as ViewResult).Model as CustomerAccountTransactionsVM).Customer.ID, 0);
-            Assert.AreEqual(((tResult as ViewResult).Model as CustomerAccountTransactionsVM).Account.ID, 0);
-            Assert.IsTrue(((tResult as ViewResult).Model as CustomerAccountTransactionsVM).AccountTransactions.Count > 0);
-
-            #endregion
-        }
-
-        [TestMethod]
-        public void TestTransactionPost_NullID()
-        {
-            #region ASSIGN
-
-            TestRepository tRepo = new TestRepository();
-            AccountsController tController = null;
-            CustomerAccountTransactionsVM tVM = tRepo.GetAllTransactions(0, 0);
-
-            tController = new AccountsController(tRepo)
-            {
-                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
-            };
-
-            #endregion
-
-            #region ACT
-
-            var tResult = tController.Transactions(null, tVM);
-
-            #endregion
-
-            #region ASSERT
-
-            Assert.IsTrue(tResult is RedirectToActionResult);
-            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
-
-            #endregion
-        }
-
-        [TestMethod]
-        public void TestTransactionPost_NullAccount()
-        {
-            #region ASSIGN
-
-            TestRepository tRepo = new TestRepository();
-            AccountsController tController = null;
-            CustomerAccountTransactionsVM tVM = tRepo.GetAllTransactions(0, 0);
-            tVM.Account = null;
-
-            tController = new AccountsController(tRepo)
-            {
-                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
-            };
-
-            #endregion
-
-            #region ACT
-
-            var tResult = tController.Transactions(0, tVM);
-
-            #endregion
-
-            #region ASSERT
-
-            Assert.IsTrue(tResult is RedirectToActionResult);
-            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
-
-            #endregion
-        }
-
-        [TestMethod]
-        public void TestTransactionPost_MismatchAccountID()
-        {
-            #region ASSIGN
-
-            TestRepository tRepo = new TestRepository();
-            AccountsController tController = null;
-            CustomerAccountTransactionsVM tVM = tRepo.GetAllTransactions(0, 0);
-
-            tController = new AccountsController(tRepo)
-            {
-                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
-            };
-
-            #endregion
-
-            #region ACT
-
-            var tResult = tController.Transactions(100, tVM);
-
-            #endregion
-
-            #region ASSERT
-
-            Assert.IsTrue(tResult is RedirectToActionResult);
-            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
-
-            #endregion
-        }
-
-        [TestMethod]
-        public void TestTransactionPost_NewUserInvalid()
-        {
-            #region ASSIGN
-
-            TestRepository tRepo = new TestRepository();
-            AccountsController tController = null;
-            CustomerAccountTransactionsVM tVM = tRepo.GetAllTransactions(0, 0);
-
-            tController = new AccountsController(tRepo)
-            {
-                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
-            };
-
-            #endregion
-
-            #region ACT
-
-            var tResult = tController.Transactions(0, tVM);
-
-            #endregion
-
-            #region ASSERT
-
-            Assert.IsTrue(tResult is RedirectToActionResult);
-            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Create");
-            Assert.AreEqual((tResult as RedirectToActionResult).ControllerName, "Customers");
-
-            #endregion
-        }
-
-        [TestMethod]
-        public void TestTransactionPost_UnauthorizedAccountOwner()
-        {
-            #region ASSIGN
-
-            TestRepository tRepo = new TestRepository();
-            AccountsController tController = null;
-            CustomerAccountTransactionsVM tVM = tRepo.GetAllTransactions(0, 0);
 
             tController = new AccountsController(tRepo)
             {
@@ -316,7 +131,40 @@ namespace UnitTests
 
             #region ACT
 
-            var tResult = tController.Transactions(0, tVM);
+            var tResult = tController.Installment(3);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is ViewResult);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransactionVM).Account.ID, 3);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransactionVM).Account.AccountTypeID, (int)Utility.AccountType.LOAN);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransactionVM).Amount, 0.0);
+
+            #endregion
+        }
+
+        [TestMethod]
+        public void TestInstallmentPost_MismatchAccountID()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            Account tAccount = tRepo.GetAccountInformation(1, 3);
+            AccountTransactionVM tVM = new AccountTransactionVM() { Account = tAccount, Amount = 0.0 };
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Installment(100, tVM);
 
             #endregion
 
@@ -329,38 +177,133 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestTransactionPost_Valid()
+        public void TestInstallmentPost_UnauthorizeAccountUser()
         {
             #region ASSIGN
 
             TestRepository tRepo = new TestRepository();
             AccountsController tController = null;
-            CustomerAccountTransactionsVM tVM = tRepo.GetAllTransactions(0, 0);
+            Account tAccount = tRepo.GetAccountInformation(1, 3);
+            AccountTransactionVM tVM = new AccountTransactionVM() { Account = tAccount, Amount = 0.0 };
 
             tController = new AccountsController(tRepo)
             {
-                ControllerContext =  UtilityFunctions.GenerateMockControllerContext("UserA"),
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
             };
 
             #endregion
 
             #region ACT
 
-            var tResult = tController.Transactions(0, tVM);
+            var tResult = tController.Installment(3, tVM);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+
+            #endregion
+        }
+
+        [TestMethod]
+        public void TestInstallmentPost_NonLoanAccount()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            Account tAccount = tRepo.GetAccountInformation(1, 3);
+            AccountTransactionVM tVM = new AccountTransactionVM() { Account = tAccount, Amount = 0.0 };
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserB"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Installment(3, tVM);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+
+            #endregion
+        }
+
+        [TestMethod]
+        public void TestInstallmentPost_OverdraftError()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            Account tAccount = tRepo.GetAccountInformation(1, 3);
+            AccountTransactionVM tVM = new AccountTransactionVM() { Account = tAccount, Amount = 100000.0 };
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserB"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Installment(3, tVM);
 
             #endregion
 
             #region ASSERT
 
             Assert.IsTrue(tResult is ViewResult);
-            Assert.AreEqual(((tResult as ViewResult).Model as CustomerAccountTransactionsVM).Customer.ID, 0);
-            Assert.AreEqual(((tResult as ViewResult).Model as CustomerAccountTransactionsVM).Account.ID, 0);
-            Assert.IsTrue(((tResult as ViewResult).Model as CustomerAccountTransactionsVM).AccountTransactions.Count > 0);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransactionVM).Account.ID, 3);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransactionVM).Account.AccountBalance, 50000.0);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransactionVM).Amount, 0.0);
+            Assert.IsNotNull((tResult as ViewResult).ViewData["ErrorMessage"]);
 
             #endregion
         }
 
-       
+        [TestMethod]
+        public void TestInstallmentPost_Valid()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            Account tAccount = tRepo.GetAccountInformation(1, 3);
+            AccountTransactionVM tVM = new AccountTransactionVM() { Account = tAccount, Amount = 5000.0 };
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserB"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Installment(3, tVM);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+            Assert.AreEqual((tResult as RedirectToActionResult).ControllerName, "Customers");
+
+            #endregion
+        }
+
         #endregion
     }
 }
