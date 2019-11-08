@@ -59,20 +59,25 @@
         </dd>
     </dl>
 </div>
+<br />
 
+<hr />
+<div style="width:35%; float:left">
+    <h4>
+    @Html.ActionLink("Create Account", "Create", "Accounts")
+    </h4>
+</div>
+@if ((bool)ViewData["CanMove"])
+{
+    <div style="width:35%; float:right">
+        <h4 style="text-align:right">
+        @Html.ActionLink("Transfer Balance", "Transfer", "Accounts")
+        </h4>
+    </div>
+}
 <br />
 <hr />
-<h4>
-    @Html.ActionLink("Create Account", "Create", "Accounts")
-    @if ((bool)ViewData["CanMove"])
-    {
-        <br />
-        <br />
-        @Html.ActionLink("Transfer Balance", "Transfer", "Accounts");
-    }
-    <br />
-</h4>
-<hr />
+
 <br />
 <br />
 
@@ -93,6 +98,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Accounts[0].AccountTypeID)
                 </th>
+                <th></th>
+                <th></th>
+                <th></th>
                 <th></th>
                 <th></th>
             </tr>
