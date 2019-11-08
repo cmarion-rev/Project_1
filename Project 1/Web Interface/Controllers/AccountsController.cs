@@ -84,6 +84,11 @@ namespace Web_Interface.Controllers
                     account = _repo.OpenAccount(currentCustomer.ID, account.AccountTypeID, account.AccountBalance);
                     return RedirectToAction(nameof(Details), new { id = account.ID });
                 }
+                else
+                {
+                    ViewData["ErrorMessage"] = "Starting Balance needs to be a positive value.";
+                    account.AccountBalance = 0.0;
+                }
             }
             ViewData["AccountTypeID"] = new SelectList(_repo.GetAllAccountTypes(), "ID", "Name");
             return View(account);
@@ -459,16 +464,6 @@ namespace Web_Interface.Controllers
         public IActionResult Transactions(int? id, [Bind("Customer,Account,AccountTransaction,StartDate,EndDate,Limit,AccountTransactionStates")] CustomerAccountTransactionsVM accountPost)
         {
             if (id == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            if (accountPost.Account == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            if (id != accountPost.Account.ID)
             {
                 return RedirectToAction(nameof(Index));
             }

@@ -1,7 +1,7 @@
 ﻿@model Data_Layer.View_Models.CustomerAccountsVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Customer Accounts";
 }
 
 <h1>Index</h1>
@@ -11,6 +11,8 @@
 </p>
 <div>
     <h4>Customer</h4>
+    <hr />
+    @Html.ActionLink("Edit Information", "Edit", "Customers", new { id = Model.Customer.ID })
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -57,13 +59,26 @@
         </dd>
     </dl>
 </div>
+<br />
 
-@Html.ActionLink("Create Account", "Create", "Accounts");
+<hr />
+<div style="width:35%; float:left">
+    <h4>
+    @Html.ActionLink("Create Account", "Create", "Accounts")
+    </h4>
+</div>
 @if ((bool)ViewData["CanMove"])
 {
-    <br />
-    @Html.ActionLink("Transfer Balance", "Transfer", "Accounts");
+    <div style="width:35%; float:right">
+        <h4 style="text-align:right">
+        @Html.ActionLink("Transfer Balance", "Transfer", "Accounts")
+        </h4>
+    </div>
 }
+<br />
+<hr />
+
+<br />
 <br />
 
 @if (Model.Accounts.Count > 0)
@@ -85,6 +100,9 @@
                 </th>
                 <th></th>
                 <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -94,7 +112,7 @@
             <tr>
                 <td>
                     <a asp-controller="Accounts" asp-action="Details" asp-route-id="@Model.Accounts[index].ID">
-                        @Html.DisplayFor(modelItem => Model.Accounts[index].ID)
+                        # @Html.DisplayFor(modelItem => Model.Accounts[index].ID)
                     </a>
                 </td>
                 <td>

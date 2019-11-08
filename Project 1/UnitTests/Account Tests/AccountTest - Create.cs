@@ -82,7 +82,7 @@ namespace UnitTests
             #region ASSERT
 
             Assert.IsTrue(tResult is ViewResult);
-            Assert.AreEqual(((tResult as ViewResult).Model as Account).AccountBalance, -100.0);
+            Assert.AreEqual(((tResult as ViewResult).Model as Account).AccountBalance, 0);
 
             #endregion
         }

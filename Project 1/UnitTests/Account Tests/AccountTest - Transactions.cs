@@ -175,37 +175,6 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestTransactionPost_NullAccount()
-        {
-            #region ASSIGN
-
-            TestRepository tRepo = new TestRepository();
-            AccountsController tController = null;
-            CustomerAccountTransactionsVM tVM = tRepo.GetAllTransactions(0, 0);
-            tVM.Account = null;
-
-            tController = new AccountsController(tRepo)
-            {
-                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
-            };
-
-            #endregion
-
-            #region ACT
-
-            var tResult = tController.Transactions(0, tVM);
-
-            #endregion
-
-            #region ASSERT
-
-            Assert.IsTrue(tResult is RedirectToActionResult);
-            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
-
-            #endregion
-        }
-
-        [TestMethod]
         public void TestTransactionPost_MismatchAccountID()
         {
             #region ASSIGN
