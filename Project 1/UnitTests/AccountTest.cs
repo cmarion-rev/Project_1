@@ -41,10 +41,14 @@ namespace UnitTests
                 });
 
             var serviceProviderMock = new Mock<IServiceProvider>();
-            var urlHelperFactory = new Mock<ITempDataDictionaryFactory>();
+            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
+            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
             serviceProviderMock
                 .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
-                .Returns(urlHelperFactory.Object);
+                .Returns(tempDataFactoryMock.Object);
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
+                .Returns(UrlFactoryMock.Object);
 
 
             var httpContext = Substitute.For<HttpContext>();
@@ -66,17 +70,15 @@ namespace UnitTests
 
             #region ACT
 
-            var tResult = tController.Index() as ViewResult;
+            var tResult = tController.Index();
 
             #endregion
 
             #region ASSERT
 
-            var tList = tResult.ViewData["StateID"] as SelectList;
-
-            var tItem = tList.Where(a => a.Value == "0").FirstOrDefault().Text;
-
-            Assert.AreEqual(tItem, "FL");
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+            Assert.AreEqual((tResult as RedirectToActionResult).ControllerName, "Customers");
 
             #endregion
         }
