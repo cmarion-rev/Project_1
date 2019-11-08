@@ -498,7 +498,41 @@ namespace UnitTests.Repositories
 
         public Account Withdraw(int customerID, int accountID, double newAmount)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            // Get account query.
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+
+            // Check if customer id was valid to account.
+            if (query.Count() < 1)
+            {
+                throw new UnauthorizedAccessException("UNAUTHORIZED USER");
+            }
+
+            // Get account data.
+            result = query.FirstOrDefault();
+
+            // Check if account is withdrawable.
+            if (!IsAccountWithdrawable(result))
+            {
+                throw new InvalidAccountException("NON-WITHDRAW ACCOUNT");
+            }
+
+            // Check if withdraw amount can be done.
+            switch ((Utility.AccountType)result.AccountTypeID)
+            {
+                case Utility.AccountType.CHECKING:
+                case Utility.AccountType.TERM_DEPOSIT:
+                    if (result.AccountBalance < newAmount)
+                    {
+                        throw new OverdraftProtectionException("OVERDRAFT ERROR");
+                    }
+                    break;
+            }
+
+            result.AccountBalance -= newAmount;
+
+            return result;
         }
     }
 }
