@@ -93,6 +93,18 @@ namespace UnitTests.Repositories
                            IsOpen=true,
                             MaturityDate = DateTime.Now.AddYears(-1),
                 },
+
+                new Account()
+                {
+                     ID=accountID++,
+                      AccountBalance = 50000.0,
+                       AccountTypeID= (int)Utility.AccountType.LOAN,
+                        CustomerID = 1,
+                         InterestRate=0.001f,
+                          IsActive=true,
+                           IsOpen=true,
+                            MaturityDate = DateTime.Now.AddYears(1),
+                },
             };
 
             AccountTransactions = new List<AccountTransaction>()
@@ -393,7 +405,24 @@ namespace UnitTests.Repositories
 
         public bool IsAccountWithdrawable(Account account)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            switch ((Utility.AccountType)account.AccountTypeID)
+            {
+                case Utility.AccountType.CHECKING:
+                    result = account.AccountBalance > 0.0;
+                    break;
+                
+                case Utility.AccountType.BUSINESS:
+                    result = true;
+                    break;
+                
+                case Utility.AccountType.TERM_DEPOSIT:
+                    result = (account.MaturityDate.Subtract(DateTime.Now).TotalDays < 0);
+                    break;
+            }
+
+            return result;
         }
 
         public bool IsCustomerIdValid(int id, string guid)
