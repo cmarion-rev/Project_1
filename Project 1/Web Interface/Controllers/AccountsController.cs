@@ -268,6 +268,7 @@ namespace Web_Interface.Controllers
                 {
                     Console.WriteLine(WTF);
                     ViewData["ErrorMessage"] = "Overdraft Protection! Withdrawal amount exceeded current balance!";
+                    accountPost.Amount = 0;
                     return View(accountPost);
                 }
                 catch (DbUpdateConcurrencyException WTF)
