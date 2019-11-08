@@ -188,7 +188,28 @@ namespace UnitTests.Repositories
 
         public string GetAccountTypeName(int id)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            switch ((Utility.AccountType)id)
+            {
+                case Utility.AccountType.CHECKING:
+                    result = "Checking";
+                    break;
+
+                case Utility.AccountType.BUSINESS:
+                    result = "Business";
+                    break;
+
+                case Utility.AccountType.TERM_DEPOSIT:
+                    result = "Term CD";
+                    break;
+
+                case Utility.AccountType.LOAN:
+                    result = "Loan";
+                    break;
+            }
+
+            return result;
         }
 
         public List<AccountType> GetAllAccountTypes()
@@ -335,7 +356,11 @@ namespace UnitTests.Repositories
 
         public bool IsAccountDepositable(Account account)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            result = (account.AccountTypeID == (int)Utility.AccountType.CHECKING) | (account.AccountTypeID == (int)Utility.AccountType.BUSINESS);
+
+            return result;
         }
 
         public bool IsAccountLoanPayable(Account account)
