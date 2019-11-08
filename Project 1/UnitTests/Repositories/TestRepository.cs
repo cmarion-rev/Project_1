@@ -378,7 +378,40 @@ namespace UnitTests.Repositories
 
         public Account OpenAccount(int customerID, int accountType, double initialBalance = 0)
         {
-            throw new NotImplementedException();
+            Account result = new Account()
+            {
+                ID = accountID++,
+                AccountBalance = initialBalance,
+                CustomerID = customerID,
+                IsActive = true,
+                IsOpen = true,
+            };
+
+            switch ((Utility.AccountType)accountType)
+            {
+                case Utility.AccountType.CHECKING:
+                    result.AccountTypeID = (int)Utility.AccountType.CHECKING;
+                    result.InterestRate = 0.015f;
+                    result.MaturityDate = DateTime.Now;
+                    break;
+                case Utility.AccountType.BUSINESS:
+                    result.AccountTypeID = (int)Utility.AccountType.BUSINESS;
+                    result.InterestRate = 0.015f;
+                    result.MaturityDate = DateTime.Now;
+                    break;
+                case Utility.AccountType.TERM_DEPOSIT:
+                    result.AccountTypeID = (int)Utility.AccountType.TERM_DEPOSIT;
+                    result.InterestRate = 0.015f;
+                    result.MaturityDate = DateTime.Now.AddYears(1);
+                    break;
+                case Utility.AccountType.LOAN:
+                    result.AccountTypeID = (int)Utility.AccountType.LOAN;
+                    result.InterestRate = 0.015f;
+                    result.MaturityDate = DateTime.Now.AddYears(5);
+                    break;
+            }
+
+            return result;
         }
 
         public Customer UpdateCustomer(Customer currentCustomer)
