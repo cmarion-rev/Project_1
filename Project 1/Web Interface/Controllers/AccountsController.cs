@@ -243,7 +243,7 @@ namespace Web_Interface.Controllers
         {
             if (id != accountPost.Account.ID)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
             if (ModelState.IsValid)
@@ -273,6 +273,7 @@ namespace Web_Interface.Controllers
                 catch (DbUpdateConcurrencyException WTF)
                 {
                     Console.WriteLine(WTF);
+                    return RedirectToAction(nameof(Index));
                     //if (!AccountExists(account.ID))
                     //{
                     //    return NotFound();
@@ -286,10 +287,9 @@ namespace Web_Interface.Controllers
                 {
                     Console.WriteLine(WTF);
                     return RedirectToAction(nameof(Index));
-                    //return NotFound();
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Customers");
             }
             return View(accountPost);
         }
