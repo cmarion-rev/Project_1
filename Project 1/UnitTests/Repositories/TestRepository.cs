@@ -169,7 +169,11 @@ namespace UnitTests.Repositories
 
         public Account GetAccountInformation(int customerID, int accountID)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            result = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID).FirstOrDefault();
+
+            return result;
         }
 
         public AccountType GetAccountType(int id)
