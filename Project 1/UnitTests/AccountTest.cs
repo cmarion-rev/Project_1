@@ -321,7 +321,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestCreate()
+        public void TestCreateGet()
         {
             #region ASSIGN
 
@@ -375,6 +375,69 @@ namespace UnitTests
 
             Assert.IsTrue(tResult is ViewResult);
             Assert.AreEqual(((tResult as ViewResult).ViewData["AccountTypeID"] as SelectList).Where(t=>t.Value == "0").FirstOrDefault().Text, "Checking");
+
+            #endregion
+        }
+
+        [TestMethod]
+        public void TestCreatePost_InvalidData()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            Account tAccount = new Account()
+            {
+                AccountBalance = -100.0,
+            };
+
+            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
+
+            var validPrincipal = new ClaimsPrincipal(
+                new[]
+                {
+                     new ClaimsIdentity(
+                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserA")})
+                });
+
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
+            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
+                .Returns(tempDataFactoryMock.Object);
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
+                .Returns(UrlFactoryMock.Object);
+
+
+            var httpContext = Substitute.For<HttpContext>();
+            httpContext.RequestServices = serviceProviderMock.Object;
+            httpContext.User.Returns(validPrincipal);
+
+            var contContext = Substitute.For<ControllerContext>();
+            contContext.HttpContext = httpContext;
+
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = contContext,
+            };
+
+            #endregion
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Create(tAccount);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is ViewResult);
+            Assert.AreEqual(((tResult as ViewResult).Model as Account).AccountBalance, -100.0);
 
             #endregion
         }
