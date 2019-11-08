@@ -11,7 +11,7 @@ using System.Text;
 
 namespace UnitTests.Resources
 {
-   public static class UtilityFunctions
+    static class UtilityFunctions
     {
         public static ControllerContext GenerateMockControllerContext(string userID)
         {
