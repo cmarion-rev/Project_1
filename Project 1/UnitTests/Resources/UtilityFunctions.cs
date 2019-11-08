@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NSubstitute;
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 
 namespace UnitTests.Resources
 {
