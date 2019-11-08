@@ -463,6 +463,16 @@ namespace Web_Interface.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            if (accountPost.Account == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (id != accountPost.Account.ID)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             // Check if customer is registered.
             string guid = GetUserGuID();
             if (_repo.IsCustomerPresent(guid))
