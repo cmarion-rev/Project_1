@@ -699,18 +699,25 @@ namespace Web_Interface.Controllers
                 string guid = GetUserGuID();
                 Customer currentCustomer = _repo.GetCustomer(guid);
 
-                transfer = new AccountTransferVM
+                if (_repo.CanTransferBalance(currentCustomer.ID))
                 {
-                    Amount = 0,
-                };
+                    transfer = new AccountTransferVM
+                    {
+                        Amount = 0,
+                    };
 
-                // Get all withdrawable accounts.
-                transfer.SourceAccounts = _repo.GetWithdrawAccounts(currentCustomer.ID);
-                transfer.SourceID = transfer.SourceAccounts[0].ID;
+                    // Get all withdrawable accounts.
+                    transfer.SourceAccounts = _repo.GetWithdrawAccounts(currentCustomer.ID);
+                    transfer.SourceID = transfer.SourceAccounts[0].ID;
 
-                // Get all depositable accounts.
-                transfer.DestinationAccounts = _repo.GetDepositAccounts(currentCustomer.ID);
-                transfer.DestinationID = transfer.DestinationAccounts[0].ID;
+                    // Get all depositable accounts.
+                    transfer.DestinationAccounts = _repo.GetDepositAccounts(currentCustomer.ID);
+                    transfer.DestinationID = transfer.DestinationAccounts[0].ID;
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
             catch (Exception WTF)
             {
