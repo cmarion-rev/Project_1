@@ -84,6 +84,10 @@ namespace Web_Interface.Controllers
                     account = _repo.OpenAccount(currentCustomer.ID, account.AccountTypeID, account.AccountBalance);
                     return RedirectToAction(nameof(Details), new { id = account.ID });
                 }
+                else
+                {
+                    ViewData["ErrorMessage"] = "Starting Balance needs to be a positive value.";
+                }
             }
             ViewData["AccountTypeID"] = new SelectList(_repo.GetAllAccountTypes(), "ID", "Name");
             return View(account);
