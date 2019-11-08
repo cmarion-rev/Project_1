@@ -295,16 +295,14 @@ namespace Web_Interface.Controllers
             return View(accountPost);
         }
 
-
         //GET: Accounts/Edit/5
         public IActionResult Installment(int? id)
         {
             // Check if valid id was presented.
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
-
 
             AccountTransactionVM account = null;
             try
@@ -324,24 +322,24 @@ namespace Web_Interface.Controllers
                             Amount = 0.0,
                         };
                     }
+                    else
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
             }
             catch (Exception WTF)
             {
                 Console.WriteLine(WTF);
                 return RedirectToAction(nameof(Index));
-                //return NotFound();
             }
 
             if (account == null)
             {
                 return RedirectToAction(nameof(Index));
-                //return NotFound();
             }
 
             ViewData["AccountType"] = _repo.GetAccountTypeName(account.Account.AccountTypeID);
-            //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
-            //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
             return View(account);
         }
 
@@ -354,7 +352,7 @@ namespace Web_Interface.Controllers
         {
             if (id != accountPost.Account.ID)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
             if (ModelState.IsValid)
@@ -399,10 +397,8 @@ namespace Web_Interface.Controllers
                     Console.WriteLine(WTF);
                     return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Customers");
             }
-            //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
-            //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
             return View(accountPost);
         }
 
@@ -440,7 +436,6 @@ namespace Web_Interface.Controllers
                         };
 
                         ViewData["Limit"] = new SelectList(tempList, "ID", "Name", customerTransactions.Limit);
-                        //ViewData["Account Types"] = _repo.GetAllAccountTypes();
 
                         return View(customerTransactions);
                     }
@@ -450,7 +445,7 @@ namespace Web_Interface.Controllers
                     Console.WriteLine(WTF);
                     return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Customers");
             }
             else
             {
@@ -464,6 +459,16 @@ namespace Web_Interface.Controllers
         public IActionResult Transactions(int? id, [Bind("Customer,Account,AccountTransaction,StartDate,EndDate,Limit,AccountTransactionStates")] CustomerAccountTransactionsVM accountPost)
         {
             if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (accountPost.Account == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (id != accountPost.Account.ID)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -571,7 +576,7 @@ namespace Web_Interface.Controllers
             // Check if valid id was presented.
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
             Account currentAccount = null;
@@ -642,9 +647,8 @@ namespace Web_Interface.Controllers
                 {
                     Console.WriteLine(WTF);
                     return RedirectToAction(nameof(Index));
-                    //return NotFound();
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Customers");
             }
 
             ViewData["AccountType"] = _repo.GetAccountTypeName(accountPost.AccountTypeID);
@@ -695,18 +699,25 @@ namespace Web_Interface.Controllers
                 string guid = GetUserGuID();
                 Customer currentCustomer = _repo.GetCustomer(guid);
 
-                transfer = new AccountTransferVM
+                if (_repo.CanTransferBalance(currentCustomer.ID))
                 {
-                    Amount = 0,
-                };
+                    transfer = new AccountTransferVM
+                    {
+                        Amount = 0,
+                    };
 
-                // Get all withdrawable accounts.
-                transfer.SourceAccounts = _repo.GetWithdrawAccounts(currentCustomer.ID);
-                transfer.SourceID = transfer.SourceAccounts[0].ID;
+                    // Get all withdrawable accounts.
+                    transfer.SourceAccounts = _repo.GetWithdrawAccounts(currentCustomer.ID);
+                    transfer.SourceID = transfer.SourceAccounts[0].ID;
 
-                // Get all depositable accounts.
-                transfer.DestinationAccounts = _repo.GetDepositAccounts(currentCustomer.ID);
-                transfer.DestinationID = transfer.DestinationAccounts[0].ID;
+                    // Get all depositable accounts.
+                    transfer.DestinationAccounts = _repo.GetDepositAccounts(currentCustomer.ID);
+                    transfer.DestinationID = transfer.DestinationAccounts[0].ID;
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
             catch (Exception WTF)
             {
@@ -759,7 +770,7 @@ namespace Web_Interface.Controllers
                     // Deposit amount to destination account.
                     destinationAccount = _repo.Deposit(currentCustomer.ID, destinationAccount.ID, transferPost.Amount);
 
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), "Customers");
                 }
             }
             catch (OverdraftProtectionException WTF)
@@ -772,6 +783,11 @@ namespace Web_Interface.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 return View(transfer);
+            }
+            catch(UnauthorizedAccessException WTF)
+            {
+                Console.WriteLine(WTF);
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception WTF)
             {
