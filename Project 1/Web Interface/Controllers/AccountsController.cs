@@ -647,7 +647,6 @@ namespace Web_Interface.Controllers
                 {
                     Console.WriteLine(WTF);
                     return RedirectToAction(nameof(Index));
-                    //return NotFound();
                 }
                 return RedirectToAction(nameof(Index), "Customers");
             }

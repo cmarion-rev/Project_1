@@ -147,7 +147,24 @@ namespace UnitTests.Repositories
 
         public Account CloseAccount(int customerID, int accountID)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+            if (query.Count()<1)
+            {
+                throw new UnauthorizedAccessException("UNAUTHORIZED USER");
+            }
+
+            result = query.FirstOrDefault();
+            if (result.AccountBalance != 0.0)
+            {
+                throw new InvalidAccountException("ACCOUNT HAS REMAINING BALANCE");
+            }
+
+            result.IsActive = false;
+            result.IsOpen = false;
+
+            return result;
         }
 
         public Customer CreateNewCustomer(string guid, Customer newCustomer)
