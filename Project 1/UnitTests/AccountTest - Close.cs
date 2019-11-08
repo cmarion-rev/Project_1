@@ -82,5 +82,35 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestCloseGet_Valid()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Close(0);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is ViewResult);
+            Assert.AreEqual(((tResult as ViewResult).Model as Account).ID, 0);
+            Assert.AreEqual(((tResult as ViewResult).Model as Account).CustomerID, 0);
+
+            #endregion
+        }
     }
 }
