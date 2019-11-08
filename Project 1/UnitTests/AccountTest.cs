@@ -2040,6 +2040,68 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestInstallmentPost_Valid()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            Account tAccount = tRepo.GetAccountInformation(1, 3);
+            AccountTransactionVM tVM = new AccountTransactionVM() { Account = tAccount, Amount = 5000.0 };
+
+            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
+
+            var validPrincipal = new ClaimsPrincipal(
+                new[]
+                {
+                     new ClaimsIdentity(
+                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserB")})
+                });
+
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
+            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
+                .Returns(tempDataFactoryMock.Object);
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
+                .Returns(UrlFactoryMock.Object);
+
+
+            var httpContext = Substitute.For<HttpContext>();
+            httpContext.RequestServices = serviceProviderMock.Object;
+            httpContext.User.Returns(validPrincipal);
+
+            var contContext = Substitute.For<ControllerContext>();
+            contContext.HttpContext = httpContext;
+
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = contContext,
+            };
+
+            #endregion
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Installment(3, tVM);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+            Assert.AreEqual((tResult as RedirectToActionResult).ControllerName, "Customers");
+
+            #endregion
+        }
         #endregion
     }
 }
