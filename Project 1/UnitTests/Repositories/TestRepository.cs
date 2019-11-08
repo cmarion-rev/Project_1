@@ -5,6 +5,7 @@ using System.Text;
 
 using Data_Layer.Data_Objects;
 using Data_Layer.Database_Repository.Interfaces;
+using Data_Layer.Errors;
 using Data_Layer.Resources;
 using Data_Layer.View_Models;
 
@@ -92,6 +93,18 @@ namespace UnitTests.Repositories
                            IsOpen=true,
                             MaturityDate = DateTime.Now.AddYears(-1),
                 },
+
+                new Account()
+                {
+                     ID=accountID++,
+                      AccountBalance = 50000.0,
+                       AccountTypeID= (int)Utility.AccountType.LOAN,
+                        CustomerID = 1,
+                         InterestRate=0.001f,
+                          IsActive=true,
+                           IsOpen=true,
+                            MaturityDate = DateTime.Now.AddYears(1),
+                },
             };
 
             AccountTransactions = new List<AccountTransaction>()
@@ -129,7 +142,7 @@ namespace UnitTests.Repositories
 
         public bool CanTransferBalance(int customerID)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public Account CloseAccount(int customerID, int accountID)
@@ -164,12 +177,38 @@ namespace UnitTests.Repositories
 
         public Account Deposit(int customerID, int accountID, double newAmount)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            // Get account query.
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+
+            // Check if account owner id was valid.
+            if (query.Count() < 1)
+            {
+                throw new UnauthorizedAccessException("UNAUTHORIZED ACCOUNT USER");
+            }
+
+            // Get valid account from query.
+            result = query.FirstOrDefault();
+
+            // Check if account is despoitable.
+            if (!IsAccountDepositable(result))
+            {
+                throw new InvalidAccountException("NON-DEPOSIT ACCOUNT");
+            }
+
+            result.AccountBalance += newAmount;
+
+            return result;
         }
 
         public Account GetAccountInformation(int customerID, int accountID)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            result = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID).FirstOrDefault();
+
+            return result;
         }
 
         public AccountType GetAccountType(int id)
@@ -184,7 +223,28 @@ namespace UnitTests.Repositories
 
         public string GetAccountTypeName(int id)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            switch ((Utility.AccountType)id)
+            {
+                case Utility.AccountType.CHECKING:
+                    result = "Checking";
+                    break;
+
+                case Utility.AccountType.BUSINESS:
+                    result = "Business";
+                    break;
+
+                case Utility.AccountType.TERM_DEPOSIT:
+                    result = "Term CD";
+                    break;
+
+                case Utility.AccountType.LOAN:
+                    result = "Loan";
+                    break;
+            }
+
+            return result;
         }
 
         public List<AccountType> GetAllAccountTypes()
@@ -331,7 +391,11 @@ namespace UnitTests.Repositories
 
         public bool IsAccountDepositable(Account account)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            result = (account.AccountTypeID == (int)Utility.AccountType.CHECKING) | (account.AccountTypeID == (int)Utility.AccountType.BUSINESS);
+
+            return result;
         }
 
         public bool IsAccountLoanPayable(Account account)
@@ -341,7 +405,24 @@ namespace UnitTests.Repositories
 
         public bool IsAccountWithdrawable(Account account)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            switch ((Utility.AccountType)account.AccountTypeID)
+            {
+                case Utility.AccountType.CHECKING:
+                    result = account.AccountBalance > 0.0;
+                    break;
+                
+                case Utility.AccountType.BUSINESS:
+                    result = true;
+                    break;
+                
+                case Utility.AccountType.TERM_DEPOSIT:
+                    result = (account.MaturityDate.Subtract(DateTime.Now).TotalDays < 0);
+                    break;
+            }
+
+            return result;
         }
 
         public bool IsCustomerIdValid(int id, string guid)
@@ -374,7 +455,40 @@ namespace UnitTests.Repositories
 
         public Account OpenAccount(int customerID, int accountType, double initialBalance = 0)
         {
-            throw new NotImplementedException();
+            Account result = new Account()
+            {
+                ID = accountID++,
+                AccountBalance = initialBalance,
+                CustomerID = customerID,
+                IsActive = true,
+                IsOpen = true,
+            };
+
+            switch ((Utility.AccountType)accountType)
+            {
+                case Utility.AccountType.CHECKING:
+                    result.AccountTypeID = (int)Utility.AccountType.CHECKING;
+                    result.InterestRate = 0.015f;
+                    result.MaturityDate = DateTime.Now;
+                    break;
+                case Utility.AccountType.BUSINESS:
+                    result.AccountTypeID = (int)Utility.AccountType.BUSINESS;
+                    result.InterestRate = 0.015f;
+                    result.MaturityDate = DateTime.Now;
+                    break;
+                case Utility.AccountType.TERM_DEPOSIT:
+                    result.AccountTypeID = (int)Utility.AccountType.TERM_DEPOSIT;
+                    result.InterestRate = 0.015f;
+                    result.MaturityDate = DateTime.Now.AddYears(1);
+                    break;
+                case Utility.AccountType.LOAN:
+                    result.AccountTypeID = (int)Utility.AccountType.LOAN;
+                    result.InterestRate = 0.015f;
+                    result.MaturityDate = DateTime.Now.AddYears(5);
+                    break;
+            }
+
+            return result;
         }
 
         public Customer UpdateCustomer(Customer currentCustomer)
@@ -384,7 +498,41 @@ namespace UnitTests.Repositories
 
         public Account Withdraw(int customerID, int accountID, double newAmount)
         {
-            throw new NotImplementedException();
+            Account result = null;
+
+            // Get account query.
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+
+            // Check if customer id was valid to account.
+            if (query.Count() < 1)
+            {
+                throw new UnauthorizedAccessException("UNAUTHORIZED USER");
+            }
+
+            // Get account data.
+            result = query.FirstOrDefault();
+
+            // Check if account is withdrawable.
+            if (!IsAccountWithdrawable(result))
+            {
+                throw new InvalidAccountException("NON-WITHDRAW ACCOUNT");
+            }
+
+            // Check if withdraw amount can be done.
+            switch ((Utility.AccountType)result.AccountTypeID)
+            {
+                case Utility.AccountType.CHECKING:
+                case Utility.AccountType.TERM_DEPOSIT:
+                    if (result.AccountBalance < newAmount)
+                    {
+                        throw new OverdraftProtectionException("OVERDRAFT ERROR");
+                    }
+                    break;
+            }
+
+            result.AccountBalance -= newAmount;
+
+            return result;
         }
     }
 }
