@@ -81,7 +81,7 @@ namespace UnitTests.Repositories
                            IsOpen=true,
                             MaturityDate = DateTime.Now,
                 },
-                
+
                 new Account()
                 {
                      ID=accountID++,
@@ -126,7 +126,7 @@ namespace UnitTests.Repositories
                      Amount= 250.0,
                       TimeStamp = DateTime.Now.AddDays(-20),
                 },
-                
+
                 new AccountTransaction()
                 {
                   ID = transactionID++,
@@ -259,7 +259,7 @@ namespace UnitTests.Repositories
 
         public List<AccountType> GetAllAccountTypes()
         {
-           return new List<AccountType>()
+            return new List<AccountType>()
            {
               new AccountType()
               {
@@ -291,22 +291,86 @@ namespace UnitTests.Repositories
 
         public CustomerAccountTransactionsVM GetAllTransactions(int customerID, int accountID)
         {
-            throw new NotImplementedException();
+            CustomerAccountTransactionsVM result = null;
+
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+
+            if (query.Count() > 0)
+            {
+                result = new CustomerAccountTransactionsVM();
+                result.Account = query.FirstOrDefault();
+
+                result.AccountTransactions = AccountTransactions.Where(t => t.AccountID == accountID).OrderBy(t => t.TimeStamp).ToList();
+                result.Customer = Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                result.AccountTransactionStates = GetTransactionStates();
+            }
+
+            return result;
         }
 
         public CustomerAccountTransactionsVM GetAllTransactions(int customerID, int accountID, DateTime startDate, DateTime endDate)
         {
-            throw new NotImplementedException();
+            CustomerAccountTransactionsVM result = null;
+
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+
+            if (query.Count() > 0)
+            {
+                result = new CustomerAccountTransactionsVM();
+                result.Account = query.FirstOrDefault();
+
+                result.AccountTransactions = AccountTransactions.Where(t => t.AccountID == accountID &&
+                                                                            t.TimeStamp > startDate &&
+                                                                            t.TimeStamp < endDate)
+                                                                .OrderBy(t => t.TimeStamp).ToList();
+                result.Customer = Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                result.AccountTransactionStates = GetTransactionStates();
+            }
+
+            return result;
         }
 
         public CustomerAccountTransactionsVM GetAllTransactions(int customerID, int accountID, int resultLimit)
         {
-            throw new NotImplementedException();
+            CustomerAccountTransactionsVM result = null;
+
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+
+            if (query.Count() > 0)
+            {
+                result = new CustomerAccountTransactionsVM();
+                result.Account = query.FirstOrDefault();
+
+                var query2 = AccountTransactions.Where(t => t.AccountID == accountID).OrderBy(t => t.TimeStamp).ToList();
+                result.AccountTransactions = query2.Skip(Math.Max(0, query2.Count() - resultLimit)).ToList();
+                result.Customer = Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                result.AccountTransactionStates = GetTransactionStates();
+            }
+
+            return result;
         }
 
         public CustomerAccountTransactionsVM GetAllTransactions(int customerID, int accountID, DateTime startDate, DateTime endDate, int resultLimit)
         {
-            throw new NotImplementedException();
+            CustomerAccountTransactionsVM result = null;
+
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+
+            if (query.Count() > 0)
+            {
+                result = new CustomerAccountTransactionsVM();
+                result.Account = query.FirstOrDefault();
+
+                var query2 = AccountTransactions.Where(t => t.AccountID == accountID &&
+                                                                            t.TimeStamp > startDate &&
+                                                                            t.TimeStamp < endDate)
+                                                                .OrderBy(t => t.TimeStamp).ToList();
+                result.AccountTransactions = query2.Skip(Math.Max(0, query2.Count() - resultLimit)).ToList();
+                result.Customer = Customers.Where(c => c.ID == customerID).FirstOrDefault();
+                result.AccountTransactionStates = GetTransactionStates();
+            }
+
+            return result;
         }
 
         public Customer GetCustomer(int id)
@@ -367,7 +431,7 @@ namespace UnitTests.Repositories
 
         public List<State> GetStates()
         {
-           return new List<State>()
+            return new List<State>()
            {
                new State()
                {
@@ -391,7 +455,35 @@ namespace UnitTests.Repositories
 
         public List<AccountTransactionState> GetTransactionStates()
         {
-            throw new NotImplementedException();
+            int index = 0;
+            return new List<AccountTransactionState>()
+            {
+               new AccountTransactionState()
+               {
+                    ID=index++,
+                     Name = "Open Account"
+               },
+               new AccountTransactionState()
+               {
+                    ID=index++,
+                     Name = "Close Account"
+               },
+               new AccountTransactionState()
+               {
+                    ID=index++,
+                     Name = "Deposit"
+               },
+               new AccountTransactionState()
+               {
+                    ID=index++,
+                     Name = "Withdrawal"
+               },
+               new AccountTransactionState()
+               {
+                    ID=index++,
+                     Name = "Installment"
+               }
+            };
         }
 
         public List<Account> GetWithdrawAccounts(int customerID)
@@ -426,11 +518,11 @@ namespace UnitTests.Repositories
                 case Utility.AccountType.CHECKING:
                     result = account.AccountBalance > 0.0;
                     break;
-                
+
                 case Utility.AccountType.BUSINESS:
                     result = true;
                     break;
-                
+
                 case Utility.AccountType.TERM_DEPOSIT:
                     result = (account.MaturityDate.Subtract(DateTime.Now).TotalDays < 0);
                     break;
