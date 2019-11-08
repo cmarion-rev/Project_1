@@ -142,5 +142,35 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestClosePost_UnauthorizedAccountOwner()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            Account tData = tRepo.GetAccountInformation(0, 0);
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("User"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Close(0, tData);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+
+            #endregion
+        }
     }
 }
