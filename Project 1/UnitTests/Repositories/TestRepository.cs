@@ -233,7 +233,12 @@ namespace UnitTests.Repositories
         {
             Account result = null;
 
-            result = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID).FirstOrDefault();
+            var query = Accounts.Where(a => a.ID == accountID && a.CustomerID == customerID);
+            if (query.Count() < 0)
+            {
+                throw new UnauthorizedAccessException("UNAUTHORIZED USER");
+            }
+            result = query.FirstOrDefault();
 
             return result;
         }
