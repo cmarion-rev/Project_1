@@ -770,7 +770,7 @@ namespace Web_Interface.Controllers
                     // Deposit amount to destination account.
                     destinationAccount = _repo.Deposit(currentCustomer.ID, destinationAccount.ID, transferPost.Amount);
 
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), "Customers");
                 }
             }
             catch (OverdraftProtectionException WTF)
