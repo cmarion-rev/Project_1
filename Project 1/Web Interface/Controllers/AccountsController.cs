@@ -445,7 +445,7 @@ namespace Web_Interface.Controllers
                     Console.WriteLine(WTF);
                     return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Customers");
             }
             else
             {
