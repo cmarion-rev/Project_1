@@ -95,9 +95,8 @@ namespace Web_Interface.Controllers
             // Check if valid id was presented.
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index), "Customers");
             }
-
 
             AccountTransactionVM account = null;
             try
@@ -108,27 +107,32 @@ namespace Web_Interface.Controllers
 
                 if (currentAccount != null)
                 {
-                    account = new AccountTransactionVM()
+                    if (_repo.IsAccountDepositable(currentAccount))
                     {
-                        Account = currentAccount,
-                        Amount = 0.0,
-                    };
+                        account = new AccountTransactionVM()
+                        {
+                            Account = currentAccount,
+                            Amount = 0.0,
+                        };
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(Index), "Customers");
+                    }
                 }
             }
             catch (Exception WTF)
             {
                 Console.WriteLine(WTF);
-                return NotFound();
+                return RedirectToAction(nameof(Index), "Customers");
             }
 
             if (account == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index), "Customers");
             }
 
             ViewData["AccountType"] = _repo.GetAccountTypeName(account.Account.AccountTypeID);
-            //ViewData["AccountTypeID"] = new SelectList(_repo.AccountTypes, "ID", "ID", account.AccountTypeID);
-            //ViewData["CustomerID"] = new SelectList(_repo.Customers, "ID", "FirstName", account.CustomerID);
             return View(account);
         }
 
