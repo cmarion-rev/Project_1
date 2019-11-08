@@ -205,6 +205,8 @@ namespace UnitTests
                 SourceID = 0,
                 Amount = 5000.0,
             };
+            Account tData1 = tRepo.GetAccountInformation(0, 0);
+            Account tData2 = tRepo.GetAccountInformation(0, 1);
 
             tController = new AccountsController(tRepo)
             {
@@ -224,6 +226,8 @@ namespace UnitTests
             Assert.IsTrue(tResult is ViewResult);
             Assert.IsNotNull((tResult as ViewResult).ViewData["ErrorMessage"]);
             Assert.IsTrue((tResult as ViewResult).ViewData["ErrorMessage"].ToString().Contains("Overdraft"));
+            Assert.AreEqual(tData1.AccountBalance, 1000.0);
+            Assert.AreEqual(tData2.AccountBalance, 500.0);
 
             #endregion
         }
