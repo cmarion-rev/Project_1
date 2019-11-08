@@ -192,12 +192,22 @@ namespace UnitTests.Repositories
             result = query.FirstOrDefault();
 
             // Check if account is despoitable.
-            if (!IsAccountDepositable(result))
+            if (IsAccountDepositable(result))
+            {
+                result.AccountBalance += newAmount;
+            }
+            else if (IsAccountLoanPayable(result))
+            {
+                if (newAmount > result.AccountBalance)
+                {
+                    throw new InvalidAmountException("INSTALLMENT AMOUNT EXCEEDS REMAINING BALANCE");
+                }
+                result.AccountBalance -= newAmount;
+            }
+            else
             {
                 throw new InvalidAccountException("NON-DEPOSIT ACCOUNT");
             }
-
-            result.AccountBalance += newAmount;
 
             return result;
         }
