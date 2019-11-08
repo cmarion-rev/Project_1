@@ -1977,6 +1977,69 @@ namespace UnitTests
             #endregion
         }
 
+        [TestMethod]
+        public void TestInstallmentPost_OverdraftError()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            Account tAccount = tRepo.GetAccountInformation(1, 3);
+            AccountTransactionVM tVM = new AccountTransactionVM() { Account = tAccount, Amount = 100000.0 };
+
+            #region DO NOT DELETE - FOR GENERATING FAKE SESSION USER DATA
+
+            var validPrincipal = new ClaimsPrincipal(
+                new[]
+                {
+                     new ClaimsIdentity(
+                         new[] {new Claim(ClaimTypes.NameIdentifier, "UserB")})
+                });
+
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            var tempDataFactoryMock = new Mock<ITempDataDictionaryFactory>();
+            var UrlFactoryMock = new Mock<IUrlHelperFactory>();
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(ITempDataDictionaryFactory)))
+                .Returns(tempDataFactoryMock.Object);
+            serviceProviderMock
+                .Setup(s => s.GetService(typeof(IUrlHelperFactory)))
+                .Returns(UrlFactoryMock.Object);
+
+
+            var httpContext = Substitute.For<HttpContext>();
+            httpContext.RequestServices = serviceProviderMock.Object;
+            httpContext.User.Returns(validPrincipal);
+
+            var contContext = Substitute.For<ControllerContext>();
+            contContext.HttpContext = httpContext;
+
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = contContext,
+            };
+
+            #endregion
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Installment(3, tVM);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is ViewResult);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransactionVM).Account.ID, 3);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransactionVM).Account.AccountBalance, 50000.0);
+            Assert.AreEqual(((tResult as ViewResult).Model as AccountTransactionVM).Amount, 0.0);
+            Assert.IsNotNull((tResult as ViewResult).ViewData["ErrorMessage"]);
+
+            #endregion
+        }
         #endregion
     }
 }
