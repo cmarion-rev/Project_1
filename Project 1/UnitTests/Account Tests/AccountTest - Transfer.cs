@@ -121,5 +121,40 @@ namespace UnitTests
 
             #endregion
         }
+
+        [TestMethod]
+        public void TestTransferPost_UnauthorizedDestinationAccountOwner()
+        {
+            #region ASSIGN
+
+            TestRepository tRepo = new TestRepository();
+            AccountsController tController = null;
+            AccountTransferVM tVM = new AccountTransferVM()
+            {
+                DestinationID = 2,
+                SourceID = 0,
+                Amount = 1.0,
+            };
+
+            tController = new AccountsController(tRepo)
+            {
+                ControllerContext = UtilityFunctions.GenerateMockControllerContext("UserA"),
+            };
+
+            #endregion
+
+            #region ACT
+
+            var tResult = tController.Transfer(tVM);
+
+            #endregion
+
+            #region ASSERT
+
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
+
+            #endregion
+        }
     }
 }
