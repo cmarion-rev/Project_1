@@ -1003,6 +1003,8 @@ namespace UnitTests
 
         #endregion
 
+        #region WITHDRAW
+
         [TestMethod]
         public void TestWithdrawGet_Null()
         {
@@ -1548,5 +1550,7 @@ namespace UnitTests
 
             #endregion
         }
+
+        #endregion
     }
 }
