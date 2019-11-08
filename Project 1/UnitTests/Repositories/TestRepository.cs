@@ -180,7 +180,7 @@ namespace UnitTests.Repositories
             result = query.FirstOrDefault();
 
             // Check if account is despoitable.
-            if (IsAccountDepositable(result))
+            if (!IsAccountDepositable(result))
             {
                 throw new InvalidAccountException("NON-DEPOSIT ACCOUNT");
             }
