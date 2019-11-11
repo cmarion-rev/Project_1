@@ -33,7 +33,8 @@ namespace UnitTests.AccountTests
 
             #region ASSERT
 
-            Assert.IsTrue(tResult is NotFoundResult);
+            Assert.IsTrue(tResult is RedirectToActionResult);
+            Assert.AreEqual((tResult as RedirectToActionResult).ActionName, "Index");
 
             #endregion
         }
