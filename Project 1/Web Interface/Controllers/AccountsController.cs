@@ -44,6 +44,8 @@ namespace Web_Interface.Controllers
                     {
                         return RedirectToAction(nameof(Index));
                     }
+
+                    ViewData["AccountType"] = _repo.GetAccountTypeName(account.AccountTypeID);
                 }
                 catch (Exception WTF)
                 {
