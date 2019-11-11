@@ -506,7 +506,7 @@ namespace Web_Interface.Controllers
                         }
 
                         // Check if date ranges are not the same.
-                        if (Math.Abs(accountPost.StartDate.Subtract(accountPost.EndDate).TotalDays) > 0)
+                        if (accountPost.StartDate.Subtract(accountPost.EndDate).TotalDays < 0)
                         {
                             // Check if limit was set.
                             if (limit > 0)
@@ -529,7 +529,11 @@ namespace Web_Interface.Controllers
                             {
                                 customerTransactions = _repo.GetAllTransactions(currentCustomer.ID, currentAccount.ID);
                             }
+
+                            accountPost.StartDate = DateTime.Now;
+                            accountPost.EndDate = accountPost.StartDate;
                         }
+
                         // Restore old values.
                         customerTransactions.StartDate = accountPost.StartDate;
                         customerTransactions.EndDate = accountPost.EndDate;

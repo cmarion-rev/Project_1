@@ -173,6 +173,7 @@ namespace Data_Layer
                         {
                             // Update account balance for new amount.
                             currentAccount.AccountBalance += newAmount;
+                            currentAccount.AccountBalance = Math.Round(currentAccount.AccountBalance, 2);
 
                             // Create new transaction record.
                             AccountTransaction tempTransaction = new AccountTransaction()
@@ -197,6 +198,7 @@ namespace Data_Layer
                             {
                                 // Update account balance for new amount.
                                 currentAccount.AccountBalance -= newAmount;
+                                currentAccount.AccountBalance = Math.Round(currentAccount.AccountBalance, 2);
 
                                 // Create new transaction record.
                                 AccountTransaction tempTransaction = new AccountTransaction()
@@ -286,6 +288,7 @@ namespace Data_Layer
                             if (IsBusinessAccount(currentAccount.AccountTypeID))
                             {
                                 currentAccount.AccountBalance -= newAmount;
+                                currentAccount.AccountBalance = Math.Round(currentAccount.AccountBalance, 2);
 
                                 // Create new transaction for withdrawal.
                                 AccountTransaction newTransaction = new AccountTransaction()
@@ -333,6 +336,7 @@ namespace Data_Layer
                                 if (currentAccount.MaturityDate.Subtract(DateTime.Now).TotalDays < 0)
                                 {
                                     currentAccount.AccountBalance -= newAmount;
+                                    currentAccount.AccountBalance = Math.Round(currentAccount.AccountBalance, 2);
 
                                     // Create new transaction for withdrawal.
                                     AccountTransaction newTransaction = new AccountTransaction()
