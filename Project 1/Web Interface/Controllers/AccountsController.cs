@@ -42,7 +42,7 @@ namespace Web_Interface.Controllers
 
                     if (account == null)
                     {
-                        return NotFound();
+                        return RedirectToAction(nameof(Index));
                     }
                 }
                 catch (Exception WTF)
@@ -54,7 +54,7 @@ namespace Web_Interface.Controllers
                 return View(account);
             }
 
-            return NotFound();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Accounts/Create
