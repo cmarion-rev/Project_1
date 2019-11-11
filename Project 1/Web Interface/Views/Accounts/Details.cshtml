@@ -35,7 +35,10 @@
             @Html.DisplayNameFor(model => model.AccountType)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AccountType.ID)
+           @if (ViewData.ContainsKey("AccountType"))
+           {
+               @ViewData["AccountType"]
+           }
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Customer)
