@@ -141,6 +141,7 @@ namespace UnitTests.Repositories
 
         public bool CanTransferBalance(int customerID)
         {
+            int x = 0;
             return true;
         }
 
